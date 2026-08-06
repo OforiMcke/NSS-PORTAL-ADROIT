@@ -4,14 +4,13 @@ const User = require("../models/User.js");
 
 // @desc    Sign up (applicant)
 // @route   POST /api/auth/signup
-// @access  Public
 const signup = asyncHandler(async (req, res) => {
-  const { fullName, email, phoneNumber, password } = req.body;
+  const { firstName, lastName, email, phoneNumber, password } = req.body;
 
   // Validate the required input
-  if (!fullName || !email || !phoneNumber) {
+  if (!firstName || !lastName || !email || !phoneNumber || !password) {
     res.status(400);
-    throw new Error("Full name, email, and phone number are required");
+    throw new Error("All fields are required");
   }
 
   // Check duplicate emails
@@ -21,9 +20,9 @@ const signup = asyncHandler(async (req, res) => {
     throw new Error("An account with this email already exists");
   }
 
-  // Create user
   const user = await User.create({
-    fullName,
+    firstName,
+    lastName,
     email,
     phoneNumber,
     password: password || `${email}${Date.now()}`,
@@ -32,17 +31,18 @@ const signup = asyncHandler(async (req, res) => {
   res.status(201).json({
     success: true,
     _id: user._id,
-    fullName: user.fullName,
+    firstName: user.firstName,
+    lastName: user.lastName,
     email: user.email,
     phoneNumber: user.phoneNumber,
     role: user.role,
+    password: user.password,
     token: generateToken(user._id, user.role),
   });
 });
 
 // @desc    Sign in
 // @route   POST /api/auth/signin
-// @access  Public
 const signin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -52,7 +52,8 @@ const signin = asyncHandler(async (req, res) => {
     res.json({
       success: true,
       _id: user._id,
-      fullName: user.fullName,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       phoneNumber: user.phoneNumber,
       role: user.role,
@@ -66,12 +67,13 @@ const signin = asyncHandler(async (req, res) => {
 
 // @desc    Get current user profile
 // @route   GET /api/auth/profile
-// @access  Private
 const getProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
   res.json({
     success: true,
     _id: req.user._id,
-    fullName: req.user.fullName,
+    firstName: req.user.firstName,
+    lastName: req.user.lastName,
     email: req.user.email,
     phoneNumber: req.user.phoneNumber,
     role: req.user.role,
@@ -80,10 +82,10 @@ const getProfile = asyncHandler(async (req, res) => {
 
 // @desc    Update profile
 // @route   PUT /api/auth/profile
-// @access  Private
 const updateProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
-  user.fullName = req.body.fullName || user.fullName;
+  const user = await User.findByIdAndUpdate(req.user._id);
+  user.firstName = req.body.firstName || user.firstName;
+  user.lastName = req.body.lastName || user.lastName;
   user.email = req.body.email || user.email;
   user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
 
@@ -94,7 +96,8 @@ const updateProfile = asyncHandler(async (req, res) => {
   res.json({
     success: true,
     _id: updated._id,
-    fullName: updated.fullName,
+    firstName: updated.firstName,
+    lastName: updated.lastName,
     email: updated.email,
     phoneNumber: updated.phoneNumber,
     role: updated.role,
@@ -103,7 +106,6 @@ const updateProfile = asyncHandler(async (req, res) => {
 
 // @desc    Get all users
 // @route   GET /api/auth/users
-// @access  Admin
 const getUsers = asyncHandler(async (req, res) => {
   const users = await User.find({}).select("-password");
   res.json({ success: true, count: users.length, data: users });

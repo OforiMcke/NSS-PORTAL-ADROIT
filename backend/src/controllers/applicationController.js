@@ -8,7 +8,7 @@ const Category = require("../models/Category.js");
 const SubCategory = require("../models/SubCategory.js");
 const cloudinary = require("../config/cloudinary.js");
 
-// upload a local file to Cloudinary, and then delete the local copy
+// upload 
 const uploadToCloudinary = async (filePath, folder) => {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
