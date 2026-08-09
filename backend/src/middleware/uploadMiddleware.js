@@ -2,8 +2,10 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 
-// This ensures uploads directory exists
-const uploadDir = "uploads";
+// Absolute path — a relative "uploads" string resolves against
+// process.cwd(), which depends on where you launched `node` from, not
+// necessarily your project root.
+const uploadDir = path.join(__dirname, "..", "uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -37,4 +39,19 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
 });
 
+// Wraps a multer middleware (e.g. upload.fields([...])) so that both
+// MulterErrors (file too large, unexpected field, etc.) and fileFilter
+// errors ("CV must be a PDF file") come back as 400s instead of falling
+// through to errorMiddleware's default 500.
+const handleUploadErrors = (multerMiddleware) => (req, res, next) => {
+  multerMiddleware(req, res, (err) => {
+    if (err) {
+      res.status(400);
+      return next(err instanceof Error ? err : new Error(String(err)));
+    }
+    next();
+  });
+};
+
 module.exports = upload;
+module.exports.handleUploadErrors = handleUploadErrors;

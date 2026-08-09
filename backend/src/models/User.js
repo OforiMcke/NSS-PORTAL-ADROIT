@@ -37,6 +37,11 @@ const userSchema = mongoose.Schema(
       enum: ["applicant", "admin"],
       default: "applicant",
     },
+    avatarUrl: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true },

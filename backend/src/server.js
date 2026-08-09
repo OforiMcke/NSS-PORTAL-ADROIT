@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+const cors = require("cors");
 const connectDB = require("./config/db");
 
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
@@ -11,6 +12,7 @@ const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -19,14 +21,16 @@ connectDB();
 
 // API Route Links
 app.use("/api/auth", authRoutes);
-// app.use("/api/categories", categoryRoutes);
-// app.use("/api/applications", applicationRoutes);
+const categoryRoutes = require("./routes/categoryRoutes");
+const applicationRoutes = require("./routes/applicationRoutes");
+app.use("/api/categories", categoryRoutes);
+app.use("/api/applications", applicationRoutes);
 
-// Centralized Error Handlers
+//Error Handlers
 app.use(notFound);
 app.use(errorHandler);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log(`Server running on port ${port}...`);
 });

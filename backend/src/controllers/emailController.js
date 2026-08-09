@@ -1,12 +1,23 @@
 const { transporter } = require("../config/nodemailer.js");
 
+// Escapes HTML-significant characters so user-controlled strings (fullName,
+// adminFeedback) can't inject markup/scripts into the email body.
+const escapeHtml = (str = "") =>
+  String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
 // This accepts emails
 const sendAcceptanceEmail = async (application) => {
+  const safeName = escapeHtml(application.fullName);
   const subject = `Congratulations Your application was accepted | Adroit 360`;
   const html = `  
     <div style="font-family: Arial, sans-serif; min-width: 600px; margin:auto;">  
       <h2 style="color:#1a73e8;">Adroit 360: Application Accepted</h2>  
-      <p>Dear <strong>${application.fullName}</strong>,</p>  
+      <p>Dear <strong>${safeName}</strong>,</p>  
       <p>We are delighted to inform you that your application has been  
          <strong>accepted</strong>. Congratulations!</p>  
       <p>Our team will reach out to you shortly with the next steps.</p>  
@@ -30,17 +41,18 @@ const sendAcceptanceEmail = async (application) => {
 
 // Rejection email
 const sendRejectionEmail = async (application) => {
+  const safeName = escapeHtml(application.fullName);
   const subject = `Update on your application | Adroit 360`;
   const feedback = application.adminFeedback
     ? `<p style="background: #f9f9f9; padding:12px; border-left:4px solid #ec289d;">
-         <strong>Feedback:</strong> ${application.adminFeedback}
+         <strong>Feedback:</strong> ${escapeHtml(application.adminFeedback)}
        </p>`
     : "";
 
   const html = `
     <div style="font-family: Arial, sans-serif; min-width: 600px; margin:auto;  padding:20px;">
       <h2 style="color: #ec289d;;">Adroit 360: Application Update</h2>
-      <p>Dear <strong>${application.fullName}</strong>,</p>
+      <p>Dear <strong>${safeName}</strong>,</p>
       <p>Thank you for your interest in Adroit 360. After careful review,
          we regret to inform you that your application has been
          <strong>declined</strong> at this time.</p>

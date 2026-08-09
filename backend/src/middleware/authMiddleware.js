@@ -15,21 +15,27 @@ const protect = asyncHandler(async (req, res, next) => {
     throw new Error("Not authorized, no token");
   }
 
+  // Only jwt.verify's own failures (expired/malformed/bad signature) are
+  // caught here. Previously the "user not found/deactivated" check lived
+  // inside this same try block, so its specific message got swallowed by
+  // this catch and replaced with a generic one.
+  let decoded;
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id).select("_password");
-
-    if (!user || !user.isActive) {
-      res.status(401);
-      throw new Error("User not found or deactivated");
-    }
-
-    req.user = user;
-    next();
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
   } catch (error) {
     res.status(401);
     throw new Error("Not authorized, token failed");
   }
+
+  const user = await User.findById(decoded.id).select("-password");
+
+  if (!user || !user.isActive) {
+    res.status(401);
+    throw new Error("User not found or deactivated");
+  }
+
+  req.user = user;
+  next();
 });
 
 // We must used them after verification

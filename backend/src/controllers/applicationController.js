@@ -7,8 +7,13 @@ const {
 const Category = require("../models/Category.js");
 const SubCategory = require("../models/SubCategory.js");
 const cloudinary = require("../config/cloudinary.js");
+const fs = require("fs/promises");
 
-// upload 
+// upload — now throws instead of swallowing failures, so callers can't
+// mistake a failed upload for a successful one with an empty url.
+// Also removes the local temp file multer wrote to disk regardless of
+// whether the Cloudinary upload succeeds or fails, so files don't pile
+// up in the uploads/ folder forever.
 const uploadToCloudinary = async (filePath, folder) => {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
@@ -18,15 +23,18 @@ const uploadToCloudinary = async (filePath, folder) => {
     return { url: result.secure_url, publicId: result.public_id };
   } catch (error) {
     console.error("Cloudinary upload failed:", error.message);
-    return { url: "", publicId: "" };
+    throw new Error("File upload failed, please try again");
+  } finally {
+    fs.unlink(filePath).catch((err) =>
+      console.error("Temp file cleanup failed:", err.message),
+    );
   }
 };
 
 // @desc    Submit a new application
 // @route   POST /api/applications
 // @access  Private (applicant)
-// @body    multipart/form-data: fullName, email, phoneNumber, statementOfMotivation,
-//          categoryId, subCategoryId, cv (file), photo (file, optional)
+
 const submitApplication = asyncHandler(async (req, res) => {
   const {
     fullName,
@@ -37,13 +45,22 @@ const submitApplication = asyncHandler(async (req, res) => {
     subCategoryId,
   } = req.body;
 
-  // Validate required text fields
-  if (!fullName || !email || !phoneNumber || !statementOfMotivation) {
+  // Validate required text fields — categoryId/subCategoryId included so
+  // we never hit Mongoose's findById with undefined (which throws a
+  // CastError and surfaces as an ugly 500 instead of a clean 400)
+  if (
+    !fullName ||
+    !email ||
+    !phoneNumber ||
+    !statementOfMotivation ||
+    !categoryId ||
+    !subCategoryId
+  ) {
     res.status(400);
     throw new Error("All form fields are required");
   }
 
-  // Verify category & sub-category exist
+  // Verify if category & sub-category exist
   const category = await Category.findById(categoryId);
   const subCategory = await SubCategory.findById(subCategoryId);
   if (!category || !subCategory) {
@@ -57,7 +74,9 @@ const submitApplication = asyncHandler(async (req, res) => {
     throw new Error("CV/Resume upload is required");
   }
 
-  // Upload files to Cloudinary
+  // Upload files to Cloudinary. uploadToCloudinary now throws on failure,
+  // so a broken CV upload stops the request here instead of silently
+  // saving an application with an empty cvUrl.
   const cvUpload = await uploadToCloudinary(
     req.files.cv[0].path,
     "adroit360/cvs",
@@ -109,6 +128,26 @@ const getApplicationsBySubCategory = asyncHandler(async (req, res) => {
 
   const applications = await Application.find(filter)
     .select("fullName email phoneNumber status createdAt cvUrl photoUrl")
+    .sort("-createdAt");
+
+  res.json({ success: true, count: applications.length, data: applications });
+});
+
+// @desc    Get all applications for admin dashboard/list views
+// @route   GET /api/applications/admin/list
+// @access  Private/Admin
+const getAdminApplications = asyncHandler(async (req, res) => {
+  const { status, categoryId, subCategoryId } = req.query;
+  const filter = {};
+
+  if (status) filter.status = status;
+  if (categoryId) filter.category = categoryId;
+  if (subCategoryId) filter.subCategory = subCategoryId;
+
+  const applications = await Application.find(filter)
+    .populate("applicant", "firstName lastName email avatarUrl")
+    .populate("category", "name slug")
+    .populate("subCategory", "name")
     .sort("-createdAt");
 
   res.json({ success: true, count: applications.length, data: applications });
@@ -224,10 +263,65 @@ const declineApplication = asyncHandler(async (req, res) => {
   });
 });
 
+const getMyApplications = asyncHandler(async (req, res) => {
+  const applications = await Application.find({ applicant: req.user._id })
+    .populate("category", "name")
+    .populate("subCategory", "name")
+    .sort("-createdAt");
+
+  res.json({
+    success: true,
+    count: applications.length,
+    data: applications,
+  });
+});
+
+const getAdminStats = asyncHandler(async (req, res) => {
+  const totalApplications = await Application.countDocuments();
+  const pendingApplications = await Application.countDocuments({
+    status: "pending",
+  });
+  const acceptedApplications = await Application.countDocuments({
+    status: "accepted",
+  });
+  const declinedApplications = await Application.countDocuments({
+    status: "declined",
+  });
+  const totalApplicants = await Application.distinct("applicant").then(
+    (distinct) => distinct.length,
+  );
+
+  res.json({
+    success: true,
+    data: {
+      totalApplications,
+      pendingApplications,
+      acceptedApplications,
+      declinedApplications,
+      totalApplicants,
+    },
+  });
+});
+
+const getRecentApplications = asyncHandler(async (req, res) => {
+  const applications = await Application.find()
+    .sort("-createdAt")
+    .limit(5)
+    .populate("applicant", "firstName lastName")
+    .populate("category", "name")
+    .populate("subCategory", "name");
+
+  res.json({ success: true, count: applications.length, data: applications });
+});
+
 module.exports = {
   submitApplication,
   getApplicationsBySubCategory,
+  getAdminApplications,
   getApplicationDetail,
   acceptApplication,
   declineApplication,
+  getMyApplications,
+  getAdminStats,
+  getRecentApplications,
 };

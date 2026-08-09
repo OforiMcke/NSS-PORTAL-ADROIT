@@ -12,7 +12,17 @@ const getCategories = asyncHandler(async (req, res) => {
       match: { isActive: true },
     })
     .sort("createdAt");
-  res.json({ success: true, count: categories.length, data: categories });
+
+  // Mongoose's populate `match` doesn't remove non-matching refs from the
+  // array — it replaces them with null. Strip those out so the frontend
+  // dropdown never has to deal with null entries.
+  const cleaned = categories.map((cat) => {
+    const obj = cat.toObject();
+    obj.subCategories = obj.subCategories.filter(Boolean);
+    return obj;
+  });
+
+  res.json({ success: true, count: cleaned.length, data: cleaned });
 });
 
 // @desc    Create category (admin)

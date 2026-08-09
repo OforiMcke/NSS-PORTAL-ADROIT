@@ -12,14 +12,18 @@ const subCategorySchema = mongoose.Schema(
       ref: "Category",
       required: true,
     },
-    applications: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Application",
-    },
-    acceptedApplications: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Application",
-    },
+    applications: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Application",
+      },
+    ],
+    acceptedApplications: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Application",
+      },
+    ],
 
     isActive: { type: Boolean, default: true },
   },

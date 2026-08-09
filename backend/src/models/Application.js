@@ -21,7 +21,7 @@ const applicationSchema = mongoose.Schema(
     },
 
     // Form fields
-    name: {
+    fullName: {
       type: String,
       required: [true, "Name is required"],
       trim: true,
@@ -57,6 +57,7 @@ const applicationSchema = mongoose.Schema(
       type: String,
       default: "",
     },
+    interviewDate: Date,
     // Which admin took the accept/decline action
     reviewedBy: {
       type: mongoose.Schema.Types.ObjectId,
