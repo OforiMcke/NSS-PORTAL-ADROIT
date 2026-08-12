@@ -30,7 +30,6 @@ const subCategorySchema = mongoose.Schema(
   { timestamps: true },
 );
 
-// speeds up fetching sub-category dropdowns for the given category
 subCategorySchema.index({ category: 1, isActive: 1 });
 
 const SubCategory = mongoose.model("SubCategory", subCategorySchema);

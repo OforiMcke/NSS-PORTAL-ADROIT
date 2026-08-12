@@ -7,8 +7,6 @@ const connectDB = require("./config/db");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
 const authRoutes = require("./routes/authRoutes");
-// const categoryRoutes = require("./routes/categoryRoutes");
-// const applicationRoutes = require("./routes/applicationRoutes");
 
 const app = express();
 
@@ -25,6 +23,7 @@ const categoryRoutes = require("./routes/categoryRoutes");
 const applicationRoutes = require("./routes/applicationRoutes");
 app.use("/api/categories", categoryRoutes);
 app.use("/api/applications", applicationRoutes);
+app.use("/api/jobs", require("./routes/jobRoutes"));
 
 //Error Handlers
 app.use(notFound);

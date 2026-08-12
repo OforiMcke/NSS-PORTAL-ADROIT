@@ -19,7 +19,7 @@
 .visual-panel {
   flex: 0 0 40%;
   min-height: 100vh;
-  background: url("/logos/page.jpg") no-repeat center center;
+  background: url("/logos/pic.jpg") no-repeat center center;
   background-size: cover;
 }
 

@@ -1,10 +1,7 @@
-
-
 require("dotenv").config();
 const mongoose = require("mongoose");
 const Category = require("./Category");
 const SubCategory = require("./SubCategory");
-
 
 const MONGO_URI = process.env.MONGO_URI;
 
@@ -24,10 +21,10 @@ const seedData = [
     subCategories: [
       "Software Developers",
       "UI/UX Designers",
-      "Mobile App Developers",
-      "Business Administration",
-      "Human Resource",
-      "Others",
+      // "Mobile App Developers",
+      // "Business Administration",
+      // "Human Resource",
+      // "Others",
     ],
   },
   {
@@ -37,9 +34,9 @@ const seedData = [
     subCategories: [
       "Software Developers",
       "UI/UX Designers",
-      "Mobile App Developers",
-      "Data Analysts",
-      "Others",
+      // "Mobile App Developers",
+      // "Data Analysts",
+      // "Others",
     ],
   },
   {
@@ -49,9 +46,9 @@ const seedData = [
     subCategories: [
       "Software Developers",
       "UI/UX Designers",
-      "Mobile App Developers",
-      "Product Managers",
-      "Others",
+      // "Mobile App Developers",
+      // "Product Managers",
+      // "Others",
     ],
   },
 ];

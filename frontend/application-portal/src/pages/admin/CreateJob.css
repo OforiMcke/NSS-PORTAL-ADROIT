@@ -1,0 +1,79 @@
+.create-job-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.create-job-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.create-job-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.create-job-form input,
+.create-job-form select,
+.create-job-form textarea {
+  padding: 10px 12px;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.create-job-form button {
+  padding: 12px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.create-job-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.job-link-box {
+  background: #ecfdf5;
+  border: 1px solid #10b981;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.link-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.link-row input {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+}
+
+.link-row button {
+  padding: 8px 14px;
+  background: #10b981;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.error-text {
+  color: #dc2626;
+  font-size: 14px;
+  margin-bottom: 12px;
+}

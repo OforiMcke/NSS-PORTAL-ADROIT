@@ -4,7 +4,7 @@ export default function TopBar({ userName = "Recruiter", avatarUrl }) {
   return (
     <div className="topbar">
       <div className="search-box">
-        <Search size={16} />
+        <Search size={12} />
         <input type="text" placeholder="Search" />
       </div>
 

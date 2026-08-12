@@ -33,6 +33,13 @@ const chartColors = [
   "#3c485a",
 ];
 
+const JOB_APPLICATIONS_GROUP = [
+  "Job Applications",
+  "All Applications",
+  "All Jobs",
+  "Create Job",
+];
+
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [activeLink, setActiveLink] = useState("Dashboard");
@@ -71,10 +78,12 @@ export default function AdminDashboard() {
         setRecentActivity(
           recentData.data.map((application) => ({
             name: `${application.applicant.firstName} ${application.applicant.lastName}`,
-            action: `applied for ${application.category?.name || "a role"}`,
+            action: `applied for ${application.job?.title || "a role"}`,
             time: new Date(application.createdAt).toLocaleDateString(),
-            categoryName: application.category?.name,
-            subCategoryName: application.subCategory?.name,
+            // categoryName: application.category?.name,
+            // subCategoryName: application.subCategory?.name,
+            jobTitle: application.job?.title,
+            employmentType: application.job?.employmentType,
           })),
         );
         setUserAvatarUrl(profileRes.data.avatarUrl || "");
@@ -98,9 +107,11 @@ export default function AdminDashboard() {
       return;
     }
 
-    if (label === "Job Applications") {
+    if (JOB_APPLICATIONS_GROUP.includes(label)) {
       setActiveLink(label);
-      navigate("/admin/job-applications");
+      const initialView =
+        label === "Job Applications" ? "All Applications" : label;
+      navigate("/admin/job-applications", { state: { initialView } });
       return;
     }
 
@@ -119,16 +130,19 @@ export default function AdminDashboard() {
         <TopBar userName={userName} avatarUrl={userAvatarUrl} />
 
         <section className="welcome-banner">
-          <img
-            className="welcome-avatar"
-            src="https://i.pravatar.cc/150?img=47"
-            alt="user"
-          />
+          <div className="welcome-avatar welcome-avatar--initials">
+            {userName
+              .split(" ")
+              .map((part) => part[0])
+              .join("")
+              .slice(0, 2)
+              .toUpperCase()}
+          </div>
           <div>
             <h1>Hello {userName.split(" ")[0] || "Recruiter"},</h1>
             <p>You have received {stats.totalApplications} responses</p>
           </div>
-          <div classNmae="lines">
+          <div>
             <div className="bundle down"></div>
             <div className="bundle up"></div>
             <div className="bundle good"></div>
@@ -139,11 +153,11 @@ export default function AdminDashboard() {
         </section>
 
         <section className="stats-row">
-          <StatCard
+          {/* <StatCard
             label="Interviews Scheduled:"
             value={stats.acceptedApplications}
             icon={CalendarDays}
-          />
+          /> */}
           <StatCard
             label="Open Jobs:"
             value={stats.totalApplicants}
@@ -216,10 +230,10 @@ export default function AdminDashboard() {
         </section>
         <section className="schedule-card">
           <h3>Current Schedule</h3>
-          <div className="schedule-item">
+          {/* <div className="schedule-item">
             <span className="schedule-dot" />
             Interview with Grace Nova today at 8:15 AM
-          </div>
+          </div> */}
         </section>
       </main>
     </div>

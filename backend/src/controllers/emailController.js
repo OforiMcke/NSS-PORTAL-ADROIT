@@ -77,4 +77,72 @@ const sendRejectionEmail = async (application) => {
   });
 };
 
-module.exports = { sendAcceptanceEmail, sendRejectionEmail };
+// NEW: confirmation email sent to the applicant right after they submit
+const sendApplicationReceivedEmail = async (application) => {
+  const safeName = escapeHtml(application.fullName);
+  const safeJobTitle = escapeHtml(application.jobTitle || "the role");
+  const subject = `We've received your application | Adroit 360`;
+  const html = `
+    <div style="font-family: Arial, sans-serif; min-width: 600px; margin:auto; padding:20px;">
+      <h2 style="color:#1a73e8;">Adroit 360: Application Received</h2>
+      <p>Dear <strong>${safeName}</strong>,</p>
+      <p>Thank you for applying for <strong>${safeJobTitle}</strong>. We've
+         successfully received your application and it is now under review.</p>
+      <p>We'll be in touch as soon as there's an update on your status.</p>
+      <p style="margin-top: -20px;">Warm regards,<br/>The Adroit 360 Team</p>
+    </div>
+    <footer style="font-size: 12px; color: #888; margin-top: 20px; text-align: center;">
+      <p>This email was sent from Adroit 360. If you have any questions, please contact us at
+      <a href="mailto:amiskyjunior@gmail.com">amiskyjunior@gmail.com</a>
+      </p>
+      <p>&copy; ${new Date().getFullYear()} Adroit 360. All rights reserved.</p>
+    </footer>
+  `;
+
+  await transporter.sendMail({
+    from: `"Adroit 360" <${process.env.EMAIL_USER}>`,
+    to: application.email,
+    subject,
+    html,
+  });
+};
+
+// NEW: notification email sent to admins when a new application comes in
+const sendNewApplicationAdminEmail = async (application, adminEmails = []) => {
+  if (!adminEmails.length) return;
+
+  const safeName = escapeHtml(application.fullName);
+  const safeJobTitle = escapeHtml(application.jobTitle || "a role");
+  const safeEmail = escapeHtml(application.email);
+  const safePhone = escapeHtml(application.phoneNumber || "");
+  const subject = `New application: ${application.jobTitle || "a role"} | Adroit 360`;
+  const html = `
+    <div style="font-family: Arial, sans-serif; min-width: 600px; margin:auto; padding:20px;">
+      <h2 style="color:#1a73e8;">Adroit 360: New Application Submitted</h2>
+      <p>A new application has just come in for <strong>${safeJobTitle}</strong>.</p>
+      <table style="border-collapse: collapse; width: 100%; margin-top: 12px;">
+        <tr><td style="padding:6px 0;"><strong>Applicant</strong></td><td style="padding:6px 0;">${safeName}</td></tr>
+        <tr><td style="padding:6px 0;"><strong>Email</strong></td><td style="padding:6px 0;">${safeEmail}</td></tr>
+        <tr><td style="padding:6px 0;"><strong>Phone</strong></td><td style="padding:6px 0;">${safePhone}</td></tr>
+      </table>
+      <p style="margin-top: 16px;">Log in to the admin dashboard to review it.</p>
+    </div>
+    <footer style="font-size: 12px; color: #888; margin-top: 20px; text-align: center;">
+      <p>&copy; ${new Date().getFullYear()} Adroit 360. All rights reserved.</p>
+    </footer>
+  `;
+
+  await transporter.sendMail({
+    from: `"Adroit 360" <${process.env.EMAIL_USER}>`,
+    to: adminEmails,
+    subject,
+    html,
+  });
+};
+
+module.exports = {
+  sendAcceptanceEmail,
+  sendRejectionEmail,
+  sendApplicationReceivedEmail,
+  sendNewApplicationAdminEmail,
+};

@@ -4,16 +4,12 @@ const {
   sendAcceptanceEmail,
   sendRejectionEmail,
 } = require("./emailController.js");
-const Category = require("../models/Category.js");
-const SubCategory = require("../models/SubCategory.js");
+// const Category = require("../models/Category.js");
+// const SubCategory = require("../models/SubCategory.js");
+const Job = require("../models/Job.js");
 const cloudinary = require("../config/cloudinary.js");
 const fs = require("fs/promises");
 
-// upload — now throws instead of swallowing failures, so callers can't
-// mistake a failed upload for a successful one with an empty url.
-// Also removes the local temp file multer wrote to disk regardless of
-// whether the Cloudinary upload succeeds or fails, so files don't pile
-// up in the uploads/ folder forever.
 const uploadToCloudinary = async (filePath, folder) => {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
@@ -31,52 +27,51 @@ const uploadToCloudinary = async (filePath, folder) => {
   }
 };
 
-// @desc    Submit a new application
-// @route   POST /api/applications
-// @access  Private (applicant)
-
 const submitApplication = asyncHandler(async (req, res) => {
-  const {
-    fullName,
-    email,
-    phoneNumber,
-    statementOfMotivation,
-    categoryId,
-    subCategoryId,
-  } = req.body;
+  const { fullName, email, phoneNumber, jobId } = req.body;
 
-  // Validate required text fields — categoryId/subCategoryId included so
-  // we never hit Mongoose's findById with undefined (which throws a
-  // CastError and surfaces as an ugly 500 instead of a clean 400)
-  if (
-    !fullName ||
-    !email ||
-    !phoneNumber ||
-    !statementOfMotivation ||
-    !categoryId ||
-    !subCategoryId
-  ) {
+  if (!fullName || !email || !phoneNumber) {
     res.status(400);
     throw new Error("All form fields are required");
   }
 
-  // Verify if category & sub-category exist
-  const category = await Category.findById(categoryId);
-  const subCategory = await SubCategory.findById(subCategoryId);
-  if (!category || !subCategory) {
-    res.status(404);
-    throw new Error("Category or sub-category not found");
+  if (!jobId) {
+    res.status(400);
+    throw new Error("A job must be selected to apply");
   }
 
-  // CV file is required
+  const job = await Job.findById(jobId);
+  if (!job) {
+    res.status(404);
+    throw new Error("Job not found");
+  }
+  if (job.status === "closed") {
+    res.status(410);
+    throw new Error("This job is no longer accepting applications");
+  }
+
+  const jobTitle = job.title;
+
+  // Categories/sub-categories are disabled for now.
+  // } else {
+  //   if (!categoryId || !subCategoryId) {
+  //     res.status(400);
+  //     throw new Error("Category and sub-category are required");
+  //   }
+  //   category = await Category.findById(categoryId);
+  //   subCategory = await SubCategory.findById(subCategoryId);
+  //   if (!category || !subCategory) {
+  //     res.status(404);
+  //     throw new Error("Category or sub-category not found");
+  //   }
+  //   jobTitle = subCategory.name;
+  // }
+
   if (!req.files?.cv) {
     res.status(400);
     throw new Error("CV/Resume upload is required");
   }
 
-  // Upload files to Cloudinary. uploadToCloudinary now throws on failure,
-  // so a broken CV upload stops the request here instead of silently
-  // saving an application with an empty cvUrl.
   const cvUpload = await uploadToCloudinary(
     req.files.cv[0].path,
     "adroit360/cvs",
@@ -89,25 +84,17 @@ const submitApplication = asyncHandler(async (req, res) => {
     );
   }
 
-  // Create application
   const application = await Application.create({
     applicant: req.user._id,
-    category: categoryId,
-    subCategory: subCategoryId,
+    job: job._id,
+    jobTitle,
     fullName,
     email,
     phoneNumber,
-    statementOfMotivation,
     cvUrl: cvUpload.url,
     cvPublicId: cvUpload.publicId,
-    photoUrl: photoUpload?.url,
-    photoPublicId: photoUpload?.publicId,
     status: "pending",
   });
-
-  // Push into sub-category's pending applications list
-  subCategory.applications.push(application._id);
-  await subCategory.save();
 
   res.status(201).json({
     success: true,
@@ -116,50 +103,32 @@ const submitApplication = asyncHandler(async (req, res) => {
   });
 });
 
-// @desc    Get applicants for a sub-category (list view for admin)
-// @route   GET /api/applications/subcategory/:subCategoryId?status=pending
-// @access  Private/Admin
+// getApplicationsBySubCategory left in place but unreachable
+// (its route is already commented out in applicationRoutes.js)
 const getApplicationsBySubCategory = asyncHandler(async (req, res) => {
-  const { subCategoryId } = req.params;
-  const { status } = req.query; // optional: pending | accepted | declined
-
-  const filter = { subCategory: subCategoryId };
-  if (status) filter.status = status;
-
-  const applications = await Application.find(filter)
-    .select("fullName email phoneNumber status createdAt cvUrl photoUrl")
-    .sort("-createdAt");
-
-  res.json({ success: true, count: applications.length, data: applications });
+  res.status(410).json({
+    success: false,
+    message: "Sub-category browsing is disabled",
+  });
 });
 
-// @desc    Get all applications for admin dashboard/list views
-// @route   GET /api/applications/admin/list
-// @access  Private/Admin
 const getAdminApplications = asyncHandler(async (req, res) => {
-  const { status, categoryId, subCategoryId } = req.query;
+  const { status } = req.query;
   const filter = {};
-
   if (status) filter.status = status;
-  if (categoryId) filter.category = categoryId;
-  if (subCategoryId) filter.subCategory = subCategoryId;
 
   const applications = await Application.find(filter)
-    .populate("applicant", "firstName lastName email avatarUrl")
-    .populate("category", "name slug")
-    .populate("subCategory", "name")
+    .populate("applicant", "firstName lastName email")
+    .populate("job", "title employmentType")
     .sort("-createdAt");
 
   res.json({ success: true, count: applications.length, data: applications });
 });
 
-// @desc    Get a single application detail
-// @route   GET /api/applications/:id
-// @access  Private/Admin
 const getApplicationDetail = asyncHandler(async (req, res) => {
   const application = await Application.findById(req.params.id)
-    .populate("category", "name")
-    .populate("subCategory", "name");
+    .populate("applicant", "firstName lastName email")
+    .populate("job", "title employmentType");
 
   if (!application) {
     res.status(404);
@@ -169,9 +138,6 @@ const getApplicationDetail = asyncHandler(async (req, res) => {
   res.json({ success: true, data: application });
 });
 
-// @desc    Accept an application
-// @route   PUT /api/applications/:id/accept
-// @access  Private/Admin
 const acceptApplication = asyncHandler(async (req, res) => {
   const application = await Application.findById(req.params.id);
 
@@ -185,19 +151,17 @@ const acceptApplication = asyncHandler(async (req, res) => {
     throw new Error("Application already accepted");
   }
 
-  // Update status
   application.status = "accepted";
   application.reviewDate = new Date();
   application.adminFeedback = "";
   await application.save();
 
-  // Move into sub-category's accepted applications list
-  await SubCategory.findByIdAndUpdate(application.subCategory, {
-    $addToSet: { acceptedApplications: application._id },
-    $pull: { applications: application._id },
-  });
+  // Sub-category bookkeeping disabled for now.
+  // await SubCategory.findByIdAndUpdate(application.subCategory, {
+  //   $addToSet: { acceptedApplications: application._id },
+  //   $pull: { applications: application._id },
+  // });
 
-  // Send acceptance email (once)
   if (!application.emailsSent.acceptance) {
     try {
       await sendAcceptanceEmail(application);
@@ -215,9 +179,6 @@ const acceptApplication = asyncHandler(async (req, res) => {
   });
 });
 
-// @desc    Decline an application (with optional feedback)
-// @route   PUT /api/applications/:id/decline
-// @access  Private/Admin
 const declineApplication = asyncHandler(async (req, res) => {
   const application = await Application.findById(req.params.id);
 
@@ -231,21 +192,19 @@ const declineApplication = asyncHandler(async (req, res) => {
     throw new Error("Application already declined");
   }
 
-  // Capture feedback/notes from the decline modal
   application.adminFeedback = req.body.feedback || "";
   application.status = "declined";
   application.reviewDate = new Date();
   await application.save();
 
-  // Remove from sub-category's active applications list
-  await SubCategory.findByIdAndUpdate(application.subCategory, {
-    $pull: {
-      applications: application._id,
-      acceptedApplications: application._id,
-    },
-  });
+  // Sub-category bookkeeping disabled for now.
+  // await SubCategory.findByIdAndUpdate(application.subCategory, {
+  //   $pull: {
+  //     applications: application._id,
+  //     acceptedApplications: application._id,
+  //   },
+  // });
 
-  // Send rejection email (with feedback, once)
   if (!application.emailsSent.rejection) {
     try {
       await sendRejectionEmail(application);
@@ -265,8 +224,7 @@ const declineApplication = asyncHandler(async (req, res) => {
 
 const getMyApplications = asyncHandler(async (req, res) => {
   const applications = await Application.find({ applicant: req.user._id })
-    .populate("category", "name")
-    .populate("subCategory", "name")
+    .populate("job", "title employmentType")
     .sort("-createdAt");
 
   res.json({
@@ -308,8 +266,7 @@ const getRecentApplications = asyncHandler(async (req, res) => {
     .sort("-createdAt")
     .limit(5)
     .populate("applicant", "firstName lastName")
-    .populate("category", "name")
-    .populate("subCategory", "name");
+    .populate("job", "title employmentType");
 
   res.json({ success: true, count: applications.length, data: applications });
 });

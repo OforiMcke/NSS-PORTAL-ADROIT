@@ -8,19 +8,26 @@ const applicationSchema = mongoose.Schema(
       required: true,
     },
 
-    // What they're applying for
-    category: {
+    // category: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Category",
+    //   required: true,
+    // },
+    // subCategory: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "SubCategory",
+    //   required: true,
+    // },
+
+    job: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
-      required: true,
+      ref: "Job",
     },
-    subCategory: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "SubCategory",
+    jobTitle: {
+      type: String,
       required: true,
     },
 
-    // Form fields
     fullName: {
       type: String,
       required: [true, "Name is required"],
@@ -32,20 +39,19 @@ const applicationSchema = mongoose.Schema(
       lowercase: true,
     },
     phoneNumber: { type: String, required: [true, "Phone number is required"] },
-    //Captures applicants' cover letter
-    statementOfMotivation: {
-      type: String,
-      required: [true, "Personal statement is required"],
-      maxlength: [2000, "Statement too long"],
-    },
+    // statementOfMotivation: {
+    //   type: String,
+    //   required: [true, "Personal statement is required"],
+    //   maxlength: [2000, "Statement too long"],
+    // },
 
     // Uploaded files
     cvUrl: {
       type: String,
       required: [true, "CV/Resume is required"],
     },
-    cvPublicId: String, // id for deletion
-    photoUrl: String, // may be optional
+    cvPublicId: String,
+    photoUrl: String,
     photoPublicId: String,
 
     status: {
@@ -58,7 +64,6 @@ const applicationSchema = mongoose.Schema(
       default: "",
     },
     interviewDate: Date,
-    // Which admin took the accept/decline action
     reviewedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -75,10 +80,10 @@ const applicationSchema = mongoose.Schema(
 );
 
 // we use the Index to fetch status faster within a sub-category
-applicationSchema.index({ subCategory: 1, status: 1, createdAt: -1 });
+// applicationSchema.index({ subCategory: 1, status: 1, createdAt: -1 });
 
 // speeds up a top-level category dashboard before drilling into sub-category
-applicationSchema.index({ category: 1, status: 1 });
+// applicationSchema.index({ category: 1, status: 1 });
 
 // lets an applicant fetch their own submission history quickly
 applicationSchema.index({ applicant: 1 });

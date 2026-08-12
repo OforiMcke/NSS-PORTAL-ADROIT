@@ -106,19 +106,22 @@ export default function ApplicantDashboard() {
         {activeLink === "Dashboard" && (
           <>
             <section className="welcome-banner">
-              <img
-                className="welcome-avatar"
-                src="https://i.pravatar.cc/150?img=12"
-                alt="user"
-              />
-              <div classNmae="lines">
-                <div className="bund own"></div>
-                <div className="bund pu"></div>
-                <div className="bund go"></div>
+              <div className="welcome-avatar welcome-avatar--initials">
+                {profile.firstName
+                  .split(" ")
+                  .map((part) => part[0])
+                  .join("")
+                  .slice(0, 2)
+                  .toUpperCase()}
               </div>
               <div>
                 <h1>Welcome back, {profile.firstName}</h1>
                 <p>You have {submittedCount} active applications</p>
+              </div>
+              <div>
+                <div className="bund own"></div>
+                <div className="bund pu"></div>
+                <div className="bund go"></div>
               </div>
               <div className="welcome-cta">
                 <button
@@ -170,7 +173,8 @@ export default function ApplicantDashboard() {
                 <tbody>
                   {applications.map((app, i) => (
                     <tr key={i}>
-                      <td>{app.subCategory?.name || "Unknown role"}</td>
+                      <td>{app.job?.title || "Unknown role"}</td>
+                      {/* was: app.subCategory?.name */}{" "}
                       <td>
                         <span
                           className={`status-badge ${statusColor[app.status]}`}
@@ -187,10 +191,10 @@ export default function ApplicantDashboard() {
 
             <section className="schedule-card">
               <h3>Upcoming Interview</h3>
-              <div className="schedule-item">
+              {/* <div className="schedule-item">
                 <span className="schedule-dot" />
                 NSS - IT Support Interview on Aug 12, 2026 at 10:00 AM
-              </div>
+              </div> */}
             </section>
           </>
         )}

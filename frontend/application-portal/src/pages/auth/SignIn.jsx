@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import "./SignUp.css";
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [animate, setAnimate] = useState(false);
   const [form, setForm] = useState({
     email: "",
@@ -56,13 +57,17 @@ const SignIn = () => {
       localStorage.setItem("userName", displayName);
       axios.defaults.headers.common.Authorization = `Bearer ${data.token}`;
 
-      const destination = data.role === "admin" ? "/admin" : "/applicant";
+      const from = location.state?.from?.pathname;
+      const fallback = data.role === "admin" ? "/admin" : "/applicant";
+      const destination = from && from !== "/signin" ? from : fallback;
+
       setSuccess(
         data.role === "admin"
           ? "Signed in as recruiter. Redirecting..."
           : "Signed in successfully. Redirecting...",
       );
-      setTimeout(() => navigate(destination), 900);
+
+      setTimeout(() => navigate(destination, { replace: true }), 900);
       console.log("Signin success:", data);
     } catch (err) {
       setError(

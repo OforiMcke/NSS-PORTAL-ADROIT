@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import "./SignUp.css";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const timeoutRef = useRef(null);
   const [animate, setAnimate] = useState(false);
   const [form, setForm] = useState({
@@ -58,7 +59,14 @@ const SignUp = () => {
       });
 
       setSuccess("Account created successfully. Redirecting to sign in...");
-      timeoutRef.current = setTimeout(() => navigate("/signin"), 1800);
+
+      timeoutRef.current = setTimeout(
+        () =>
+          navigate("/signin", {
+            state: { from: location.state?.from },
+          }),
+        1800,
+      );
     } catch (err) {
       setError(
         err.response?.data?.message ||

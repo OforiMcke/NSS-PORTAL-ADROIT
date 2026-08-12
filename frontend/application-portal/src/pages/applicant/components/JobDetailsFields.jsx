@@ -1,0 +1,99 @@
+const EMPLOYMENT_TYPES = [
+  // "Intern",
+  "National Service Personnel",
+  // "Full-Time",
+  // "Part-Time",
+];
+import "../ApplicationForm.css";
+const EXPERIENCE_LEVELS = ["Entry Level", "Mid Level", "Senior Level"];
+
+export default function JobDetailsFields({
+  formValues,
+  onChange,
+  employmentType,
+  onEmploymentTypeChange,
+  job,
+}) {
+  return (
+    <>
+      <div>
+        <h3>Employment Type</h3>
+        <div className="af-button-group">
+          {EMPLOYMENT_TYPES.map((type) => (
+            <button
+              key={type}
+              type="button"
+              className={`af-button ${employmentType === type ? "af-button--active" : ""}`}
+              onClick={() => onEmploymentTypeChange(type)}
+              aria-pressed={employmentType === type}
+            >
+              {type}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <h3 style={{ marginTop: "12px" }}> Job Details</h3>
+      <div
+        className={job ? "af-grid-2" : "af-grid-1"}
+        style={{ marginTop: "12px" }}
+      >
+        {job && (
+          <div>
+            <label>Job Title</label>
+            <input
+              type="text"
+              className="af-input"
+              value={job.title || ""}
+              readOnly
+              disabled
+            />
+          </div>
+        )}
+        <div>
+          <label>Job Role</label>
+          <input
+            type="text"
+            name="jobRole"
+            className="af-input"
+            value={formValues.jobRole}
+            onChange={onChange}
+          />
+        </div>
+      </div>
+
+      <div className="af-grid-2" style={{ marginTop: "12px" }}>
+        <div>
+          <label>Experience Level</label>
+          <select
+            name="experienceLevel"
+            className="af-select"
+            value={formValues.experienceLevel}
+            onChange={onChange}
+          >
+            <option value="">Select Experience Level</option>
+            {EXPERIENCE_LEVELS.map((level) => (
+              <option key={level} value={level}>
+                {level}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* <div>
+          <label>Portfolio Link</label>
+          <input
+            type="url"
+            name="portfolio"
+            className="af-input"
+            placeholder="https://..."
+            value={formValues.portfolio}
+            onChange={onChange}
+          />
+        </div> */}
+      </div>
+    </>
+  );
+}
+
+export { EMPLOYMENT_TYPES, EXPERIENCE_LEVELS };

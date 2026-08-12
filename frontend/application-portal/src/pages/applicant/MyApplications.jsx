@@ -98,7 +98,7 @@ export default function MyApplications() {
             <thead>
               <tr>
                 <th>Position</th>
-                <th>Category</th>
+                {/* <th>Category</th> */}
                 <th>Status</th>
                 <th>Date Applied</th>
                 <th></th>
@@ -111,8 +111,8 @@ export default function MyApplications() {
                   className="ma-row"
                   onClick={() => setSelected(app)}
                 >
-                  <td>{app.subCategory?.name || "—"}</td>
-                  <td>{app.category?.name || "—"}</td>
+                  <td>{app.job?.title || "—"}</td>
+                  {/* <td>{app.category?.name || "—"}</td> */}
                   <td>
                     <span
                       className={`status-badge ${statusColor[app.status] || ""}`}
@@ -140,9 +140,13 @@ export default function MyApplications() {
             <div className="ma-modal-header">
               <div>
                 <h3 className="ma-modal-title">
-                  {selected.subCategory?.name || "Application"}
+                  {selected.job?.title || "Application"}
+                  {/* was: selected.subCategory?.name */}
                 </h3>
-                <p className="ma-modal-subtitle">{selected.category?.name}</p>
+                <p className="ma-modal-subtitle">
+                  {selected.job?.employmentType}
+                </p>
+                {/* was: selected.category?.name */}
               </div>
               <button
                 onClick={() => setSelected(null)}
