@@ -22,12 +22,12 @@ export default function JobApplicationsPage() {
   // const [activeTab, setActiveTab] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
   const [selectedId, setSelectedId] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState(null);
   const [error, setError] = useState("");
   const [userName, setUserName] = useState("Recruiter");
-  const [userEmail, setUserEmail] = useState("recruiter@adroit360.com");
+  const [setUserEmail] = useState("recruiter@adroit360.com");
 
   const [activeLink, setActiveLink] = useState(
     location.state?.initialView || "All Applications",

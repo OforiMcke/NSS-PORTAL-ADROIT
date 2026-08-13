@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { CalendarDays, Megaphone, Users2, Handshake } from "lucide-react";
+import { Megaphone, Users2, Handshake } from "lucide-react";
 import Sidebar from "../../components/Sidebar";
 import TopBar from "../../components/TopBar";
 import StatCard from "../../components/StatCard";
