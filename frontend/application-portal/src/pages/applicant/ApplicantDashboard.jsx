@@ -123,6 +123,7 @@ export default function ApplicantDashboard() {
                 <div className="bund pu"></div>
                 <div className="bund go"></div>
               </div>
+              <div className="bundled last"></div>
               <div className="welcome-cta">
                 <button
                   onClick={() => setActiveLink("Apply")}
@@ -143,11 +144,11 @@ export default function ApplicantDashboard() {
                 value={submittedCount}
                 icon={FileText}
               />
-              <StatCard
+              {/* <StatCard
                 label="Interviews Scheduled:"
                 value={interviewCount}
                 icon={CalendarDays}
-              />
+              /> */}
               <StatCard
                 label="Accepted:"
                 value={acceptedCount}

@@ -3,10 +3,13 @@ const Application = require("../models/Application.js");
 const {
   sendAcceptanceEmail,
   sendRejectionEmail,
+  sendApplicationReceivedEmail,
+  sendNewApplicationAdminEmail,
 } = require("./emailController.js");
 // const Category = require("../models/Category.js");
 // const SubCategory = require("../models/SubCategory.js");
 const Job = require("../models/Job.js");
+const User = require("../models/User.js");
 const cloudinary = require("../config/cloudinary.js");
 const fs = require("fs/promises");
 
@@ -83,9 +86,15 @@ const submitApplication = asyncHandler(async (req, res) => {
       "adroit360/photos",
     );
   }
-
+  let additionalDocUpload = null;
+  if (req.files?.additionalDoc) {
+    additionalDocUpload = await uploadToCloudinary(
+      req.files.additionalDoc[0].path,
+      "adroit360/additional-docs",
+    );
+  }
   const application = await Application.create({
-    applicant: req.user._id,
+    applicant: req.user?._id,
     job: job._id,
     jobTitle,
     fullName,
@@ -93,8 +102,24 @@ const submitApplication = asyncHandler(async (req, res) => {
     phoneNumber,
     cvUrl: cvUpload.url,
     cvPublicId: cvUpload.publicId,
+    additionalDocUrl: additionalDocUpload?.url,
+    additionalDocPublicId: additionalDocUpload?.publicId,
     status: "pending",
   });
+
+  sendApplicationReceivedEmail(application).catch((err) =>
+    console.error("Applicant confirmation email failed:", err.message),
+  );
+
+  User.find({ role: "admin" })
+    .select("email")
+    .then((admins) => {
+      const adminEmails = admins.map((a) => a.email).filter(Boolean);
+      return sendNewApplicationAdminEmail(application, adminEmails);
+    })
+    .catch((err) =>
+      console.error("Admin notification email failed:", err.message),
+    );
 
   res.status(201).json({
     success: true,

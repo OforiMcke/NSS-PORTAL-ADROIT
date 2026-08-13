@@ -4,6 +4,7 @@ export default function ApplicationReviewCard({
   application,
   isUpdating,
   onViewResume,
+  onViewAdditionalDoc,
   onAccept,
   onDecline,
 }) {
@@ -19,8 +20,17 @@ export default function ApplicationReviewCard({
           <Download size={13} />
           Download Resume
         </button>
+        {application.additionalDocUrl && (
+          <button
+            className="jap-download-btn"
+            type="button"
+            onClick={() => onViewAdditionalDoc(application.additionalDocUrl)}
+          >
+            <Download size={13} />
+            Download Additional Document
+          </button>
+        )}
       </div>
-
       <h3>{application.fullName}</h3>
       {/* 
       <h4>Motivation</h4>

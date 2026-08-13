@@ -109,9 +109,16 @@ export default function AdminDashboard() {
 
     if (JOB_APPLICATIONS_GROUP.includes(label)) {
       setActiveLink(label);
-      const initialView =
-        label === "Job Applications" ? "All Applications" : label;
+      const initialView = label;
       navigate("/admin/job-applications", { state: { initialView } });
+      return;
+    }
+
+    if (label === "Create Admin") {
+      setActiveLink(label);
+      navigate("/admin/job-applications", {
+        state: { initialView: "Create Admin" },
+      });
       return;
     }
 
@@ -143,10 +150,11 @@ export default function AdminDashboard() {
             <p>You have received {stats.totalApplications} responses</p>
           </div>
           <div>
-            <div className="bundle down"></div>
-            <div className="bundle up"></div>
-            <div className="bundle good"></div>
+            <div className="bund own"></div>
+            <div className="bund pu"></div>
+            <div className="bund go"></div>
           </div>
+          <div className="bundled last"></div>
           <div className="welcome-badge">
             Total Number of Jobs Open : {stats.totalApplicants}
           </div>

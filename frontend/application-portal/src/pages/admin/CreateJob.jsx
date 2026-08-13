@@ -2,13 +2,12 @@ import { useState, useEffect } from "react";
 import api from "../../api/axiosInstance";
 import "./CreateJob.css";
 
-const CreateJob = () => {
+export const CreateJob = () => {
   const [form, setForm] = useState({
     title: "",
     description: "",
-    // department: "",
-    // location: "",
     employmentType: "NSS",
+    role: "",
     deadline: "",
   });
 
@@ -23,6 +22,20 @@ const CreateJob = () => {
   const [link, setLink] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [roles, setRoles] = useState([]);
+  const [roleInput, setRoleInput] = useState("");
+
+  const addRole = () => {
+    const trimmed = roleInput.trim();
+    if (trimmed && !roles.includes(trimmed)) {
+      setRoles((prev) => [...prev, trimmed]);
+    }
+    setRoleInput("");
+  };
+
+  const removeRole = (role) => {
+    setRoles((prev) => prev.filter((r) => r !== role));
+  };
 
   // useEffect(() => {
   //   let mounted = true;
@@ -66,36 +79,33 @@ const CreateJob = () => {
     e.preventDefault();
     setError("");
 
-    // if (!selectedCategory || !subCategoryId) {
-    //   setError("Please select a category and sub-category for this job.");
-    //   return;
-    // }
+    if (roles.length === 0) {
+      setError("Please add at least one job role.");
+      return;
+    }
 
     setLoading(true);
     try {
-      const res = await api.post("/api/jobs", {
-        ...form,
-        // categoryId: selectedCategory,
-        // subCategoryId,
-      });
+      const res = await api.post("/api/jobs", { ...form, roles });
       setLink(res.data.applicationLink);
       setForm({
         title: "",
         description: "",
-        // department: "",
-        // location: "",
         employmentType: "NSS",
         deadline: "",
       });
-      // setSelectedCategory("");
-      // setSubCategories([]);
-      // setSubCategoryId("");
+      setRoles([]);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to create job");
     } finally {
       setLoading(false);
     }
   };
+
+  // if (!selectedCategory || !subCategoryId) {
+  //   setError("Please select a category and sub-category for this job.");
+  //   return;
+  // }
 
   const copyLink = () => {
     navigator.clipboard.writeText(link);
@@ -196,6 +206,40 @@ const CreateJob = () => {
           />
         </label>
         */}
+        <label>
+          Job Roles
+          <div className="role-input-row">
+            <input
+              type="text"
+              value={roleInput}
+              onChange={(e) => setRoleInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  addRole();
+                }
+              }}
+              placeholder="e.g. Software Developer"
+            />
+            <button type="button" onClick={addRole}>
+              Add
+            </button>
+          </div>
+          <div className="role-chip-list">
+            {roles.map((r) => (
+              <span key={r} className="role-chip">
+                {r}
+                <button
+                  type="button"
+                  onClick={() => removeRole(r)}
+                  aria-label={`Remove ${r}`}
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
+        </label>
 
         <label>
           Employment Type

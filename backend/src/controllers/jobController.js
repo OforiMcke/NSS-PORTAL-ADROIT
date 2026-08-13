@@ -4,11 +4,11 @@ const Job = require("../models/Job");
 const mongoose = require("mongoose");
 exports.createJob = async (req, res) => {
   try {
-    const { title, description, employmentType, deadline } = req.body;
+    const { title, description, employmentType, deadline, roles } = req.body;
 
-    if (!title || !description) {
+    if (!title || !description || !Array.isArray(roles) || roles.length === 0) {
       return res.status(400).json({
-        message: "Title and description are required",
+        message: "Title, description, and at least one job role are required",
       });
     }
 
@@ -17,6 +17,7 @@ exports.createJob = async (req, res) => {
       description,
       employmentType: employmentType || "NSS",
       deadline,
+      roles: roles.map((r) => r.trim()).filter(Boolean),
       createdBy: req.user._id,
     });
 
@@ -30,7 +31,6 @@ exports.createJob = async (req, res) => {
     return res.status(500).json({ message: "Failed to create job" });
   }
 };
-
 // @route  GET /api/jobs
 // @access Admin only (list, for dashboard)
 exports.getAllJobs = async (req, res) => {

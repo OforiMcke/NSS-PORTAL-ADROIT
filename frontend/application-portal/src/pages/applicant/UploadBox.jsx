@@ -32,7 +32,6 @@ export function UploadBox({
     if (file) onChange({ target: { files: [file] } });
   };
 
-  // Helper function to safely clear the input if the user wants to remove the file
   const handleRemoveFile = (e) => {
     e.stopPropagation(); // Stop from opening the file picker again
     if (fileInputRef.current) fileInputRef.current.value = "";

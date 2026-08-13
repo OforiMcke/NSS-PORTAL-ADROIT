@@ -3,12 +3,24 @@ require("dotenv").config();
 const {
   sendAcceptanceEmail,
   sendRejectionEmail,
+  sendApplicationReceivedEmail,
+  sendNewApplicationAdminEmail,
 } = require("./controllers/emailController");
 
+const MockApplicationEmail = {
+  fullName: "JM Ofori",
+  email: "oforimckeownjulius@gmail.com",
+  jobTitle: "Software dev",
+};
+
+const MockNewApplicationEmail = {
+  fullName: "JM Ofori",
+  email: "oforimckeownjulius@gmail.com",
+  jobTitle: "Software dev",
+};
 // Mock application objects
 const mockAcceptedApplicant = {
   fullName: "Julius Junior",
-  // email: "donaldfifonsi@gmail.com",
   email: "oforimckeownjulius@gmail.com",
 };
 
@@ -29,6 +41,14 @@ async function executeTests() {
   }
 
   try {
+    console.log("Sending application email...");
+    await sendApplicationReceivedEmail(MockApplicationEmail);
+    console.log("Application email sent successfully!");
+
+    console.log("Sending New application email...");
+    await sendNewApplicationAdminEmail(MockNewApplicationEmail);
+    console.log(" New Application email received successfully!");
+
     // Test Acceptance Email
     console.log("Sending acceptance email...");
     await sendAcceptanceEmail(mockAcceptedApplicant);

@@ -5,6 +5,7 @@ import Sidebar from "../../components/Sidebar";
 import TopBar from "../../components/TopBar";
 import "../admin/dashboard.css";
 import "./JobApplicationPage.css";
+import CreateAdmin from "../admin/CreateAdmin";
 
 // import CategoryTabs from "./components/CategoryTabs";
 import FilterBar from "./components/FilterBar";
@@ -80,7 +81,6 @@ export default function JobApplicationsPage() {
     };
   }, []);
 
-  // Tab-syncing effect removed along with category tabs — selection now
   // just stays valid against whatever's in `applications`.
   useEffect(() => {
     if (!applications.length) {
@@ -150,6 +150,13 @@ export default function JobApplicationsPage() {
     }
     window.open(url, "_blank", "noopener,noreferrer");
   };
+  const handleViewAdditionalDoc = (url) => {
+    if (!url) {
+      setError("No additional document is attached to this application.");
+      return;
+    }
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
 
   const handleSidebarClick = (label) => {
     if (label === "Log Out") {
@@ -169,6 +176,7 @@ export default function JobApplicationsPage() {
 
   const isCreateJobView = activeLink === "Create Job";
   const isAllJobsView = activeLink === "All Jobs";
+  const isCreateAdminView = activeLink === "Create Admin";
 
   return (
     <div className="dashboard-layout">
@@ -184,7 +192,9 @@ export default function JobApplicationsPage() {
         {isCreateJobView ? (
           <CreateJob />
         ) : isAllJobsView ? (
-          <JobsList />
+          <JobsList onCreateJob={() => setActiveLink("Create Job")} />
+        ) : isCreateAdminView ? (
+          <CreateAdmin />
         ) : (
           <>
             {/* <CategoryTabs
@@ -216,6 +226,7 @@ export default function JobApplicationsPage() {
                   application={selected}
                   isUpdating={updatingId === selected._id}
                   onViewResume={handleViewResume}
+                  onViewAdditionalDoc={handleViewAdditionalDoc}
                   onAccept={() => handleStatusAction("accept", selected._id)}
                   onDecline={() => handleStatusAction("decline", selected._id)}
                 />

@@ -10,7 +10,15 @@
 .jobs-list-error {
   color: #d33;
 }
-
+.cj-btn {
+  padding: 8px 12px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 8rem;
+}
 .jobs-list-table {
   display: flex;
   flex-direction: column;

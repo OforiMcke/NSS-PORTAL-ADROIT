@@ -3,12 +3,11 @@ import { Copy, Check } from "lucide-react";
 import api from "../../api/axiosInstance";
 import "./JobsList.css";
 
-export default function JobsList() {
+export default function JobsList({ onCreateJob }) {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [copiedId, setCopiedId] = useState(null);
-
   useEffect(() => {
     let mounted = true;
 
@@ -61,8 +60,14 @@ export default function JobsList() {
 
   return (
     <div className="jobs-list-page">
-      <h2>All Jobs</h2>
-
+      <div className="jobs-list-header-row">
+        <h2>All Jobs</h2>
+        {onCreateJob && (
+          <button className="cj-btn" onClick={onCreateJob}>
+            + Create Job
+          </button>
+        )}
+      </div>
       <div className="jobs-list-table">
         <div className="jobs-list-row jobs-list-header">
           <span>Title</span>

@@ -72,15 +72,15 @@ function App() {
           }
         />
 
-        <Route
+        {/* <Route
           path="/apply/:jobId"
           element={
             <RouteGuard requiredRole="applicant">
               <ApplicationForm />
             </RouteGuard>
           }
-        />
-
+        /> */}
+<Route path="/apply/:jobId" element={<ApplicationForm />} />
         <Route
           path="/admin"
           element={

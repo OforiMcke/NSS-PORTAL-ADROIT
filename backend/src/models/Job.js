@@ -32,6 +32,14 @@ const jobSchema = new mongoose.Schema(
     //   trim: true,
     //   default: "Not specified",
     // },
+    roles: {
+      type: [String],
+      required: [true, "At least one job role is required"],
+      validate: {
+        validator: (arr) => Array.isArray(arr) && arr.length > 0,
+        message: "At least one job role is required",
+      },
+    },
     employmentType: {
       type: String,
       enum: [

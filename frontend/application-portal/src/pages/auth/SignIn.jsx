@@ -87,6 +87,7 @@ const SignIn = () => {
       <aside className="visual-panel" />
       <main className="form-panel">
         <form className="signup-form" onSubmit={handleSubmit}>
+          <h3 className="wlcm-me">Welcome to Adroit360 Application Portal</h3>
           <h2>Sign in</h2>
           <p className="signin-link">
             Don&apos;t have an account? <Link to="/signup">Create account</Link>

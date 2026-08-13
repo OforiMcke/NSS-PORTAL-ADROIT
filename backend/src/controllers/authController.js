@@ -2,6 +2,10 @@ const asyncHandler = require("../utils/asyncHandler.js");
 const generateToken = require("../utils/generateToken.js");
 const User = require("../models/User.js");
 
+const Application = require("../models/Application.js"); // NEW
+const crypto = require("crypto");
+const { sendPasswordResetEmail } = require("./emailController.js");
+
 // @desc    Sign up (public — always creates an applicant account)
 // @route   POST /api/auth/signup
 const signup = asyncHandler(async (req, res) => {
@@ -29,6 +33,18 @@ const signup = asyncHandler(async (req, res) => {
     role: "applicant",
   });
 
+  // the feature's entire premise is that "My Applications"
+  // is populated the moment they sign up, so it must finish before we
+  // respond
+  try {
+    await Application.updateMany(
+      { applicant: { $exists: false }, email: user.email },
+      { $set: { applicant: user._id } },
+    );
+  } catch (err) {
+    console.error("Linking past applications on signup failed:", err.message);
+  }
+
   res.status(201).json({
     success: true,
     _id: user._id,
@@ -40,7 +56,6 @@ const signup = asyncHandler(async (req, res) => {
     token: generateToken(user._id, user.role),
   });
 });
-
 // @desc    Sign in
 // @route   POST /api/auth/signin
 const signin = asyncHandler(async (req, res) => {
@@ -116,8 +131,7 @@ const getUsers = asyncHandler(async (req, res) => {
   res.json({ success: true, count: users.length, data: users });
 });
 
-// @desc    Create an admin account (admin-only — this is the ONLY
-//          way an admin role should ever be assigned)
+// @desc    Create an admin account
 // @route   POST /api/auth/admins
 // @access  Private/Admin
 const createAdmin = asyncHandler(async (req, res) => {

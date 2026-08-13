@@ -54,7 +54,15 @@
   top: 0.3rem;
   right: 2rem;
 }
-
+.wlcm-me {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 2rem;
+  margin: 0;
+  color: #ffffff;
+  text-align: left;
+  min-width: 30rem;
+}
 .signup-form h2 {
   font-family: "Montserrat", sans-serif;
   font-weight: 700;
@@ -88,9 +96,9 @@
   padding: 0 14px;
   border: 1px solid #d1d5db;
   border-radius: 14px;
-  background: #424260e5;
-  color: #ffffff;
-  font-size: 0.96rem;
+  background: #dcd9ec;
+  color: #383535;
+  font-size: 13px;
 }
 
 .field input:focus {
@@ -104,8 +112,8 @@
   height: 46px;
   border: 1px solid #d1d5db;
   border-radius: 14px;
-  background: #424260e5;
-  color: #ffffff;
+  background: #dcd9ec;
+  color: #424260e5;
   display: grid;
   place-items: center;
   cursor: pointer;

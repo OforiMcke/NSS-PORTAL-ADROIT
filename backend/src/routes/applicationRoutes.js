@@ -16,11 +16,12 @@ const upload = require("../middleware/uploadMiddleware");
 
 router.post(
   "/",
-  protect,
+  // protect,
   upload.handleUploadErrors(
     upload.fields([
       { name: "cv", maxCount: 1 },
       { name: "photo", maxCount: 1 },
+      { name: "additionalDoc", maxCount: 1 },
     ]),
   ),
   submitApplication,

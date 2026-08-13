@@ -5,7 +5,7 @@ const applicationSchema = mongoose.Schema(
     applicant: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: false,
     },
 
     // category: {
@@ -53,6 +53,8 @@ const applicationSchema = mongoose.Schema(
     cvPublicId: String,
     photoUrl: String,
     photoPublicId: String,
+    additionalDocUrl: String,
+    additionalDocPublicId: String,
 
     status: {
       type: String,
@@ -72,6 +74,8 @@ const applicationSchema = mongoose.Schema(
 
     // we use this to track Emails that are sent
     emailsSent: {
+      applicationReceived: { type: Boolean, default: false },
+      newApplicationAdmin: { type: Boolean, default: false },
       acceptance: { type: Boolean, default: false },
       rejection: { type: Boolean, default: false },
     },

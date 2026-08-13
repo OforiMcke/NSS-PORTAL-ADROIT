@@ -7,6 +7,7 @@ export default function ApplicationDetailPanel({
   application,
   isUpdating,
   onViewResume,
+  onViewAdditionalDoc,
   onAccept,
   onDecline,
 }) {
@@ -19,6 +20,7 @@ export default function ApplicationDetailPanel({
         application={application}
         isUpdating={isUpdating}
         onViewResume={onViewResume}
+        onViewAdditionalDoc={onViewAdditionalDoc}
         onAccept={onAccept}
         onDecline={onDecline}
       />

@@ -52,34 +52,50 @@ export default function JobDetailsFields({
         )}
         <div>
           <label>Job Role</label>
-          <input
-            type="text"
-            name="jobRole"
-            className="af-input"
-            value={formValues.jobRole}
-            onChange={onChange}
-          />
+          {job?.roles?.length > 0 ? (
+            <select
+              name="jobRole"
+              className="af-select"
+              value={formValues.jobRole}
+              onChange={onChange}
+              required
+            >
+              <option value="">Select Role</option>
+              {job.roles.map((r) => (
+                <option key={r} value={r}>
+                  {r}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              type="text"
+              name="jobRole"
+              className="af-input"
+              value={formValues.jobRole}
+              onChange={onChange}
+            />
+          )}
         </div>
-      </div>
 
-      <div className="af-grid-2" style={{ marginTop: "12px" }}>
         <div>
-          <label>Experience Level</label>
-          <select
-            name="experienceLevel"
-            className="af-select"
-            value={formValues.experienceLevel}
-            onChange={onChange}
-          >
-            <option value="">Select Experience Level</option>
-            {EXPERIENCE_LEVELS.map((level) => (
-              <option key={level} value={level}>
-                {level}
-              </option>
-            ))}
-          </select>
+          <div>
+            <label>Experience Level</label>
+            <select
+              name="experienceLevel"
+              className="af-select"
+              value={formValues.experienceLevel}
+              onChange={onChange}
+            >
+              <option value="">Select Experience Level</option>
+              {EXPERIENCE_LEVELS.map((level) => (
+                <option key={level} value={level}>
+                  {level}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-
         {/* <div>
           <label>Portfolio Link</label>
           <input

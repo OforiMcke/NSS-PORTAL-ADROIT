@@ -8,13 +8,14 @@ const SignUp = () => {
   const location = useLocation();
   const timeoutRef = useRef(null);
   const [animate, setAnimate] = useState(false);
+  const prefill = location.state?.prefill || {};
+
   const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phoneNumber: "",
+    firstName: prefill.firstName || "",
+    lastName: prefill.lastName || "",
+    email: prefill.email || "",
+    phoneNumber: prefill.phoneNumber || "",
     password: "",
-    role: "applicant",
     agree: false,
   });
   const [error, setError] = useState("");
@@ -85,6 +86,7 @@ const SignUp = () => {
       <aside className="visual-panel" />
       <main className="form-panel">
         <form className="signup-form" onSubmit={handleSubmit}>
+          <h3 className="wlcm-me">Welcome to Adroit360 Application Portal</h3>
           <h2>Create account</h2>
           <p className="signin-link">
             Already have an account? <Link to="/signin">Log in</Link>
@@ -141,19 +143,6 @@ const SignUp = () => {
               onChange={handleChange}
               required
             />
-          </div>
-
-          <div className="field">
-            <label htmlFor="role"></label>
-            <select
-              id="role"
-              name="role"
-              value={form.role}
-              onChange={handleChange}
-            >
-              <option value="applicant">Applicant</option>
-              <option value="admin">Admin</option>
-            </select>
           </div>
 
           <div className="field">

@@ -14,8 +14,6 @@ export default function ApplicationForm({ embedded = false, onSubmitSuccess }) {
   const navigate = useNavigate();
   const { jobId: linkedJobId } = useParams();
 
-  // const [showSummary, setShowSummary] = useState(false);
-
   const [formValues, setFormValues] = useState({
     fullName: "",
     email: "",
@@ -29,7 +27,7 @@ export default function ApplicationForm({ embedded = false, onSubmitSuccess }) {
     "National Service Personnel",
   );
   const [agreed, setAgreed] = useState(false);
-  const [files, setFiles] = useState({ resume: null });
+  const [files, setFiles] = useState({ resume: null, additionalDoc: null });
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -43,6 +41,8 @@ export default function ApplicationForm({ embedded = false, onSubmitSuccess }) {
   const [openJobsLoading, setOpenJobsLoading] = useState(!linkedJobId);
   const [openJobsError, setOpenJobsError] = useState("");
   const [selectedJobId, setSelectedJobId] = useState("");
+
+  const [showAccountPrompt, setShowAccountPrompt] = useState(false);
 
   useEffect(() => {
     if (!linkedJobId) return;
@@ -119,7 +119,22 @@ export default function ApplicationForm({ embedded = false, onSubmitSuccess }) {
     const file = e.target.files?.[0] || null;
     setFiles((prev) => ({ ...prev, [key]: file }));
   };
+  const handleDone = () => {
+    const trimmedName = formValues.fullName.trim();
+    const [firstName, ...rest] = trimmedName.split(" ");
+    const lastName = rest.join(" ");
 
+    navigate("/signup", {
+      state: {
+        prefill: {
+          firstName,
+          lastName,
+          email: formValues.email,
+          phoneNumber: formValues.phoneNumber,
+        },
+      },
+    });
+  };
   const finishSubmit = () => {
     if (embedded && typeof onSubmitSuccess === "function") {
       onSubmitSuccess();
@@ -160,19 +175,6 @@ export default function ApplicationForm({ embedded = false, onSubmitSuccess }) {
     return true;
   };
 
-  // Summary step disabled for now — form submits directly on Confirm & Submit.
-  // const handleProceedToSummary = (e) => {
-  //   e.preventDefault();
-  //   setError("");
-  //   setSuccess("");
-  //   if (!validate()) return;
-  //   setShowSummary(true);
-  // };
-
-  // const handlePrintDocument = () => {
-  //   window.print();
-  // };
-
   const handleFinalSubmission = (e) => {
     e.preventDefault();
     setError("");
@@ -192,12 +194,13 @@ export default function ApplicationForm({ embedded = false, onSubmitSuccess }) {
     formData.append("jobId", job._id);
     formData.append("employmentType", employmentType);
     formData.append("cv", files.resume);
-
+    if (files.additionalDoc) {
+      formData.append("additionalDoc", files.additionalDoc);
+    }
     api
       .post("/api/applications", formData)
-      .then((res) => {
-        setSuccess(res.data?.message || "Application submitted successfully");
-        setTimeout(() => finishSubmit(), 1200);
+      .then(() => {
+        setShowAccountPrompt(true);
       })
       .catch((err) => {
         setError(
@@ -233,6 +236,7 @@ export default function ApplicationForm({ embedded = false, onSubmitSuccess }) {
     <div className={`af-page ${embedded ? "af-embedded" : ""}`}>
       <div className="af-card">
         <header className="af-header">
+          <div className="af-logo"></div>
           <div className="af-header-text">
             <h1>Application Form</h1>
             <p>
@@ -271,19 +275,6 @@ export default function ApplicationForm({ embedded = false, onSubmitSuccess }) {
             </div>
           )}
 
-          {/* {showSummary ? (
-            <ApplicationSummary
-              formValues={formValues}
-              jobTitle={job?.title}
-              employmentType={employmentType}
-              files={files}
-              loading={loading}
-              success={success}
-              onBack={() => setShowSummary(false)}
-              onPrint={handlePrintDocument}
-              onSubmit={handleFinalSubmission}
-            />
-          ) : ( */}
           <form onSubmit={handleFinalSubmission}>
             <PersonalDetailsFields
               formValues={formValues}
@@ -319,9 +310,43 @@ export default function ApplicationForm({ embedded = false, onSubmitSuccess }) {
               {loading ? "Submitting..." : "Confirm & Submit Application"}
             </button>
           </form>
-          {/* )} */}
         </div>
       </div>
+
+      {showAccountPrompt && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="af-modal-overlay"
+          onClick={() => setShowAccountPrompt(false)}
+        >
+          <div className="af-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Application Submitted!</h3>
+            <p>
+              Your application has been received. To check your status, an
+              account has been created for you. Click on done to set your
+              password.
+            </p>
+            <div className="af-modal-actions">
+              {/* <button
+                className="af-btn-secondary"
+                onClick={() => {
+                  if (embedded && typeof onSubmitSuccess === "function") {
+                    onSubmitSuccess();
+                  } else {
+                    navigate("/signin");
+                  }
+                }}
+              >
+                Maybe Later
+              </button> */}
+              <button className="af-btn-secondary" onClick={handleDone}>
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

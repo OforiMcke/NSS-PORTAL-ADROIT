@@ -25,7 +25,7 @@ const sendAcceptanceEmail = async (application) => {
       </div>
       <footer style="font-size: 12px; color: #888; margin-top: 20px; text-align: center;">
       <p>This email was sent from Adroit 360. If you have any questions, please contact us at 
-      <a href="mailto:amiskyjunior@gmail.com">amiskyjunior@gmail.com</a>
+      <a href="mailto:careers@adroit360.com">careers@adroit360.com</a>
       </p>
       <p>&copy; ${new Date().getFullYear()} Adroit 360. All rights reserved.</p>    
     </footer>
@@ -63,7 +63,7 @@ const sendRejectionEmail = async (application) => {
     </div>
      <footer style="font-size: 12px; color: #888; margin-top: 20px; text-align: center;">
       <p>This email was sent from Adroit 360. If you have any questions, please contact us at 
-      <a href="mailto:amiskyjunior@gmail.com">amiskyjunior@gmail.com</a>
+      <a href="mailto:careers@adroit360.com">careers@adroit360.com</a>
       </p>
       <p>&copy; ${new Date().getFullYear()} Adroit 360. All rights reserved.</p>    
     </footer>
@@ -77,7 +77,7 @@ const sendRejectionEmail = async (application) => {
   });
 };
 
-// NEW: confirmation email sent to the applicant right after they submit
+// confirmation email sent to the applicant right after they submit
 const sendApplicationReceivedEmail = async (application) => {
   const safeName = escapeHtml(application.fullName);
   const safeJobTitle = escapeHtml(application.jobTitle || "the role");
@@ -86,14 +86,14 @@ const sendApplicationReceivedEmail = async (application) => {
     <div style="font-family: Arial, sans-serif; min-width: 600px; margin:auto; padding:20px;">
       <h2 style="color:#1a73e8;">Adroit 360: Application Received</h2>
       <p>Dear <strong>${safeName}</strong>,</p>
-      <p>Thank you for applying for <strong>${safeJobTitle}</strong>. We've
+      <p>Thank you for applying for <strong>${safeJobTitle}</strong>. <br/> We've
          successfully received your application and it is now under review.</p>
       <p>We'll be in touch as soon as there's an update on your status.</p>
       <p style="margin-top: -20px;">Warm regards,<br/>The Adroit 360 Team</p>
     </div>
     <footer style="font-size: 12px; color: #888; margin-top: 20px; text-align: center;">
       <p>This email was sent from Adroit 360. If you have any questions, please contact us at
-      <a href="mailto:amiskyjunior@gmail.com">amiskyjunior@gmail.com</a>
+      <a href="mailto:careers@adroit360.com">careers@adroit360.com</a>
       </p>
       <p>&copy; ${new Date().getFullYear()} Adroit 360. All rights reserved.</p>
     </footer>
@@ -107,7 +107,7 @@ const sendApplicationReceivedEmail = async (application) => {
   });
 };
 
-// NEW: notification email sent to admins when a new application comes in
+// notification email sent to admins when a new application comes in
 const sendNewApplicationAdminEmail = async (application, adminEmails = []) => {
   if (!adminEmails.length) return;
 
