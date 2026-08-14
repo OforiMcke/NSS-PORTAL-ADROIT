@@ -2,11 +2,11 @@ const asyncHandler = require("../utils/asyncHandler.js");
 const generateToken = require("../utils/generateToken.js");
 const User = require("../models/User.js");
 
-const Application = require("../models/Application.js"); // NEW
+const Application = require("../models/Application.js");
 const crypto = require("crypto");
 const { sendPasswordResetEmail } = require("./emailController.js");
 
-// @desc    Sign up (public — always creates an applicant account)
+// @desc    Sign up
 // @route   POST /api/auth/signup
 const signup = asyncHandler(async (req, res) => {
   const { firstName, lastName, email, phoneNumber, password } = req.body;
