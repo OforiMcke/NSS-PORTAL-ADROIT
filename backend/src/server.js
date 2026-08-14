@@ -15,15 +15,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/api");
+
 // Database connection
 connectDB();
 
 // API Route Links
-app.use("/auth", authRoutes);
-app.use("/categories", categoryRoutes);
-app.use("/applications", applicationRoutes);
-app.use("/jobs", jobRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/applications", applicationRoutes);
+app.use("/api/jobs", jobRoutes);
 
 //Error Handlers
 app.use(notFound);
