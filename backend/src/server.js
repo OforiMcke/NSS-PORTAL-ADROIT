@@ -14,10 +14,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://nss-portal-adroit-mj2f.vercel.app/",
-    ],
+    origin: process.env.CLIENT_URL,
   }),
 );
 app.use(express.json());
