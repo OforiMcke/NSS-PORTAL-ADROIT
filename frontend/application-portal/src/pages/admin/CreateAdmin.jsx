@@ -1,6 +1,6 @@
 import { useState } from "react";
-import api from "../../api/axiosInstance"; // adjust path to match where this file lives
 import "./CreateAdmin.css";
+import api from "../../api/axiosInstance";
 
 const CreateAdmin = () => {
   const [form, setForm] = useState({

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api = axios.create();
+export const api = axios.create();
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("authToken");
