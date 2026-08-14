@@ -16,7 +16,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://nss-portal-adroit-mj2f.vercel.app",
+      "https://nss-portal-adroit-mj2f.vercel.app/",
     ],
   }),
 );
