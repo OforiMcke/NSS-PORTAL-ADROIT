@@ -7,23 +7,23 @@ const connectDB = require("./config/db");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
 const authRoutes = require("./routes/authRoutes");
-
+const categoryRoutes = require("./routes/categoryRoutes");
+const applicationRoutes = require("./routes/applicationRoutes");
+const jobRoutes = require("./routes/jobRoutes");
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use("/api");
 // Database connection
 connectDB();
 
 // API Route Links
-app.use("/api/auth", authRoutes);
-const categoryRoutes = require("./routes/categoryRoutes");
-const applicationRoutes = require("./routes/applicationRoutes");
-app.use("/api/categories", categoryRoutes);
-app.use("/api/applications", applicationRoutes);
-app.use("/api/jobs", require("./routes/jobRoutes"));
+app.use("/auth", authRoutes);
+app.use("/categories", categoryRoutes);
+app.use("/applications", applicationRoutes);
+app.use("/jobs", jobRoutes);
 
 //Error Handlers
 app.use(notFound);
