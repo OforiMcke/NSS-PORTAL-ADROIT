@@ -6,7 +6,9 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:5000/",
+        // target: "http://localhost:5000/",
+        target:
+          "https://nss-portal-adroit-df9c34d0d-team-omj.vercel.app/api/auth/signin",
         changeOrigin: true,
         secure: false,
       },
