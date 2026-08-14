@@ -3,14 +3,14 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  server: {
-    proxy: {
-      "/api": {
-        // target: "http://localhost:5000/",
-        target: "https://nss-portal-adroit-df9c34d0d-team-omj.vercel.app",
-        changeOrigin: true,
-        secure: false,
-      },
-    },
-  },
+  // server: {
+  //   proxy: {
+  //     "/api": {
+  //       // target: "http://localhost:5000/",
+  //       target: "https://nss-portal-adroit-df9c34d0d-team-omj.vercel.app",
+  //       changeOrigin: true,
+  //       secure: false,
+  //     },
+  //   },
+  // },
 });
