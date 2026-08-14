@@ -1,6 +1,10 @@
 import axios from "axios";
 
-export const api = axios.create({ baseURL: import.meta.env.VITE_BASEURL });
+const BASE_URL =
+  import.meta.env.VITE_BASEURL ??
+  "https://nss-portal-adroit-df9c34d0d-team-omj.vercel.app";
+
+export const api = axios.create({ baseURL: BASE_URL });
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("authToken");

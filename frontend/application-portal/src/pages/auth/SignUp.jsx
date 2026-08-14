@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import { api } from "../../api/axiosInstance";
 import "./SignUp.css";
 
 const SignUp = () => {
@@ -50,7 +50,7 @@ const SignUp = () => {
     setLoading(true);
 
     try {
-      await axios.post("/api/auth/signup", {
+      await api.post("/api/auth/signup", {
         firstName: form.firstName,
         lastName: form.lastName,
         email: form.email,

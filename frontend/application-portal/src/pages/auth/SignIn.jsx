@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
 import "./SignUp.css";
+import { api } from "../../api/axiosInstance";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ const SignIn = () => {
     setLoading(true);
 
     try {
-      const { data } = await axios.post("/api/auth/signin", {
+      const { data } = await api.post("/api/auth/signin", {
         email: form.email,
         password: form.password,
       });
@@ -55,7 +55,7 @@ const SignIn = () => {
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("userRole", data.role);
       localStorage.setItem("userName", displayName);
-      axios.defaults.headers.common.Authorization = `Bearer ${data.token}`;
+      api.defaults.headers.common.Authorization = `Bearer ${data.token}`;
 
       const from = location.state?.from?.pathname;
       const fallback = data.role === "admin" ? "/admin" : "/applicant";
