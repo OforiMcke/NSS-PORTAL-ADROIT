@@ -4,7 +4,7 @@ import { Megaphone, Users2, Handshake } from "lucide-react";
 import Sidebar from "../../components/Sidebar";
 import TopBar from "../../components/TopBar";
 import StatCard from "../../components/StatCard";
-import { api } from "../../api/apiInstance";
+import { api } from "../../api/axiosInstance";
 import "../admin/dashboard.css";
 
 const hiringData = [
