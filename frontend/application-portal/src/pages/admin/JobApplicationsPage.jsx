@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
 import Sidebar from "../../components/Sidebar";
 import TopBar from "../../components/TopBar";
 import "../admin/dashboard.css";
 import "./JobApplicationPage.css";
 import CreateAdmin from "../admin/CreateAdmin";
+import { api } from "../../api/axiosInstance";
 
 // import CategoryTabs from "./components/CategoryTabs";
 import FilterBar from "./components/FilterBar";
@@ -42,9 +42,9 @@ export default function JobApplicationsPage() {
         setError("");
 
         const [applicationsRes, profileRes] = await Promise.all([
-          // axios.get("/api/categories"),
-          axios.get("/api/applications/admin/list"),
-          axios.get("/api/auth/profile"),
+          // api.get("/api/categories"),
+          api.get("/api/applications/admin/list"),
+          api.get("/api/auth/profile"),
         ]);
 
         if (!isMounted) return;
@@ -118,9 +118,9 @@ export default function JobApplicationsPage() {
       setError("");
 
       if (action === "accept") {
-        await axios.put(`/api/applications/${applicationId}/accept`);
+        await api.put(`/api/applications/${applicationId}/accept`);
       } else {
-        await axios.put(`/api/applications/${applicationId}/decline`);
+        await api.put(`/api/applications/${applicationId}/decline`);
       }
 
       setApplications((current) =>
@@ -161,7 +161,7 @@ export default function JobApplicationsPage() {
   const handleSidebarClick = (label) => {
     if (label === "Log Out") {
       localStorage.clear();
-      axios.defaults.headers.common.Authorization = "";
+      api.defaults.headers.common.Authorization = "";
       navigate("/signin");
       return;
     }

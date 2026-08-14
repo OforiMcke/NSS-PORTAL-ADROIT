@@ -4,7 +4,7 @@ import { Megaphone, Users2, Handshake } from "lucide-react";
 import Sidebar from "../../components/Sidebar";
 import TopBar from "../../components/TopBar";
 import StatCard from "../../components/StatCard";
-import axios from "axios";
+import { api } from "../../api/apiInstance";
 import "../admin/dashboard.css";
 
 const hiringData = [
@@ -67,9 +67,9 @@ export default function AdminDashboard() {
       try {
         const [{ data: statsData }, { data: recentData }, profileRes] =
           await Promise.all([
-            axios.get("/api/applications/admin/stats"),
-            axios.get("/api/applications/admin/recent"),
-            axios.get("/api/auth/profile"),
+            api.get("/api/applications/admin/stats"),
+            api.get("/api/applications/admin/recent"),
+            api.get("/api/auth/profile"),
           ]);
 
         if (!isMounted) return;
@@ -102,7 +102,7 @@ export default function AdminDashboard() {
   const handleSidebarClick = (label) => {
     if (label === "Log Out") {
       localStorage.clear();
-      axios.defaults.headers.common.Authorization = "";
+      api.defaults.headers.common.Authorization = "";
       navigate("/signin");
       return;
     }
