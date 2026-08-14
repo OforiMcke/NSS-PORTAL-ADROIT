@@ -71,20 +71,20 @@ export default function JobsList({ onCreateJob }) {
       <div className="jobs-list-table">
         <div className="jobs-list-row jobs-list-header">
           <span>Title</span>
-          {/* <span>Category</span> */}
+          <span>Roles</span>
           <span>Type</span>
+          <span>Deadline</span>
           <span>Status</span>
           <span>Link</span>
         </div>
-
         {jobs.map((job) => (
           <div className="jobs-list-row" key={job._id}>
             <span className="jobs-list-title">{job.title}</span>
-            {/* <span>
-              {job.category?.name || "—"}
-              {job.subCategory?.name ? ` / ${job.subCategory.name}` : ""}
-            </span> */}
+            <span>{job.roles?.join(", ") || "—"}</span>
             <span>{job.employmentType}</span>
+            <span>
+              {job.deadline ? new Date(job.deadline).toLocaleDateString() : "—"}
+            </span>
             <span>
               <span
                 className={`jobs-list-badge jobs-list-badge--${job.status}`}

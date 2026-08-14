@@ -27,7 +27,6 @@ export default function MyApplications() {
 
   useEffect(() => {
     let mounted = true;
-    setLoading(true);
     api
       .get("/api/applications/me")
       .then((res) => {
@@ -169,10 +168,10 @@ export default function MyApplications() {
                 {new Date(selected.createdAt).toLocaleString()}
               </p>
 
-              <p className="ma-detail-label">Statement of Motivation</p>
+              {/* <p className="ma-detail-label">Statement of Motivation</p>
               <p className="ma-detail-statement">
                 {selected.statementOfMotivation}
-              </p>
+              </p> */}
 
               {selected.cvUrl && (
                 <a
@@ -184,7 +183,16 @@ export default function MyApplications() {
                   View CV/Resume <ExternalLink size={14} />
                 </a>
               )}
-
+              {selected.additionalDocUrl && (
+                <a
+                  href={selected.additionalDocUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ma-cv-link"
+                >
+                  View Additional Document <ExternalLink size={14} />
+                </a>
+              )}
               {selected.status === "declined" && selected.adminFeedback && (
                 <div className="ma-feedback-box">
                   <p className="ma-box-label">Feedback</p>

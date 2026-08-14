@@ -27,11 +27,11 @@ export default function JobApplicationsPage() {
   const [updatingId, setUpdatingId] = useState(null);
   const [error, setError] = useState("");
   const [userName, setUserName] = useState("Recruiter");
-  const [setUserEmail] = useState("recruiter@adroit360.com");
-
+  const [userEmail, setUserEmail] = useState("recruiter@adroit360.com");
   const [activeLink, setActiveLink] = useState(
     location.state?.initialView || "All Applications",
   );
+  <TopBar userName={userName} userEmail={userEmail} />;
 
   useEffect(() => {
     let isMounted = true;
@@ -79,21 +79,21 @@ export default function JobApplicationsPage() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [setUserEmail]);
 
   // just stays valid against whatever's in `applications`.
-  useEffect(() => {
-    if (!applications.length) {
-      setSelectedId(null);
-      return;
-    }
-    setSelectedId((currentId) => {
-      if (currentId && applications.some((app) => app._id === currentId)) {
-        return currentId;
-      }
-      return applications[0]?._id || null;
-    });
-  }, [applications]);
+  // useEffect(() => {
+  //   if (!applications.length) {
+  //     setSelectedId(null);
+  //     return;
+  //   }
+  //   setSelectedId((currentId) => {
+  //     if (currentId && applications.some((app) => app._id === currentId)) {
+  //       return currentId;
+  //     }
+  //     return applications[0]?._id || null;
+  //   });
+  // }, [applications]);
 
   const list = applications.filter((application) => {
     const matchesFilter =

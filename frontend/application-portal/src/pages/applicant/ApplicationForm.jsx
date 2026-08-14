@@ -10,7 +10,7 @@ import DocumentUploadFields from "./components/DocumentUploadFields";
 import DeclarationCheckbox from "./components/DeclarationCheckbox";
 // import ApplicationSummary from "./components/ApplicationSummary";
 
-export default function ApplicationForm({ embedded = false, onSubmitSuccess }) {
+export default function ApplicationForm({ embedded = false }) {
   const navigate = useNavigate();
   const { jobId: linkedJobId } = useParams();
 
@@ -135,13 +135,13 @@ export default function ApplicationForm({ embedded = false, onSubmitSuccess }) {
       },
     });
   };
-  const finishSubmit = () => {
-    if (embedded && typeof onSubmitSuccess === "function") {
-      onSubmitSuccess();
-      return;
-    }
-    navigate("/applicant");
-  };
+  // const finishSubmit = () => {
+  //   if (embedded && typeof onSubmitSuccess === "function") {
+  //     onSubmitSuccess();
+  //     return;
+  //   }
+  //   navigate("/applicant");
+  // };
 
   const validate = () => {
     if (!job?._id) {

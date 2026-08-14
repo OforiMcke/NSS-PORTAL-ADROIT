@@ -23,11 +23,12 @@ export default function DocumentUploadFields({ onFileChange, files = {} }) {
         value={files["photo"]}
       />
         */}
+
       <UploadBox
         label="Additional Doc.(Portfolio)"
-        name="additional"
-        onChange={onFileChange("additional")}
-        value={files["additional"]}
+        name="additionalDoc"
+        onChange={onFileChange("additionalDoc")}
+        value={files["additionalDoc"]}
       />
     </div>
   );
