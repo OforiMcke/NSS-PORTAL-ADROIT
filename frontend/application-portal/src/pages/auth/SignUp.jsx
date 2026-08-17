@@ -50,24 +50,29 @@ const SignUp = () => {
     setLoading(true);
 
     try {
-      await api.post("/api/auth/signup", {
+      const response = await api.post("/api/auth/signup", {
         firstName: form.firstName,
         lastName: form.lastName,
         email: form.email,
         phoneNumber: form.phoneNumber,
         password: form.password,
-        role: form.role,
+        role: "applicant",
       });
 
-      setSuccess("Account created successfully. Redirecting to sign in...");
+      const { token, role } = response.data;
 
-      timeoutRef.current = setTimeout(
-        () =>
-          navigate("/signin", {
-            state: { from: location.state?.from },
-          }),
-        1800,
-      );
+      localStorage.setItem("authToken", token);
+      localStorage.setItem("userRole", role);
+
+      setSuccess("Account created successfully. Redirecting to dashboard...");
+
+      timeoutRef.current = setTimeout(() => {
+        const destination = role === "admin" ? "/admin" : "/applicant";
+
+        navigate(destination, {
+          state: { from: location.state?.from },
+        });
+      }, 1800);
     } catch (err) {
       setError(
         err.response?.data?.message ||

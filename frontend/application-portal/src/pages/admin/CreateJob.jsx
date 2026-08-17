@@ -151,61 +151,6 @@ export const CreateJob = () => {
           />
         </label>
 
-        {/*
-        <label>
-          Category
-          <select
-            value={selectedCategory}
-            disabled={categoriesLoading}
-            onChange={(e) => handleCategoryChange(e.target.value)}
-            required
-          >
-            <option value="">Select Category</option>
-            {categories.map((c) => (
-              <option key={c._id} value={c._id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label>
-          Sub-Category
-          <select
-            value={subCategoryId}
-            disabled={subCategories.length === 0}
-            onChange={(e) => setSubCategoryId(e.target.value)}
-            required
-          >
-            <option value="">Select Sub-Category</option>
-            {subCategories.map((s) => (
-              <option key={s._id} value={s._id}>
-                {s.name}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label>
-          Department
-          <input
-            type="text"
-            name="department"
-            value={form.department}
-            onChange={handleChange}
-          />
-        </label>
-
-        <label>
-          Location
-          <input
-            type="text"
-            name="location"
-            value={form.location}
-            onChange={handleChange}
-          />
-        </label>
-        */}
         <label>
           Job Roles
           <div className="role-input-row">

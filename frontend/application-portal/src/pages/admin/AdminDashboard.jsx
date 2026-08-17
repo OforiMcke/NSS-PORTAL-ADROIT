@@ -80,8 +80,6 @@ export default function AdminDashboard() {
             name: `${application.applicant.firstName} ${application.applicant.lastName}`,
             action: `applied for ${application.job?.title || "a role"}`,
             time: new Date(application.createdAt).toLocaleDateString(),
-            // categoryName: application.category?.name,
-            // subCategoryName: application.subCategory?.name,
             jobTitle: application.job?.title,
             employmentType: application.job?.employmentType,
           })),
@@ -161,11 +159,6 @@ export default function AdminDashboard() {
         </section>
 
         <section className="stats-row">
-          {/* <StatCard
-            label="Interviews Scheduled:"
-            value={stats.acceptedApplications}
-            icon={CalendarDays}
-          /> */}
           <StatCard
             label="Open Jobs:"
             value={stats.totalApplicants}
@@ -238,10 +231,6 @@ export default function AdminDashboard() {
         </section>
         <section className="schedule-card">
           <h3>Current Schedule</h3>
-          {/* <div className="schedule-item">
-            <span className="schedule-dot" />
-            Interview with Grace Nova today at 8:15 AM
-          </div> */}
         </section>
       </main>
     </div>
