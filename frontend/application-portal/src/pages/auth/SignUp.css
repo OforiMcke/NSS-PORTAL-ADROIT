@@ -1,7 +1,7 @@
 .split-screen {
   display: flex;
   width: 100%;
-  min-height: 130vh;
+  /* min-height: 130vh; */
   background: #0a0b40;
   font-family: "Montserrat", sans-serif;
   opacity: 0;
