@@ -1,8 +1,8 @@
 const Job = require("../models/Job");
-// const Category = require("../models/Category");
-// const SubCategory = require("../models/SubCategory");
 const mongoose = require("mongoose");
+const connectDB = require("../config/db");
 exports.createJob = async (req, res) => {
+  await connectDB();
   try {
     const { title, description, employmentType, deadline, roles } = req.body;
 
@@ -34,6 +34,8 @@ exports.createJob = async (req, res) => {
 // @route  GET /api/jobs
 // @access Admin only (list, for dashboard)
 exports.getAllJobs = async (req, res) => {
+  await connectDB();
+
   try {
     const jobs = await Job.find()
       // .populate("category", "name")
@@ -49,6 +51,8 @@ exports.getAllJobs = async (req, res) => {
 // @route  GET /api/jobs/open/list
 // @access Private (any signed-in user — applicants included)
 exports.getOpenJobs = async (req, res) => {
+  await connectDB();
+
   try {
     const jobs = await Job.find({ status: "open" })
       .select("title employmentType deadline")
@@ -63,14 +67,14 @@ exports.getOpenJobs = async (req, res) => {
 // @route  GET /api/jobs/:id
 // @access Public
 exports.getJobById = async (req, res) => {
+  await connectDB();
+
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({ message: "Invalid job link" });
     }
 
     const job = await Job.findById(req.params.id);
-    // .populate("category", "name")
-    // .populate("subCategory", "name");
     if (!job) {
       return res.status(404).json({ message: "Job not found" });
     }
@@ -87,11 +91,11 @@ exports.getJobById = async (req, res) => {
   }
 };
 
-// updateJob and deleteJob are unchanged
-
 // @route  PUT /api/jobs/:id
 // @access Admin only
 exports.updateJob = async (req, res) => {
+  await connectDB();
+
   try {
     const job = await Job.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -108,6 +112,8 @@ exports.updateJob = async (req, res) => {
 // @route  DELETE /api/jobs/:id
 // @access Admin only
 exports.deleteJob = async (req, res) => {
+  await connectDB();
+
   try {
     const job = await Job.findByIdAndDelete(req.params.id);
     if (!job) return res.status(404).json({ message: "Job not found" });

@@ -115,6 +115,7 @@ const submitApplication = asyncHandler(async (req, res) => {
 
 const getAdminApplications = asyncHandler(async (req, res) => {
   await connectDB();
+
   const { status } = req.query;
   const filter = {};
   if (status) filter.status = status;
