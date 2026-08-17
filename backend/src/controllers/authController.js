@@ -1,23 +1,22 @@
 const asyncHandler = require("../utils/asyncHandler.js");
 const generateToken = require("../utils/generateToken.js");
 const User = require("../models/User.js");
-
 const Application = require("../models/Application.js");
 const crypto = require("crypto");
-const { sendPasswordResetEmail } = require("./emailController.js");
+const connectDB = require("../config/db.js");
 
 // @desc    Sign up
 // @route   POST /api/auth/signup
 const signup = asyncHandler(async (req, res) => {
+  await connectDB();
+
   const { firstName, lastName, email, phoneNumber, password } = req.body;
 
-  // Validate the required input
   if (!firstName || !lastName || !email || !phoneNumber || !password) {
     res.status(400);
     throw new Error("All fields are required");
   }
 
-  // Check duplicate emails
   const userExists = await User.findOne({ email });
   if (userExists) {
     res.status(400);
@@ -33,9 +32,6 @@ const signup = asyncHandler(async (req, res) => {
     role: "applicant",
   });
 
-  // the feature's entire premise is that "My Applications"
-  // is populated the moment they sign up, so it must finish before we
-  // respond
   try {
     await Application.updateMany(
       { applicant: { $exists: false }, email: user.email },
@@ -56,11 +52,13 @@ const signup = asyncHandler(async (req, res) => {
     token: generateToken(user._id, user.role),
   });
 });
+
 // @desc    Sign in
 // @route   POST /api/auth/signin
 const signin = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  await connectDB();
 
+  const { email, password } = req.body;
   const user = await User.findOne({ email }).select("+password");
 
   if (user && (await user.matchPassword(password))) {
@@ -83,6 +81,8 @@ const signin = asyncHandler(async (req, res) => {
 // @desc    Get current user profile
 // @route   GET /api/auth/profile
 const getProfile = asyncHandler(async (req, res) => {
+  await connectDB();
+
   res.json({
     success: true,
     _id: req.user._id,
@@ -98,6 +98,8 @@ const getProfile = asyncHandler(async (req, res) => {
 // @desc    Update profile
 // @route   PUT /api/auth/profile
 const updateProfile = asyncHandler(async (req, res) => {
+  await connectDB();
+
   const user = await User.findById(req.user._id);
   if (!user) {
     res.status(404);
@@ -127,14 +129,17 @@ const updateProfile = asyncHandler(async (req, res) => {
 // @desc    Get all users
 // @route   GET /api/auth/users
 const getUsers = asyncHandler(async (req, res) => {
+  await connectDB();
+
   const users = await User.find({}).select("-password");
   res.json({ success: true, count: users.length, data: users });
 });
 
 // @desc    Create an admin account
 // @route   POST /api/auth/admins
-// @access  Private/Admin
 const createAdmin = asyncHandler(async (req, res) => {
+  await connectDB();
+
   const { firstName, lastName, email, phoneNumber, password } = req.body;
 
   if (!firstName || !lastName || !email || !phoneNumber || !password) {
