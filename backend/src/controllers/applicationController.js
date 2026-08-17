@@ -6,12 +6,12 @@ const {
   sendApplicationReceivedEmail,
   sendNewApplicationAdminEmail,
 } = require("./emailController.js");
-// const Category = require("../models/Category.js");
-// const SubCategory = require("../models/SubCategory.js");
+
 const Job = require("../models/Job.js");
 const User = require("../models/User.js");
 const cloudinary = require("../config/cloudinary.js");
 const fs = require("fs/promises");
+const connectDB = require("../config/db.js");
 
 const uploadToCloudinary = async (filePath, folder) => {
   try {
@@ -54,21 +54,6 @@ const submitApplication = asyncHandler(async (req, res) => {
   }
 
   const jobTitle = job.title;
-
-  // Categories/sub-categories are disabled for now.
-  // } else {
-  //   if (!categoryId || !subCategoryId) {
-  //     res.status(400);
-  //     throw new Error("Category and sub-category are required");
-  //   }
-  //   category = await Category.findById(categoryId);
-  //   subCategory = await SubCategory.findById(subCategoryId);
-  //   if (!category || !subCategory) {
-  //     res.status(404);
-  //     throw new Error("Category or sub-category not found");
-  //   }
-  //   jobTitle = subCategory.name;
-  // }
 
   if (!req.files?.cv) {
     res.status(400);
@@ -128,16 +113,8 @@ const submitApplication = asyncHandler(async (req, res) => {
   });
 });
 
-// getApplicationsBySubCategory left in place but unreachable
-// (its route is already commented out in applicationRoutes.js)
-const getApplicationsBySubCategory = asyncHandler(async (req, res) => {
-  res.status(410).json({
-    success: false,
-    message: "Sub-category browsing is disabled",
-  });
-});
-
 const getAdminApplications = asyncHandler(async (req, res) => {
+  await connectDB();
   const { status } = req.query;
   const filter = {};
   if (status) filter.status = status;
@@ -151,6 +128,8 @@ const getAdminApplications = asyncHandler(async (req, res) => {
 });
 
 const getApplicationDetail = asyncHandler(async (req, res) => {
+  await connectDB();
+
   const application = await Application.findById(req.params.id)
     .populate("applicant", "firstName lastName email")
     .populate("job", "title employmentType");
@@ -164,6 +143,8 @@ const getApplicationDetail = asyncHandler(async (req, res) => {
 });
 
 const acceptApplication = asyncHandler(async (req, res) => {
+  await connectDB();
+
   const application = await Application.findById(req.params.id);
 
   if (!application) {
@@ -180,12 +161,6 @@ const acceptApplication = asyncHandler(async (req, res) => {
   application.reviewDate = new Date();
   application.adminFeedback = "";
   await application.save();
-
-  // Sub-category bookkeeping disabled for now.
-  // await SubCategory.findByIdAndUpdate(application.subCategory, {
-  //   $addToSet: { acceptedApplications: application._id },
-  //   $pull: { applications: application._id },
-  // });
 
   if (!application.emailsSent.acceptance) {
     try {
@@ -205,6 +180,8 @@ const acceptApplication = asyncHandler(async (req, res) => {
 });
 
 const declineApplication = asyncHandler(async (req, res) => {
+  await connectDB();
+
   const application = await Application.findById(req.params.id);
 
   if (!application) {
@@ -221,14 +198,6 @@ const declineApplication = asyncHandler(async (req, res) => {
   application.status = "declined";
   application.reviewDate = new Date();
   await application.save();
-
-  // Sub-category bookkeeping disabled for now.
-  // await SubCategory.findByIdAndUpdate(application.subCategory, {
-  //   $pull: {
-  //     applications: application._id,
-  //     acceptedApplications: application._id,
-  //   },
-  // });
 
   if (!application.emailsSent.rejection) {
     try {
@@ -248,6 +217,8 @@ const declineApplication = asyncHandler(async (req, res) => {
 });
 
 const getMyApplications = asyncHandler(async (req, res) => {
+  await connectDB();
+
   const applications = await Application.find({ applicant: req.user._id })
     .populate("job", "title employmentType")
     .sort("-createdAt");
@@ -260,6 +231,8 @@ const getMyApplications = asyncHandler(async (req, res) => {
 });
 
 const getAdminStats = asyncHandler(async (req, res) => {
+  await connectDB();
+
   const totalApplications = await Application.countDocuments();
   const pendingApplications = await Application.countDocuments({
     status: "pending",
@@ -287,6 +260,8 @@ const getAdminStats = asyncHandler(async (req, res) => {
 });
 
 const getRecentApplications = asyncHandler(async (req, res) => {
+  await connectDB();
+
   const applications = await Application.find()
     .sort("-createdAt")
     .limit(5)

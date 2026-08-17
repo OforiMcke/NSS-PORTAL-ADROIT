@@ -36,7 +36,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate replace to="/signin" />} />
+        <Route path="/" element={<Navigate replace to="/signup" />} />
 
         <Route
           path="/signup"
@@ -80,7 +80,7 @@ function App() {
             </RouteGuard>
           }
         /> */}
-<Route path="/apply/:jobId" element={<ApplicationForm />} />
+        <Route path="/apply/:jobId" element={<ApplicationForm />} />
         <Route
           path="/admin"
           element={

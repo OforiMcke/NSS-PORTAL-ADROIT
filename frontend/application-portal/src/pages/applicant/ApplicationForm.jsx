@@ -8,7 +8,6 @@ import JobDetailsFields from "./components/JobDetailsFields";
 import JobSelectFields from "./components/JobSelectFields";
 import DocumentUploadFields from "./components/DocumentUploadFields";
 import DeclarationCheckbox from "./components/DeclarationCheckbox";
-// import ApplicationSummary from "./components/ApplicationSummary";
 
 export default function ApplicationForm({ embedded = false }) {
   const navigate = useNavigate();
@@ -135,13 +134,6 @@ export default function ApplicationForm({ embedded = false }) {
       },
     });
   };
-  // const finishSubmit = () => {
-  //   if (embedded && typeof onSubmitSuccess === "function") {
-  //     onSubmitSuccess();
-  //     return;
-  //   }
-  //   navigate("/applicant");
-  // };
 
   const validate = () => {
     if (!job?._id) {
@@ -328,18 +320,6 @@ export default function ApplicationForm({ embedded = false }) {
               password.
             </p>
             <div className="af-modal-actions">
-              {/* <button
-                className="af-btn-secondary"
-                onClick={() => {
-                  if (embedded && typeof onSubmitSuccess === "function") {
-                    onSubmitSuccess();
-                  } else {
-                    navigate("/signin");
-                  }
-                }}
-              >
-                Maybe Later
-              </button> */}
               <button className="af-btn-secondary" onClick={handleDone}>
                 Done
               </button>
