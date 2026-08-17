@@ -273,7 +273,6 @@ const getRecentApplications = asyncHandler(async (req, res) => {
 
 module.exports = {
   submitApplication,
-  getApplicationsBySubCategory,
   getAdminApplications,
   getApplicationDetail,
   acceptApplication,
