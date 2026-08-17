@@ -14,6 +14,8 @@ const fs = require("fs/promises");
 const connectDB = require("../config/db.js");
 
 const uploadToCloudinary = async (filePath, folder) => {
+  await connectDB();
+
   try {
     const result = await cloudinary.uploader.upload(filePath, {
       folder,
@@ -31,6 +33,8 @@ const uploadToCloudinary = async (filePath, folder) => {
 };
 
 const submitApplication = asyncHandler(async (req, res) => {
+  await connectDB();
+
   const { fullName, email, phoneNumber, jobId } = req.body;
 
   if (!fullName || !email || !phoneNumber) {
@@ -95,16 +99,16 @@ const submitApplication = asyncHandler(async (req, res) => {
   sendApplicationReceivedEmail(application).catch((err) =>
     console.error("Applicant confirmation email failed:", err.message),
   );
-
-  User.find({ role: "admin" })
-    .select("email")
-    .then((admins) => {
+  (async () => {
+    try {
+      await connectDB();
+      const admins = await User.find({ role: "admin" }).select("email");
       const adminEmails = admins.map((a) => a.email).filter(Boolean);
-      return sendNewApplicationAdminEmail(application, adminEmails);
-    })
-    .catch((err) =>
-      console.error("Admin notification email failed:", err.message),
-    );
+      await sendNewApplicationAdminEmail(application, adminEmails);
+    } catch (err) {
+      console.error("Admin notification email failed:", err.message);
+    }
+  })();
 
   res.status(201).json({
     success: true,

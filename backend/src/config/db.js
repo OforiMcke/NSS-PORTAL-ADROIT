@@ -23,7 +23,7 @@ const connectDB = async () => {
 
   if (!cached.promise) {
     const opts = {
-      bufferCommands: false, // Prevents Mongoose from hanging for 10s if the database goes down
+      bufferCommands: true,
     };
 
     cached.promise = mongoose

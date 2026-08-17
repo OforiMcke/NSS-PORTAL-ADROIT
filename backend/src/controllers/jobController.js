@@ -1,6 +1,6 @@
 const Job = require("../models/Job");
 const mongoose = require("mongoose");
-const connectDB = require("../config/db");
+const connectDB = require("../config/db.js");
 exports.createJob = async (req, res) => {
   await connectDB();
   try {
@@ -32,15 +32,11 @@ exports.createJob = async (req, res) => {
   }
 };
 // @route  GET /api/jobs
-// @access Admin only (list, for dashboard)
 exports.getAllJobs = async (req, res) => {
   await connectDB();
 
   try {
-    const jobs = await Job.find()
-      // .populate("category", "name")
-      // .populate("subCategory", "name")
-      .sort({ createdAt: -1 });
+    const jobs = await Job.find().sort({ createdAt: -1 });
     return res.status(200).json(jobs);
   } catch (err) {
     console.error("Get jobs error:", err.message);
@@ -49,7 +45,7 @@ exports.getAllJobs = async (req, res) => {
 };
 
 // @route  GET /api/jobs/open/list
-// @access Private (any signed-in user — applicants included)
+// @access Private
 exports.getOpenJobs = async (req, res) => {
   await connectDB();
 
