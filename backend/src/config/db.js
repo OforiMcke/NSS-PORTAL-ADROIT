@@ -1,11 +1,49 @@
 const mongoose = require("mongoose");
+
+const MONGO_URI = process.env.MONGO_URI;
+
+if (!MONGO_URI) {
+  throw new Error(
+    "Please define the MONGO_URI environment variable inside Vercel Settings",
+  );
+}
+
+// Check if there is already a global connection cached
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
+
 const connectDB = async () => {
-  try {
-    const conn = await mongoose.connect(process.env.MONGO_URI);
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
-  } catch (error) {
-    console.error(`MongoDB Error: ${error.message}`);
+  // If a connection already exists, reuse it instantly
+  if (cached.conn) {
+    return cached.conn;
   }
+
+  if (!cached.promise) {
+    const opts = {
+      bufferCommands: false, // Prevents Mongoose from hanging for 10s if the database goes down
+    };
+
+    cached.promise = mongoose
+      .connect(MONGO_URI, opts)
+      .then((mongooseInstance) => {
+        console.log(`MongoDB Connected: ${mongooseInstance.connection.host}`);
+        return mongooseInstance;
+      });
+  }
+
+  try {
+    //  Wait for the connection promise to resolve
+    cached.conn = await cached.promise;
+  } catch (error) {
+    cached.promise = null; // Clear promise on error so next request tries again
+    console.error(`MongoDB Error: ${error.message}`);
+    throw error;
+  }
+
+  return cached.conn;
 };
 
 module.exports = connectDB;
