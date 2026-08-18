@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../../api/axiosInstance";
 import "./ApplicationForm.css";
 
 import PersonalDetailsFields from "./components/PersonalDetailsFields";
 import JobDetailsFields from "./components/JobDetailsFields";
-import JobSelectFields from "./components/JobSelectFields";
+import RoleSelectFields from "./components/RoleSelectFields";
 import DocumentUploadFields from "./components/DocumentUploadFields";
 import DeclarationCheckbox from "./components/DeclarationCheckbox";
 
@@ -39,7 +39,7 @@ export default function ApplicationForm({ embedded = false }) {
   const [openJobs, setOpenJobs] = useState([]);
   const [openJobsLoading, setOpenJobsLoading] = useState(!linkedJobId);
   const [openJobsError, setOpenJobsError] = useState("");
-  const [selectedJobId, setSelectedJobId] = useState("");
+  const [selectedRoleKey, setSelectedRoleKey] = useState("");
 
   const [showAccountPrompt, setShowAccountPrompt] = useState(false);
 
@@ -82,7 +82,7 @@ export default function ApplicationForm({ embedded = false }) {
         setOpenJobs(list);
         if (list.length === 0) {
           setOpenJobsError(
-            "No open positions are available right now. Please check back later.",
+            "No open open Jobs available right now. Please check back later.",
           );
         }
       })
@@ -91,7 +91,7 @@ export default function ApplicationForm({ embedded = false }) {
         setOpenJobsError(
           err.response?.status === 401
             ? "Your session has expired. Please log in again."
-            : "Couldn't load open positions. Please refresh the page.",
+            : "Couldn't load open roles. Please refresh the page.",
         );
       })
       .finally(() => {
@@ -104,9 +104,28 @@ export default function ApplicationForm({ embedded = false }) {
     };
   }, [linkedJobId]);
 
-  const handleJobSelect = (id) => {
-    setSelectedJobId(id);
-    setJob(openJobs.find((j) => j._id === id) || null);
+  const roleOptions = useMemo(() => {
+    return openJobs.flatMap((j) =>
+      (j.roles || []).map((role) => ({
+        key: `${j._id}::${role}`,
+        role,
+        jobId: j._id,
+        jobTitle: j.title,
+      })),
+    );
+  }, [openJobs]);
+
+  const handleRoleSelect = (key) => {
+    setSelectedRoleKey(key);
+    const option = roleOptions.find((opt) => opt.key === key);
+    if (!option) {
+      setJob(null);
+      setFormValues((prev) => ({ ...prev, jobRole: "" }));
+      return;
+    }
+    const matchedJob = openJobs.find((j) => j._id === option.jobId);
+    setJob(matchedJob || null);
+    setFormValues((prev) => ({ ...prev, jobRole: option.role }));
   };
 
   const handleInputChange = (e) => {
@@ -118,6 +137,7 @@ export default function ApplicationForm({ embedded = false }) {
     const file = e.target.files?.[0] || null;
     setFiles((prev) => ({ ...prev, [key]: file }));
   };
+
   const handleDone = () => {
     const trimmedName = formValues.fullName.trim();
     const [firstName, ...rest] = trimmedName.split(" ");
@@ -140,8 +160,13 @@ export default function ApplicationForm({ embedded = false }) {
       setError(
         linkedJobId
           ? "We couldn't confirm the job for this application. Please use a valid application link."
-          : "Please select a position to apply for.",
+          : "Please select a job role to apply for.",
       );
+      return false;
+    }
+
+    if (!linkedJobId && !formValues.jobRole) {
+      setError("Please select a job role to apply for.");
       return false;
     }
 
@@ -189,6 +214,7 @@ export default function ApplicationForm({ embedded = false }) {
     if (files.additionalDoc) {
       formData.append("additionalDoc", files.additionalDoc);
     }
+
     api
       .post("/api/applications", formData)
       .then(() => {
@@ -234,7 +260,7 @@ export default function ApplicationForm({ embedded = false }) {
             <p>
               {linkedJobId
                 ? `Applying for: ${job?.title || "..."}`
-                : "Select a position and fill out the details below to apply"}
+                : "Select a job role and fill out the details below to apply"}
             </p>
           </div>
         </header>
@@ -274,12 +300,12 @@ export default function ApplicationForm({ embedded = false }) {
             />
 
             {!linkedJobId && (
-              <JobSelectFields
-                jobs={openJobs}
-                jobsLoading={openJobsLoading}
-                jobsError={openJobsError}
-                selectedJobId={selectedJobId}
-                onJobChange={handleJobSelect}
+              <RoleSelectFields
+                roleOptions={roleOptions}
+                loading={openJobsLoading}
+                error={openJobsError}
+                selectedRoleKey={selectedRoleKey}
+                onRoleChange={handleRoleSelect}
               />
             )}
 
@@ -289,6 +315,7 @@ export default function ApplicationForm({ embedded = false }) {
               employmentType={employmentType}
               onEmploymentTypeChange={setEmploymentType}
               job={job}
+              rolePreselected={!linkedJobId}
             />
 
             <DocumentUploadFields

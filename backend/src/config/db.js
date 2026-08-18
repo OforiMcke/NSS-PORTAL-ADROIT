@@ -3,9 +3,7 @@ const mongoose = require("mongoose");
 const MONGO_URI = process.env.MONGO_URI;
 
 if (!MONGO_URI) {
-  throw new Error(
-    "Please define the MONGO_URI environment variable inside Vercel Settings",
-  );
+  throw new Error("Please define the MONGO_URI environment variable");
 }
 
 // Check if there is already a global connection cached

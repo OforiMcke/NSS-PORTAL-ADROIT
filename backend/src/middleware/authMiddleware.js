@@ -34,7 +34,6 @@ const protect = asyncHandler(async (req, res, next) => {
   next();
 });
 
-// We must used them after verification
 const adminOnly = (req, res, next) => {
   if (req.user && req.user.role === "admin") {
     next();

@@ -13,6 +13,7 @@ export default function JobDetailsFields({
   employmentType,
   onEmploymentTypeChange,
   job,
+  rolePreselected = false,
 }) {
   return (
     <>
@@ -33,7 +34,7 @@ export default function JobDetailsFields({
         </div>
       </div>
 
-      <h3 style={{ marginTop: "12px" }}> Job Details</h3>
+      <h3 style={{ marginTop: "12px" }}>Job Details</h3>
       <div
         className={job ? "af-grid-2" : "af-grid-1"}
         style={{ marginTop: "12px" }}
@@ -50,9 +51,18 @@ export default function JobDetailsFields({
             />
           </div>
         )}
+
         <div>
           <label>Job Role</label>
-          {job?.roles?.length > 0 ? (
+          {rolePreselected ? (
+            <input
+              type="text"
+              className="af-input"
+              value={formValues.jobRole || "Not selected"}
+              readOnly
+              disabled
+            />
+          ) : job?.roles?.length > 0 ? (
             <select
               name="jobRole"
               className="af-select"
@@ -77,36 +87,25 @@ export default function JobDetailsFields({
             />
           )}
         </div>
+      </div>
 
+      <div className="af-grid-2" style={{ marginTop: "12px" }}>
         <div>
-          <div>
-            <label>Experience Level</label>
-            <select
-              name="experienceLevel"
-              className="af-select"
-              value={formValues.experienceLevel}
-              onChange={onChange}
-            >
-              <option value="">Select Experience Level</option>
-              {EXPERIENCE_LEVELS.map((level) => (
-                <option key={level} value={level}>
-                  {level}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        {/* <div>
-          <label>Portfolio Link</label>
-          <input
-            type="url"
-            name="portfolio"
-            className="af-input"
-            placeholder="https://..."
-            value={formValues.portfolio}
+          <label>Experience Level</label>
+          <select
+            name="experienceLevel"
+            className="af-select"
+            value={formValues.experienceLevel}
             onChange={onChange}
-          />
-        </div> */}
+          >
+            <option value="">Select Experience Level</option>
+            {EXPERIENCE_LEVELS.map((level) => (
+              <option key={level} value={level}>
+                {level}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
     </>
   );

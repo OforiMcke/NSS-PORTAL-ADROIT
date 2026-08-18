@@ -39,11 +39,6 @@ const applicationSchema = mongoose.Schema(
       lowercase: true,
     },
     phoneNumber: { type: String, required: [true, "Phone number is required"] },
-    // statementOfMotivation: {
-    //   type: String,
-    //   required: [true, "Personal statement is required"],
-    //   maxlength: [2000, "Statement too long"],
-    // },
 
     // Uploaded files
     cvUrl: {
@@ -82,12 +77,6 @@ const applicationSchema = mongoose.Schema(
   },
   { timestamps: true },
 );
-
-// we use the Index to fetch status faster within a sub-category
-// applicationSchema.index({ subCategory: 1, status: 1, createdAt: -1 });
-
-// speeds up a top-level category dashboard before drilling into sub-category
-// applicationSchema.index({ category: 1, status: 1 });
 
 // lets an applicant fetch their own submission history quickly
 applicationSchema.index({ applicant: 1 });
