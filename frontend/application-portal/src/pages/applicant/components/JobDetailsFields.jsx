@@ -39,7 +39,7 @@ export default function JobDetailsFields({
         className={job ? "af-grid-2" : "af-grid-1"}
         style={{ marginTop: "12px" }}
       >
-        {job && (
+        {/* {job && (
           <div>
             <label>Job Title</label>
             <input
@@ -50,7 +50,7 @@ export default function JobDetailsFields({
               disabled
             />
           </div>
-        )}
+        )} */}
 
         <div>
           <label>Job Role</label>
@@ -87,24 +87,24 @@ export default function JobDetailsFields({
             />
           )}
         </div>
-      </div>
 
-      <div className="af-grid-2" style={{ marginTop: "12px" }}>
         <div>
-          <label>Experience Level</label>
-          <select
-            name="experienceLevel"
-            className="af-select"
-            value={formValues.experienceLevel}
-            onChange={onChange}
-          >
-            <option value="">Select Experience Level</option>
-            {EXPERIENCE_LEVELS.map((level) => (
-              <option key={level} value={level}>
-                {level}
-              </option>
-            ))}
-          </select>
+          <div>
+            <label>Experience Level</label>
+            <select
+              name="experienceLevel"
+              className="af-select"
+              value={formValues.experienceLevel}
+              onChange={onChange}
+            >
+              <option value="">Select Experience Level</option>
+              {EXPERIENCE_LEVELS.map((level) => (
+                <option key={level} value={level}>
+                  {level}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
     </>

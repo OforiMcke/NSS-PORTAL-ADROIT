@@ -13,25 +13,7 @@ const jobSchema = new mongoose.Schema(
       required: [true, "Job description is required"],
       trim: true,
     },
-    // category: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Category",
-    //   required: true,
-    // },
-    // subCategory: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "SubCategory",
-    //   required: true,
-    // },
-    // department: {
-    //   type: String,
-    //   trim: true,
-    // },
-    // location: {
-    //   type: String,
-    //   trim: true,
-    //   default: "Not specified",
-    // },
+
     roles: {
       type: [String],
       required: [true, "At least one job role is required"],

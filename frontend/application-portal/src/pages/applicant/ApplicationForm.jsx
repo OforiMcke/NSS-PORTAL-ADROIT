@@ -13,13 +13,22 @@ export default function ApplicationForm({ embedded = false }) {
   const navigate = useNavigate();
   const { jobId: linkedJobId } = useParams();
 
-  const [formValues, setFormValues] = useState({
-    fullName: "",
-    email: "",
-    phoneNumber: "",
-    location: "",
-    jobRole: "",
-    experienceLevel: "",
+  const [formValues, setFormValues] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    const user = storedUser ? JSON.parse(storedUser) : null;
+
+    const computedName = user
+      ? user.fullName || `${user.firstName || ""} ${user.lastName || ""}`.trim()
+      : "";
+
+    return {
+      fullName: computedName,
+      email: user?.email || "",
+      phoneNumber: user?.phoneNumber || "",
+      location: user?.location || "",
+      jobRole: "",
+      experienceLevel: "",
+    };
   });
 
   const [employmentType, setEmploymentType] = useState(
@@ -78,16 +87,24 @@ export default function ApplicationForm({ embedded = false }) {
       .get("/api/jobs/open/list")
       .then((res) => {
         if (!mounted) return;
-        const list = res.data || [];
+
+        const list = Array.isArray(res.data)
+          ? res.data
+          : res.data?.jobs || res.data?.data || [];
+
+        console.log("Parsed Open Jobs List:", list);
+
         setOpenJobs(list);
+
         if (list.length === 0) {
           setOpenJobsError(
-            "No open open Jobs available right now. Please check back later.",
+            "No open Jobs available right now. Please check back later.",
           );
         }
       })
       .catch((err) => {
         if (!mounted) return;
+        console.error("Fetch open jobs failure:", err);
         setOpenJobsError(
           err.response?.status === 401
             ? "Your session has expired. Please log in again."
@@ -105,25 +122,27 @@ export default function ApplicationForm({ embedded = false }) {
   }, [linkedJobId]);
 
   const roleOptions = useMemo(() => {
-    return openJobs.flatMap((j) =>
-      (j.roles || []).map((role) => ({
-        key: `${j._id}::${role}`,
-        role,
-        jobId: j._id,
-        jobTitle: j.title,
-      })),
-    );
+    return openJobs.map((j) => ({
+      key: j._id,
+      role: j.title,
+      jobId: j._id,
+      // jobTitle: j.title,
+    }));
   }, [openJobs]);
 
   const handleRoleSelect = (key) => {
+    if (key === selectedRoleKey) return;
     setSelectedRoleKey(key);
+
     const option = roleOptions.find((opt) => opt.key === key);
     if (!option) {
       setJob(null);
       setFormValues((prev) => ({ ...prev, jobRole: "" }));
       return;
     }
-    const matchedJob = openJobs.find((j) => j._id === option.jobId);
+
+    const matchedJob = openJobs.find((j) => j._id === key);
+
     setJob(matchedJob || null);
     setFormValues((prev) => ({ ...prev, jobRole: option.role }));
   };
@@ -257,11 +276,11 @@ export default function ApplicationForm({ embedded = false }) {
           <div className="af-logo"></div>
           <div className="af-header-text">
             <h1>Application Form</h1>
-            <p>
+            {/* <p>
               {linkedJobId
                 ? `Applying for: ${job?.title || "..."}`
                 : "Select a job role and fill out the details below to apply"}
-            </p>
+            </p> */}
           </div>
         </header>
 

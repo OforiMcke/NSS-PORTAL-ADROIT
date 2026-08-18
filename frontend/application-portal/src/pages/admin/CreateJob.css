@@ -77,3 +77,14 @@
   font-size: 14px;
   margin-bottom: 12px;
 }
+.role-input-row {
+  grid-template-rows: 1fr 1fr;
+  display: flex;
+}
+.role-chip-list {
+  border: 1px solid black;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+}

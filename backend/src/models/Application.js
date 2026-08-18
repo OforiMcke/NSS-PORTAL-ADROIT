@@ -8,17 +8,6 @@ const applicationSchema = mongoose.Schema(
       required: false,
     },
 
-    // category: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Category",
-    //   required: true,
-    // },
-    // subCategory: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "SubCategory",
-    //   required: true,
-    // },
-
     job: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Job",

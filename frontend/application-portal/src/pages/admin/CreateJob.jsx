@@ -11,14 +11,6 @@ export const CreateJob = () => {
     deadline: "",
   });
 
-  // Categories/sub-categories are disabled for now — NSS focus only.
-  // const [categories, setCategories] = useState([]);
-  // const [categoriesLoading, setCategoriesLoading] = useState(true);
-  // const [categoriesError, setCategoriesError] = useState("");
-  // const [selectedCategory, setSelectedCategory] = useState("");
-  // const [subCategories, setSubCategories] = useState([]);
-  // const [subCategoryId, setSubCategoryId] = useState("");
-
   const [link, setLink] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -36,33 +28,6 @@ export const CreateJob = () => {
   const removeRole = (role) => {
     setRoles((prev) => prev.filter((r) => r !== role));
   };
-
-  // useEffect(() => {
-  //   let mounted = true;
-  //   api
-  //     .get("/api/categories")
-  //     .then((res) => {
-  //       if (!mounted) return;
-  //       const list = res.data?.data || [];
-  //       setCategories(list);
-  //       if (list.length === 0) {
-  //         setCategoriesError("No categories are available. Create one first.");
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       if (!mounted) return;
-  //       setCategoriesError(
-  //         err.response?.data?.message || "Couldn't load categories.",
-  //       );
-  //     })
-  //     .finally(() => {
-  //       if (!mounted) return;
-  //       setCategoriesLoading(false);
-  //     });
-  //   return () => {
-  //     mounted = false;
-  //   };
-  // }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });

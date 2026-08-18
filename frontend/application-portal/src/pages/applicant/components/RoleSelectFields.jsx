@@ -30,11 +30,12 @@ export default function RoleSelectFields({
                   ? "No roles available right now"
                   : "Select a role"}
             </option>
-            {roleOptions.map((opt) => (
-              <option key={opt.key} value={opt.key}>
-                {opt.role} — {opt.jobTitle}
-              </option>
-            ))}
+            {roleOptions &&
+              roleOptions.map((opt) => (
+                <option key={opt.key ?? opt.role} value={opt.key}>
+                  {opt.role}
+                </option>
+              ))}
           </select>
         </div>
       </div>

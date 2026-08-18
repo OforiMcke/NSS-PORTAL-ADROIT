@@ -45,7 +45,6 @@ exports.getAllJobs = async (req, res) => {
 };
 
 // @route  GET /api/jobs/open/list
-// @access Private
 exports.getOpenJobs = async (req, res) => {
   await connectDB();
 
@@ -61,7 +60,6 @@ exports.getOpenJobs = async (req, res) => {
 };
 
 // @route  GET /api/jobs/:id
-// @access Public
 exports.getJobById = async (req, res) => {
   await connectDB();
 
@@ -88,7 +86,6 @@ exports.getJobById = async (req, res) => {
 };
 
 // @route  PUT /api/jobs/:id
-// @access Admin only
 exports.updateJob = async (req, res) => {
   await connectDB();
 
@@ -106,7 +103,6 @@ exports.updateJob = async (req, res) => {
 };
 
 // @route  DELETE /api/jobs/:id
-// @access Admin only
 exports.deleteJob = async (req, res) => {
   await connectDB();
 
