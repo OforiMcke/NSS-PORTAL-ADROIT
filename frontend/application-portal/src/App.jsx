@@ -11,6 +11,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import JobApplicationsPage from "./pages/admin/JobApplicationsPage.jsx";
 import ApplicantDashboard from "./pages/applicant/ApplicantDashboard.jsx";
 import ApplicationForm from "./pages/applicant/ApplicationForm.jsx";
+import JobRoles from "./pages/admin/JobRoles";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function RouteGuard({ children, requiredRole, isPublic }) {
   const location = useLocation();
@@ -72,14 +74,6 @@ function App() {
           }
         />
 
-        {/* <Route
-          path="/apply/:jobId"
-          element={
-            <RouteGuard requiredRole="applicant">
-              <ApplicationForm />
-            </RouteGuard>
-          }
-        /> */}
         <Route path="/apply/:jobId" element={<ApplicationForm />} />
         <Route
           path="/admin"
@@ -95,6 +89,14 @@ function App() {
             <RouteGuard requiredRole="admin">
               <JobApplicationsPage />
             </RouteGuard>
+          }
+        />
+        <Route
+          path="/admin/job-roles"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <JobRoles />
+            </ProtectedRoute>
           }
         />
 
