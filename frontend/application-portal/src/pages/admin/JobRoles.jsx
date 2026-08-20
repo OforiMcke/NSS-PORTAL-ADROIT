@@ -5,7 +5,7 @@ import {
   createJobRole,
   deleteJobRole,
 } from "../../api/jobRoleService";
-import "../admin/jobRoles.css";
+import "./JobRoles.css";
 
 const JobRoles = () => {
   const [roles, setRoles] = useState([]);
