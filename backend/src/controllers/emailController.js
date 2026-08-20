@@ -1,6 +1,6 @@
 const { transporter } = require("../config/nodemailer.js");
 
-// Escapes HTML-significant characters so user-controlled strings (fullName,
+//significant characters so user-controlled strings (fullName,
 // adminFeedback) can't inject markup/scripts into the email body.
 const escapeHtml = (str = "") =>
   String(str)

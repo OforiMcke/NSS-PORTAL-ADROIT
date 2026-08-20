@@ -23,9 +23,10 @@ const adminLinks = [
       { label: "All Applications", icon: FileText },
       { label: "All Jobs", icon: Briefcase },
       { label: "Create Job", icon: PlusCircle },
+      { label: "Job Roles", icon: Briefcase },
     ],
   },
-  { label: "Create Admin", icon: UserPlus }, // now top-level, not nested
+  { label: "Create Admin", icon: UserPlus },
   { label: "Approved Candidates", icon: UserCheck },
   { label: "Interview Schedules", icon: CalendarClock },
 ];
@@ -46,7 +47,6 @@ const bottomLinks = [
 export default function Sidebar({ role = "admin", activeLink, onLinkClick }) {
   const links = role === "admin" ? adminLinks : applicantLinks;
 
-  // Automatically expand a parent if the active link is one of its children
   const initiallyExpanded = links.find((l) =>
     l.children?.some((c) => c.label === activeLink),
   )?.label;

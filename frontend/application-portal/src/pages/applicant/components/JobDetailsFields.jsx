@@ -1,22 +1,26 @@
-const EMPLOYMENT_TYPES = [
-  // "Intern",
-  "National Service Personnel",
-  // "Full-Time",
-  // "Part-Time",
-];
 import "../ApplicationForm.css";
-const EXPERIENCE_LEVELS = ["Entry Level", "Mid Level", "Senior Level"];
+
+const EMPLOYMENT_TYPES = ["National Service Personnel"];
 
 export default function JobDetailsFields({
   formValues,
   onChange,
   employmentType,
   onEmploymentTypeChange,
-  job,
-  rolePreselected = false,
+  // job,
+
+  roleOptions = [],
+  loading = false,
+  error = null,
 }) {
   return (
     <>
+      {error && (
+        <div className="af-error" style={{ marginBottom: 8, color: "#d33" }}>
+          {error}
+        </div>
+      )}
+
       <div>
         <h3>Employment Type</h3>
         <div className="af-button-group">
@@ -34,81 +38,47 @@ export default function JobDetailsFields({
         </div>
       </div>
 
-      <h3 style={{ marginTop: "12px" }}>Job Details</h3>
-      <div
-        className={job ? "af-grid-2" : "af-grid-1"}
-        style={{ marginTop: "12px" }}
-      >
-        {/* {job && (
-          <div>
-            <label>Job Title</label>
-            <input
-              type="text"
-              className="af-input"
-              value={job.title || ""}
-              readOnly
-              disabled
-            />
-          </div>
-        )} */}
-
+      <h3 style={{ marginTop: "16px" }}>Job Details</h3>
+      <div className="af-grid-2" style={{ marginTop: "12px" }}>
         <div>
           <label>Job Role</label>
-          {rolePreselected ? (
-            <input
-              type="text"
-              className="af-input"
-              value={formValues.jobRole || "Not selected"}
-              readOnly
-              disabled
-            />
-          ) : job?.roles?.length > 0 ? (
-            <select
-              name="jobRole"
-              className="af-select"
-              value={formValues.jobRole}
-              onChange={onChange}
-              required
-            >
-              <option value="">Select Role</option>
-              {job.roles.map((r) => (
-                <option key={r} value={r}>
-                  {r}
+          <select
+            name="selectedJob"
+            value={formValues.selectedJob || ""}
+            className="af-select"
+            disabled={loading || roleOptions.length === 0}
+            onChange={onChange}
+            required
+          >
+            <option value="">
+              {loading
+                ? "Loading roles..."
+                : roleOptions.length === 0
+                  ? "No roles available right now"
+                  : "Select a role"}
+            </option>
+            {roleOptions &&
+              roleOptions.map((opt) => (
+                <option key={opt.key ?? opt.role} value={opt.key}>
+                  {opt.role}
                 </option>
               ))}
-            </select>
-          ) : (
-            <input
-              type="text"
-              name="jobRole"
-              className="af-input"
-              value={formValues.jobRole}
-              onChange={onChange}
-            />
-          )}
+          </select>
         </div>
 
         <div>
-          <div>
-            <label>Experience Level</label>
-            <select
-              name="experienceLevel"
-              className="af-select"
-              value={formValues.experienceLevel}
-              onChange={onChange}
-            >
-              <option value="">Select Experience Level</option>
-              {EXPERIENCE_LEVELS.map((level) => (
-                <option key={level} value={level}>
-                  {level}
-                </option>
-              ))}
-            </select>
-          </div>
+          <label>Years of experience</label>
+          <input
+            type="text"
+            name="yearsOfExperience"
+            className="af-input"
+            value={formValues.yearsOfExperience}
+            onChange={onChange}
+          />
         </div>
       </div>
     </>
   );
 }
 
-export { EMPLOYMENT_TYPES, EXPERIENCE_LEVELS };
+export { EMPLOYMENT_TYPES };

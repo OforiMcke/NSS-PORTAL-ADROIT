@@ -33,13 +33,6 @@ export const CreateJob = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // const handleCategoryChange = (id) => {
-  //   setSelectedCategory(id);
-  //   const category = categories.find((c) => c._id === id);
-  //   setSubCategories(category?.subCategories || []);
-  //   setSubCategoryId("");
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -67,11 +60,6 @@ export const CreateJob = () => {
     }
   };
 
-  // if (!selectedCategory || !subCategoryId) {
-  //   setError("Please select a category and sub-category for this job.");
-  //   return;
-  // }
-
   const copyLink = () => {
     navigator.clipboard.writeText(link);
   };
@@ -91,7 +79,6 @@ export const CreateJob = () => {
       )}
 
       {error && <p className="error-text">{error}</p>}
-      {/* {categoriesError && <p className="error-text">{categoriesError}</p>} */}
 
       <form onSubmit={handleSubmit} className="create-job-form">
         <label>
@@ -131,7 +118,7 @@ export const CreateJob = () => {
               }}
               placeholder="e.g. Software Developer"
             />
-            <button type="button" onClick={addRole}>
+            <button className="c-btn" type="button" onClick={addRole}>
               Add
             </button>
           </div>
@@ -140,6 +127,7 @@ export const CreateJob = () => {
               <span key={r} className="role-chip">
                 {r}
                 <button
+                  className="re-btn"
                   type="button"
                   onClick={() => removeRole(r)}
                   aria-label={`Remove ${r}`}
@@ -158,10 +146,20 @@ export const CreateJob = () => {
             value={form.employmentType}
             onChange={handleChange}
           >
-            {/* <option>Full-time</option> */}
-            {/* <option>Internship</option> */}
+            <option>Full-time</option>
+            <option>Internship</option>
             <option>NSS</option>
           </select>
+        </label>
+
+        <label>
+          Additional Fields
+          <textarea
+            name="additionalFields"
+            value={form.additionalFields}
+            onChange={handleChange}
+            rows={2}
+          />
         </label>
 
         <label>
@@ -174,7 +172,7 @@ export const CreateJob = () => {
           />
         </label>
 
-        <button type="submit" disabled={loading}>
+        <button className="c-btn" type="submit" disabled={loading}>
           {loading ? "Creating..." : "Create Job"}
         </button>
       </form>

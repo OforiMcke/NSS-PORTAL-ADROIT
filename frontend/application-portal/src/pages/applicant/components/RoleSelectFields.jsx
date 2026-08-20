@@ -15,7 +15,7 @@ export default function RoleSelectFields({
 
       <div className="af-grid-1" style={{ marginTop: "12px" }}>
         <div>
-          <label>Select Job Role</label>
+          <label>Select Job</label>
           <select
             value={selectedRoleKey}
             className="af-select"
@@ -25,10 +25,10 @@ export default function RoleSelectFields({
           >
             <option value="">
               {loading
-                ? "Loading roles..."
+                ? "Loading jobs..."
                 : roleOptions.length === 0
-                  ? "No roles available right now"
-                  : "Select a role"}
+                  ? "No jobs available right now"
+                  : "Select a job"}
             </option>
             {roleOptions &&
               roleOptions.map((opt) => (

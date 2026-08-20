@@ -89,9 +89,6 @@ const SignIn = () => {
         <form className="signup-form" onSubmit={handleSubmit}>
           <h3 className="wlcm-me">Welcome to Adroit360 Application Portal</h3>
           <h2>Sign in</h2>
-          <p className="signin-link">
-            Don&apos;t have an account? <Link to="/signup">Create account</Link>
-          </p>
 
           <div className="field">
             <label htmlFor="email"></label>
@@ -160,17 +157,12 @@ const SignIn = () => {
             </button>
           </div>
 
-          <div className="field terms">
-            <label className="checkbox-label">
-              <input type="checkbox" required />
-              <span>Remember Me</span>
-            </label>
-          </div>
-
           <button type="submit" className="submit-button" disabled={loading}>
             {loading ? "Signing in..." : "Sign in"}
           </button>
-
+          <p className="signin-link">
+            Don&apos;t have an account? <Link to="/signup">Create account</Link>
+          </p>
           {error && <p className="error-message">{error}</p>}
           {success && <p className="success-message">{success}</p>}
         </form>

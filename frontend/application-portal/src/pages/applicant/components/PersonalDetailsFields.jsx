@@ -55,31 +55,6 @@ export default function PersonalDetailsFields({ formValues, onChange }) {
           />
         </div>
       </div>
-      {/* <h3>Education Details</h3>
-
-      <div className="af-grid-2" style={{ marginTop: "12px" }}>
-        <div>
-          <label>Education Level</label>
-          <input
-            type="text"
-            name="educationLevel"
-            className="af-input"
-            placeholder="e.g. BSc, HND, WASSCE"
-            value={formValues.educationLevel}
-            onChange={onChange}
-          />
-        </div>
-        <div>
-          <label>School Attended</label>
-          <input
-            type="text"
-            name="school"
-            className="af-input"
-            value={formValues.school}
-            onChange={onChange}
-          />
-        </div>
-      </div> */}
     </>
   );
 }

@@ -5,7 +5,6 @@ import "./ApplicationForm.css";
 
 import PersonalDetailsFields from "./components/PersonalDetailsFields";
 import JobDetailsFields from "./components/JobDetailsFields";
-import RoleSelectFields from "./components/RoleSelectFields";
 import DocumentUploadFields from "./components/DocumentUploadFields";
 import DeclarationCheckbox from "./components/DeclarationCheckbox";
 
@@ -26,7 +25,8 @@ export default function ApplicationForm({ embedded = false }) {
       email: user?.email || "",
       phoneNumber: user?.phoneNumber || "",
       location: user?.location || "",
-      jobRole: "",
+      selectedJob: linkedJobId || "",
+      yearsOfExperience: "",
       experienceLevel: "",
     };
   });
@@ -41,14 +41,12 @@ export default function ApplicationForm({ embedded = false }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const [job, setJob] = useState(null);
   const [jobLoading, setJobLoading] = useState(!!linkedJobId);
   const [jobError, setJobError] = useState("");
 
   const [openJobs, setOpenJobs] = useState([]);
   const [openJobsLoading, setOpenJobsLoading] = useState(!linkedJobId);
   const [openJobsError, setOpenJobsError] = useState("");
-  const [selectedRoleKey, setSelectedRoleKey] = useState("");
 
   const [showAccountPrompt, setShowAccountPrompt] = useState(false);
 
@@ -60,7 +58,9 @@ export default function ApplicationForm({ embedded = false }) {
       .get(`/api/jobs/${linkedJobId}`)
       .then((res) => {
         if (!mounted) return;
-        setJob(res.data);
+        if (res.data) {
+          setOpenJobs([res.data]);
+        }
       })
       .catch((err) => {
         if (!mounted) return;
@@ -78,7 +78,6 @@ export default function ApplicationForm({ embedded = false }) {
       mounted = false;
     };
   }, [linkedJobId]);
-
   useEffect(() => {
     if (linkedJobId) return;
     let mounted = true;
@@ -91,8 +90,6 @@ export default function ApplicationForm({ embedded = false }) {
         const list = Array.isArray(res.data)
           ? res.data
           : res.data?.jobs || res.data?.data || [];
-
-        console.log("Parsed Open Jobs List:", list);
 
         setOpenJobs(list);
 
@@ -121,31 +118,26 @@ export default function ApplicationForm({ embedded = false }) {
     };
   }, [linkedJobId]);
 
+  const job = useMemo(() => {
+    if (linkedJobId) {
+      return jobLoading
+        ? null
+        : openJobs.find((j) => j._id === linkedJobId) || null;
+    }
+
+    const targetKey = formValues.selectedJob;
+    return openJobs.find((j) => j._id === targetKey) || null;
+  }, [formValues.selectedJob, openJobs, linkedJobId, jobLoading]);
+
   const roleOptions = useMemo(() => {
+    if (linkedJobId && job) {
+      return [{ key: job._id, role: job.title }];
+    }
     return openJobs.map((j) => ({
       key: j._id,
       role: j.title,
-      jobId: j._id,
-      // jobTitle: j.title,
     }));
-  }, [openJobs]);
-
-  const handleRoleSelect = (key) => {
-    if (key === selectedRoleKey) return;
-    setSelectedRoleKey(key);
-
-    const option = roleOptions.find((opt) => opt.key === key);
-    if (!option) {
-      setJob(null);
-      setFormValues((prev) => ({ ...prev, jobRole: "" }));
-      return;
-    }
-
-    const matchedJob = openJobs.find((j) => j._id === key);
-
-    setJob(matchedJob || null);
-    setFormValues((prev) => ({ ...prev, jobRole: option.role }));
-  };
+  }, [openJobs, job, linkedJobId]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -174,18 +166,14 @@ export default function ApplicationForm({ embedded = false }) {
     });
   };
 
+  // FIX: Clean up job validations to evaluate against formValues.selectedJob and dynamic title
   const validate = () => {
-    if (!job?._id) {
+    if (!formValues.selectedJob || !job?._id) {
       setError(
         linkedJobId
           ? "We couldn't confirm the job for this application. Please use a valid application link."
           : "Please select a job role to apply for.",
       );
-      return false;
-    }
-
-    if (!linkedJobId && !formValues.jobRole) {
-      setError("Please select a job role to apply for.");
       return false;
     }
 
@@ -225,11 +213,16 @@ export default function ApplicationForm({ embedded = false }) {
     formData.append("email", formValues.email.trim());
     formData.append("phoneNumber", formValues.phoneNumber.trim());
     formData.append("location", formValues.location.trim());
-    formData.append("jobRole", formValues.jobRole.trim());
-    formData.append("experienceLevel", formValues.experienceLevel.trim());
+
+    formData.append("jobRole", job.title);
+    formData.append(
+      "yearsOfExperience",
+      (formValues.yearsOfExperience || "").trim(),
+    );
     formData.append("jobId", job._id);
     formData.append("employmentType", employmentType);
     formData.append("cv", files.resume);
+
     if (files.additionalDoc) {
       formData.append("additionalDoc", files.additionalDoc);
     }
@@ -276,15 +269,10 @@ export default function ApplicationForm({ embedded = false }) {
           <div className="af-logo"></div>
           <div className="af-header-text">
             <h1>Application Form</h1>
-            {/* <p>
-              {linkedJobId
-                ? `Applying for: ${job?.title || "..."}`
-                : "Select a job role and fill out the details below to apply"}
-            </p> */}
           </div>
         </header>
 
-        <div className="af-body">
+        <form className="af-body" onSubmit={handleFinalSubmission}>
           {error && (
             <div
               className="af-error"
@@ -312,43 +300,33 @@ export default function ApplicationForm({ embedded = false }) {
             </div>
           )}
 
-          <form onSubmit={handleFinalSubmission}>
-            <PersonalDetailsFields
-              formValues={formValues}
-              onChange={handleInputChange}
-            />
+          <PersonalDetailsFields
+            formValues={formValues}
+            onChange={handleInputChange}
+          />
 
-            {!linkedJobId && (
-              <RoleSelectFields
-                roleOptions={roleOptions}
-                loading={openJobsLoading}
-                error={openJobsError}
-                selectedRoleKey={selectedRoleKey}
-                onRoleChange={handleRoleSelect}
-              />
-            )}
+          <JobDetailsFields
+            formValues={formValues}
+            onChange={handleInputChange}
+            employmentType={employmentType}
+            onEmploymentTypeChange={setEmploymentType}
+            job={job}
+            roleOptions={roleOptions}
+            loading={linkedJobId ? jobLoading : openJobsLoading}
+            error={linkedJobId ? jobError : openJobsError}
+          />
 
-            <JobDetailsFields
-              formValues={formValues}
-              onChange={handleInputChange}
-              employmentType={employmentType}
-              onEmploymentTypeChange={setEmploymentType}
-              job={job}
-              rolePreselected={!linkedJobId}
-            />
+          <DocumentUploadFields files={files} onFileChange={handleFileChange} />
 
-            <DocumentUploadFields
-              onFileChange={handleFileChange}
-              files={files}
-            />
+          <DeclarationCheckbox
+            checked={agreed}
+            onChange={(e) => setAgreed(e.target.checked)}
+          />
 
-            <DeclarationCheckbox agreed={agreed} onChange={setAgreed} />
-
-            <button type="submit" className="af-submit" disabled={loading}>
-              {loading ? "Submitting..." : "Confirm & Submit Application"}
-            </button>
-          </form>
-        </div>
+          <button type="submit" className="af-submit" disabled={loading}>
+            {loading ? "Submitting..." : "Confirm & Submit Application"}
+          </button>
+        </form>
       </div>
 
       {showAccountPrompt && (

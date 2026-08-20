@@ -30,12 +30,6 @@ router.get("/me", protect, getMyApplications);
 router.get("/admin/stats", protect, adminOnly, getAdminStats);
 router.get("/admin/recent", protect, adminOnly, getRecentApplications);
 router.get("/admin/list", protect, adminOnly, getAdminApplications);
-// router.get(
-//   "/subcategory/:subCategoryId",
-//   protect,
-//   adminOnly,
-//   getApplicationsBySubCategory,
-// );
 router.get("/:id", protect, adminOnly, getApplicationDetail);
 router.put("/:id/accept", protect, adminOnly, acceptApplication);
 router.put("/:id/decline", protect, adminOnly, declineApplication);

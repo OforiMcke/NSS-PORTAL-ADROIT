@@ -120,6 +120,14 @@ export default function AdminDashboard() {
       return;
     }
 
+    if (label === "Job Roles") {
+      setActiveLink(label);
+      navigate("/admin/job-applications", {
+        state: { initialView: "Job Roles" },
+      });
+      return;
+    }
+
     setActiveLink(label);
   };
 

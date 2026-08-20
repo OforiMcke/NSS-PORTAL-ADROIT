@@ -1,7 +1,19 @@
-import { Eye, ListChecks } from "lucide-react";
+import {
+  Eye,
+  ListChecks,
+  XCircle,
+  LoaderCircle,
+  CheckCircle2,
+} from "lucide-react";
 import { initials, statusLabel } from "../utils/helpers";
 
-export default function ApplicantProfileCard({ application }) {
+export default function ApplicantProfileCard({
+  application,
+  isUpdating,
+
+  onAccept,
+  onDecline,
+}) {
   return (
     <div className="jap-profile-card">
       <div className="jap-profile-stats">
@@ -10,7 +22,6 @@ export default function ApplicantProfileCard({ application }) {
         </span>
         <span className="jap-stat-pill">
           <ListChecks size={13} /> {application.job?.title || "General"}
-          {/* was: application.subCategory?.name */}
         </span>
       </div>
 
@@ -24,6 +35,34 @@ export default function ApplicantProfileCard({ application }) {
           <span className="jap-applied-ago">
             Applied {new Date(application.createdAt).toLocaleDateString()}
           </span>
+        </div>
+        <div className="jap-action-row">
+          <button
+            className="jap-action-btn accept"
+            type="button"
+            onClick={onAccept}
+            disabled={isUpdating || application.status === "accepted"}
+          >
+            {isUpdating ? (
+              <LoaderCircle className="jap-spinner" size={14} />
+            ) : (
+              <CheckCircle2 size={14} />
+            )}
+            Accept
+          </button>
+          <button
+            className="jap-action-btn decline"
+            type="button"
+            onClick={onDecline}
+            disabled={isUpdating || application.status === "declined"}
+          >
+            {isUpdating ? (
+              <LoaderCircle className="jap-spinner" size={14} />
+            ) : (
+              <XCircle size={14} />
+            )}
+            Decline
+          </button>
         </div>
       </div>
     </div>

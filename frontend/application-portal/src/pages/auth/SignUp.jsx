@@ -93,9 +93,7 @@ const SignUp = () => {
         <form className="signup-form" onSubmit={handleSubmit}>
           <h3 className="wlcm-me">Welcome to Adroit360 Application Portal</h3>
           <h2>Create account</h2>
-          <p className="signin-link">
-            Already have an account? <Link to="/signin">Log in</Link>
-          </p>
+
           <div className="name-row">
             <div className="field">
               <label htmlFor="firstName"></label>
@@ -138,19 +136,6 @@ const SignUp = () => {
           </div>
 
           <div className="field">
-            <label htmlFor="phoneNumber"></label>
-            <input
-              id="phoneNumber"
-              name="phoneNumber"
-              type="tel"
-              placeholder="Phone number"
-              value={form.phoneNumber}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="field">
             <label htmlFor="password"></label>
             <input
               id="password"
@@ -161,6 +146,7 @@ const SignUp = () => {
               onChange={handleChange}
               required
             />
+
             <button
               type="button"
               className="toggle-password"
@@ -203,6 +189,18 @@ const SignUp = () => {
               )}
             </button>
           </div>
+          <div className="field">
+            <label htmlFor="phoneNumber"></label>
+            <input
+              id="phoneNumber"
+              name="phoneNumber"
+              type="tel"
+              placeholder="Phone number"
+              value={form.phoneNumber}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
           <div className="field terms">
             <label className="checkbox-label">
@@ -222,7 +220,9 @@ const SignUp = () => {
           <button type="submit" className="submit-button" disabled={loading}>
             {loading ? "Creating account..." : "Create account"}
           </button>
-
+          <p className="signin-link">
+            Already have an account? <Link to="/signin">Log in</Link>
+          </p>
           {error && <p className="error-message">{error}</p>}
           {success && <p className="success-message">{success}</p>}
         </form>

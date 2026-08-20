@@ -36,7 +36,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate replace to="/signup" />} />
+        <Route path="/" element={<Navigate replace to="/signin" />} />
 
         <Route
           path="/signup"

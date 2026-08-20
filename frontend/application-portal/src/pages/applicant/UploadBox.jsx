@@ -33,7 +33,7 @@ export function UploadBox({
   };
 
   const handleRemoveFile = (e) => {
-    e.stopPropagation(); // Stop from opening the file picker again
+    e.stopPropagation();
     if (fileInputRef.current) fileInputRef.current.value = "";
     onChange({ target: { files: [] } });
   };

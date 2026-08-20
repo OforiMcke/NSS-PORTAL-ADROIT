@@ -36,7 +36,8 @@ const connectDB = async () => {
     //  Wait for the connection promise to resolve
     cached.conn = await cached.promise;
   } catch (error) {
-    cached.promise = null; // Clear promise on error so next request tries again
+    // Clear promise on error so next request tries again
+    cached.promise = null;
     console.error(`MongoDB Error: ${error.message}`);
     throw error;
   }

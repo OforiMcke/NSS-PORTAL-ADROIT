@@ -7,19 +7,18 @@ import "./JobApplicationPage.css";
 import CreateAdmin from "../admin/CreateAdmin";
 import { api } from "../../api/axiosInstance";
 
-// import CategoryTabs from "./components/CategoryTabs";
 import FilterBar from "./components/FilterBar";
 import ApplicationList from "./components/ApplicationList";
 import ApplicationDetailPanel from "./components/ApplicationDetailPanel";
 import CreateJob from "../admin/CreateJob";
 import JobsList from "../admin/JobsList";
+import JobRoles from "../admin/JobRoles";
 
 export default function JobApplicationsPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [applications, setApplications] = useState([]);
-  // const [categories, setCategories] = useState([]);
-  // const [activeTab, setActiveTab] = useState("");
+
   const [activeFilter, setActiveFilter] = useState("All");
   const [selectedId, setSelectedId] = useState(null);
   const [searchQuery] = useState("");
@@ -42,20 +41,13 @@ export default function JobApplicationsPage() {
         setError("");
 
         const [applicationsRes, profileRes] = await Promise.all([
-          // api.get("/api/categories"),
           api.get("/api/applications/admin/list"),
           api.get("/api/auth/profile"),
         ]);
 
         if (!isMounted) return;
 
-        // const categoryList = categoriesRes.data?.data || [];
-        // setCategories(categoryList);
         setApplications(applicationsRes.data?.data || []);
-
-        // if (categoryList.length) {
-        //   setActiveTab((current) => current || categoryList[0]._id);
-        // }
 
         const profile = profileRes.data || {};
         const nextName =
@@ -80,20 +72,6 @@ export default function JobApplicationsPage() {
       isMounted = false;
     };
   }, [setUserEmail]);
-
-  // just stays valid against whatever's in `applications`.
-  // useEffect(() => {
-  //   if (!applications.length) {
-  //     setSelectedId(null);
-  //     return;
-  //   }
-  //   setSelectedId((currentId) => {
-  //     if (currentId && applications.some((app) => app._id === currentId)) {
-  //       return currentId;
-  //     }
-  //     return applications[0]?._id || null;
-  //   });
-  // }, [applications]);
 
   const list = applications.filter((application) => {
     const matchesFilter =
@@ -177,7 +155,7 @@ export default function JobApplicationsPage() {
   const isCreateJobView = activeLink === "Create Job";
   const isAllJobsView = activeLink === "All Jobs";
   const isCreateAdminView = activeLink === "Create Admin";
-
+  const isJobRolesView = activeLink === "Job Roles";
   return (
     <div className="dashboard-layout">
       <Sidebar
@@ -195,15 +173,10 @@ export default function JobApplicationsPage() {
           <JobsList onCreateJob={() => setActiveLink("Create Job")} />
         ) : isCreateAdminView ? (
           <CreateAdmin />
+        ) : isJobRolesView ? (
+          <JobRoles />
         ) : (
           <>
-            {/* <CategoryTabs
-              categories={categories}
-              activeTab={activeTab}
-              tabLabel={tabLabel}
-              onTabChange={handleTabChange}
-            /> */}
-
             <div className="jap-content">
               <section className="jap-list-panel">
                 <FilterBar

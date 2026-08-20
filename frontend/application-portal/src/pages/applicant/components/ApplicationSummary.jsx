@@ -31,8 +31,6 @@ export default function ApplicationSummary({
               <td>Current Location</td>
               <td>{formValues.location || "N/A"}</td>
             </tr>
-            {/* <tr><td>Education Level</td><td>{formValues.educationLevel || "N/A"}</td></tr>
-            <tr><td>School Attended</td><td>{formValues.school || "N/A"}</td></tr> */}
           </tbody>
         </table>
       </section>

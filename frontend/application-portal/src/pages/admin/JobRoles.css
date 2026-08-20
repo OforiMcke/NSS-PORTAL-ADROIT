@@ -1,0 +1,92 @@
+.job-roles-page {
+  padding: 24px;
+}
+
+.job-roles-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.job-roles-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.job-roles-input {
+  flex: 1;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.job-roles-input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.job-roles-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.job-roles-add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.job-roles-add-btn:hover:not(:disabled) {
+  background-color: #1d4ed8;
+}
+
+.job-roles-error {
+  color: #ef4444;
+  margin-bottom: 12px;
+}
+
+.job-roles-empty {
+  color: #6b7280;
+}
+
+.job-roles-list {
+  list-style: none;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  margin: 0;
+  padding: 0;
+}
+
+.job-roles-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.job-roles-list-item:last-child {
+  border-bottom: none;
+}
+
+.job-roles-delete-btn {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.job-roles-delete-btn:hover {
+  color: #b91c1c;
+}
