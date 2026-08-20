@@ -1,9 +1,9 @@
-export default function RoleSelectFields({
+export default function JobSelectFields({
   roleOptions,
   loading,
   error,
-  selectedRoleKey,
-  onRoleChange,
+  selectedJob,
+  onChange,
 }) {
   return (
     <>
@@ -17,10 +17,11 @@ export default function RoleSelectFields({
         <div>
           <label>Select Job</label>
           <select
-            value={selectedRoleKey}
+            name="selectedJob"
+            value={selectedJob}
             className="af-select"
             disabled={loading || roleOptions.length === 0}
-            onChange={(e) => onRoleChange(e.target.value)}
+            onChange={onChange}
             required
           >
             <option value="">
@@ -30,12 +31,11 @@ export default function RoleSelectFields({
                   ? "No jobs available right now"
                   : "Select a job"}
             </option>
-            {roleOptions &&
-              roleOptions.map((opt) => (
-                <option key={opt.key ?? opt.role} value={opt.key}>
-                  {opt.role}
-                </option>
-              ))}
+            {roleOptions.map((opt) => (
+              <option key={opt.key} value={opt.key}>
+                {opt.role}
+              </option>
+            ))}
           </select>
         </div>
       </div>

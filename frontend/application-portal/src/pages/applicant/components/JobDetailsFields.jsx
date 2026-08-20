@@ -7,11 +7,12 @@ export default function JobDetailsFields({
   onChange,
   employmentType,
   onEmploymentTypeChange,
-  // job,
-
-  roleOptions = [],
-  loading = false,
-  error = null,
+  roleOptions,
+  isLocked,
+  selectedRoleKey,
+  onRoleChange,
+  loading,
+  error,
 }) {
   return (
     <>
@@ -42,28 +43,46 @@ export default function JobDetailsFields({
       <div className="af-grid-2" style={{ marginTop: "12px" }}>
         <div>
           <label>Job Role</label>
-          <select
-            name="selectedJob"
-            value={formValues.selectedJob || ""}
-            className="af-select"
-            disabled={loading || roleOptions.length === 0}
-            onChange={onChange}
-            required
-          >
-            <option value="">
-              {loading
-                ? "Loading roles..."
-                : roleOptions.length === 0
-                  ? "No roles available right now"
-                  : "Select a role"}
-            </option>
-            {roleOptions &&
-              roleOptions.map((opt) => (
-                <option key={opt.key ?? opt.role} value={opt.key}>
-                  {opt.role}
+          {loading ? (
+            <input
+              type="text"
+              className="af-input"
+              value="Loading roles..."
+              readOnly
+              disabled
+            />
+          ) : roleOptions.length === 0 ? (
+            <input
+              type="text"
+              className="af-input"
+              value="No roles available right now"
+              readOnly
+              disabled
+            />
+          ) : isLocked ? (
+            <input
+              type="text"
+              className="af-input"
+              value={roleOptions[0]?.label || ""}
+              readOnly
+              disabled
+            />
+          ) : (
+            <select
+              name="jobRole"
+              value={selectedRoleKey}
+              className="af-select"
+              onChange={onRoleChange}
+              required
+            >
+              <option value="">Select a role</option>
+              {roleOptions.map((opt) => (
+                <option key={opt.key} value={opt.key}>
+                  {opt.label}
                 </option>
               ))}
-          </select>
+            </select>
+          )}
         </div>
 
         <div>

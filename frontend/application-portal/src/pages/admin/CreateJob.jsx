@@ -1,5 +1,6 @@
 import { useState } from "react";
 import api from "../../api/axiosInstance";
+import RoleAutocomplete from "../../components/RoleAutocomplete";
 import "./CreateJob.css";
 
 export const CreateJob = () => {
@@ -15,14 +16,9 @@ export const CreateJob = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [roles, setRoles] = useState([]);
-  const [roleInput, setRoleInput] = useState("");
 
-  const addRole = () => {
-    const trimmed = roleInput.trim();
-    if (trimmed && !roles.includes(trimmed)) {
-      setRoles((prev) => [...prev, trimmed]);
-    }
-    setRoleInput("");
+  const addRole = (roleName) => {
+    setRoles((prev) => (prev.includes(roleName) ? prev : [...prev, roleName]));
   };
 
   const removeRole = (role) => {
@@ -105,38 +101,11 @@ export const CreateJob = () => {
 
         <label>
           Job Roles
-          <div className="role-input-row">
-            <input
-              type="text"
-              value={roleInput}
-              onChange={(e) => setRoleInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  addRole();
-                }
-              }}
-              placeholder="e.g. Software Developer"
-            />
-            <button className="c-btn" type="button" onClick={addRole}>
-              Add
-            </button>
-          </div>
-          <div className="role-chip-list">
-            {roles.map((r) => (
-              <span key={r} className="role-chip">
-                {r}
-                <button
-                  className="re-btn"
-                  type="button"
-                  onClick={() => removeRole(r)}
-                  aria-label={`Remove ${r}`}
-                >
-                  ×
-                </button>
-              </span>
-            ))}
-          </div>
+          <RoleAutocomplete
+            selectedRoles={roles}
+            onAdd={addRole}
+            onRemove={removeRole}
+          />
         </label>
 
         <label>

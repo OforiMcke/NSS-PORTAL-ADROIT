@@ -25,7 +25,6 @@ export default function ApplicationForm({ embedded = false }) {
       email: user?.email || "",
       phoneNumber: user?.phoneNumber || "",
       location: user?.location || "",
-      selectedJob: linkedJobId || "",
       yearsOfExperience: "",
       experienceLevel: "",
     };
@@ -48,6 +47,7 @@ export default function ApplicationForm({ embedded = false }) {
   const [openJobsLoading, setOpenJobsLoading] = useState(!linkedJobId);
   const [openJobsError, setOpenJobsError] = useState("");
 
+  const [selectedRoleKey, setSelectedRoleKey] = useState("");
   const [showAccountPrompt, setShowAccountPrompt] = useState(false);
 
   useEffect(() => {
@@ -58,9 +58,7 @@ export default function ApplicationForm({ embedded = false }) {
       .get(`/api/jobs/${linkedJobId}`)
       .then((res) => {
         if (!mounted) return;
-        if (res.data) {
-          setOpenJobs([res.data]);
-        }
+        if (res.data) setOpenJobs([res.data]);
       })
       .catch((err) => {
         if (!mounted) return;
@@ -78,6 +76,7 @@ export default function ApplicationForm({ embedded = false }) {
       mounted = false;
     };
   }, [linkedJobId]);
+
   useEffect(() => {
     if (linkedJobId) return;
     let mounted = true;
@@ -118,26 +117,37 @@ export default function ApplicationForm({ embedded = false }) {
     };
   }, [linkedJobId]);
 
-  const job = useMemo(() => {
-    if (linkedJobId) {
-      return jobLoading
-        ? null
-        : openJobs.find((j) => j._id === linkedJobId) || null;
-    }
-
-    const targetKey = formValues.selectedJob;
-    return openJobs.find((j) => j._id === targetKey) || null;
-  }, [formValues.selectedJob, openJobs, linkedJobId, jobLoading]);
-
+  // Flatten every open job's roles into one list of selectable (job, role) pairs.
+  // A job with no roles attached falls back to its title so it's still selectable.
   const roleOptions = useMemo(() => {
-    if (linkedJobId && job) {
-      return [{ key: job._id, role: job.title }];
-    }
-    return openJobs.map((j) => ({
-      key: j._id,
-      role: j.title,
-    }));
-  }, [openJobs, job, linkedJobId]);
+    const opts = [];
+    openJobs.forEach((j) => {
+      const roles = j.roles?.length ? j.roles : [j.title];
+      roles.forEach((r) => {
+        opts.push({
+          key: `${j._id}::${r}`,
+          label: openJobs.length > 1 ? `${r} — ${j.title}` : r,
+          jobId: j._id,
+          role: r,
+        });
+      });
+    });
+    return opts;
+  }, [openJobs]);
+
+  // If there's exactly one option in total, lock it in — no dropdown needed.
+  const isLocked = roleOptions.length === 1;
+  const effectiveKey = isLocked ? roleOptions[0]?.key : selectedRoleKey;
+  const selectedOption =
+    roleOptions.find((o) => o.key === effectiveKey) || null;
+
+  const job = useMemo(
+    () => openJobs.find((j) => j._id === selectedOption?.jobId) || null,
+    [openJobs, selectedOption],
+  );
+  const effectiveJobRole = selectedOption?.role || "";
+
+  const handleRoleChange = (e) => setSelectedRoleKey(e.target.value);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -166,13 +176,12 @@ export default function ApplicationForm({ embedded = false }) {
     });
   };
 
-  // FIX: Clean up job validations to evaluate against formValues.selectedJob and dynamic title
   const validate = () => {
-    if (!formValues.selectedJob || !job?._id) {
+    if (!job?._id || !effectiveJobRole) {
       setError(
         linkedJobId
           ? "We couldn't confirm the job for this application. Please use a valid application link."
-          : "Please select a job role to apply for.",
+          : "Please select a role to apply for.",
       );
       return false;
     }
@@ -213,8 +222,7 @@ export default function ApplicationForm({ embedded = false }) {
     formData.append("email", formValues.email.trim());
     formData.append("phoneNumber", formValues.phoneNumber.trim());
     formData.append("location", formValues.location.trim());
-
-    formData.append("jobRole", job.title);
+    formData.append("jobRole", effectiveJobRole);
     formData.append(
       "yearsOfExperience",
       (formValues.yearsOfExperience || "").trim(),
@@ -310,8 +318,10 @@ export default function ApplicationForm({ embedded = false }) {
             onChange={handleInputChange}
             employmentType={employmentType}
             onEmploymentTypeChange={setEmploymentType}
-            job={job}
             roleOptions={roleOptions}
+            isLocked={isLocked}
+            selectedRoleKey={effectiveKey}
+            onRoleChange={handleRoleChange}
             loading={linkedJobId ? jobLoading : openJobsLoading}
             error={linkedJobId ? jobError : openJobsError}
           />

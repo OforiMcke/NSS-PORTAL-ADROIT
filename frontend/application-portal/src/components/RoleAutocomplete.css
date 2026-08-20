@@ -1,0 +1,92 @@
+.role-autocomplete {
+  position: relative;
+}
+
+.role-autocomplete-input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.role-autocomplete-input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.role-autocomplete-suggestions {
+  position: absolute;
+  z-index: 10;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  max-height: 180px;
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+}
+
+.role-autocomplete-suggestions li {
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.role-autocomplete-suggestions li:hover {
+  background-color: #f3f4f6;
+}
+
+.role-autocomplete-no-match {
+  color: #9ca3af;
+  cursor: default !important;
+}
+
+.role-autocomplete-no-match:hover {
+  background-color: transparent !important;
+}
+
+.role-autocomplete-error {
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.role-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.role-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 13px;
+}
+
+.re-btn {
+  background: none;
+  border: none;
+  color: #1d4ed8;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+}
+
+.re-btn:hover {
+  color: #b91c1c;
+}

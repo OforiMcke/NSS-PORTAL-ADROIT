@@ -122,9 +122,7 @@ export default function AdminDashboard() {
 
     if (label === "Job Roles") {
       setActiveLink(label);
-      navigate("/admin/job-applications", {
-        state: { initialView: "Job Roles" },
-      });
+      navigate("/admin/job-roles");
       return;
     }
 

@@ -7,8 +7,8 @@ export const getJobRoles = async () => {
   return res.data;
 };
 
-export const createJobRole = async (title) => {
-  const res = await api.post(BASE, { title });
+export const createJobRole = async (name) => {
+  const res = await api.post(BASE, { name });
   return res.data;
 };
 

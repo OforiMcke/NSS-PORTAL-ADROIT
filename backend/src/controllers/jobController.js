@@ -50,7 +50,7 @@ exports.getOpenJobs = async (req, res) => {
 
   try {
     const jobs = await Job.find({ status: "open" })
-      .select("title employmentType deadline")
+      .select("title employmentType deadline roles")
       .sort({ createdAt: -1 });
     return res.status(200).json(jobs);
   } catch (err) {
