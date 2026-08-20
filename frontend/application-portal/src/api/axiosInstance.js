@@ -4,7 +4,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 if (!BASE_URL) {
   console.error(
-    "VITE_BASEURL is not set — API requests will fail. Check your Vercel environment variables.",
+    "VITE_BASE_URL is not set — API requests will fail. Check your Vercel environment variables.",
   );
 }
 
