@@ -23,7 +23,7 @@ export default function MyApplications() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState("All");
-  const [selected, setSelected] = useState(null); // application object for detail modal
+  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     let mounted = true;
