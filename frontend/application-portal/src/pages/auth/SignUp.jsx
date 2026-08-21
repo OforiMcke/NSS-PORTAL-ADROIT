@@ -59,10 +59,12 @@ const SignUp = () => {
         role: "applicant",
       });
 
-      const { token, role } = response.data;
+      const { accessToken, refreshToken, role } = response.data;
 
-      localStorage.setItem("authToken", token);
+      localStorage.setItem("authToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
       localStorage.setItem("userRole", role);
+      api.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 
       setSuccess("Account created successfully. Redirecting to dashboard...");
 
@@ -84,7 +86,6 @@ const SignUp = () => {
       setLoading(false);
     }
   };
-
   return (
     <div className={`split-screen ${animate ? "page-enter" : ""}`}>
       <div className="logo" />

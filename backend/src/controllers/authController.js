@@ -1,9 +1,27 @@
 const asyncHandler = require("../utils/asyncHandler.js");
-const generateToken = require("../utils/generateToken.js");
+const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const {
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../utils/generateToken.js");
 const User = require("../models/User.js");
 const Application = require("../models/Application.js");
-const crypto = require("crypto");
 const connectDB = require("../config/db.js");
+
+const hashToken = (token) =>
+  crypto.createHash("sha256").update(token).digest("hex");
+
+// issues both tokens, saves the refresh token's hash on the user
+const issueTokens = async (user) => {
+  const accessToken = generateAccessToken(user._id, user.role);
+  const refreshToken = generateRefreshToken(user._id);
+
+  user.refreshTokenHash = hashToken(refreshToken);
+  await user.save();
+
+  return { accessToken, refreshToken };
+};
 
 // @desc    Sign up
 // @route   POST /api/auth/signup
@@ -41,6 +59,8 @@ const signup = asyncHandler(async (req, res) => {
     console.error("Linking past applications on signup failed:", err.message);
   }
 
+  const { accessToken, refreshToken } = await issueTokens(user);
+
   res.status(201).json({
     success: true,
     _id: user._id,
@@ -49,7 +69,8 @@ const signup = asyncHandler(async (req, res) => {
     email: user.email,
     phoneNumber: user.phoneNumber,
     role: user.role,
-    token: generateToken(user._id, user.role),
+    accessToken,
+    refreshToken,
   });
 });
 
@@ -62,6 +83,8 @@ const signin = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email }).select("+password");
 
   if (user && (await user.matchPassword(password))) {
+    const { accessToken, refreshToken } = await issueTokens(user);
+
     res.json({
       success: true,
       _id: user._id,
@@ -70,12 +93,78 @@ const signin = asyncHandler(async (req, res) => {
       email: user.email,
       phoneNumber: user.phoneNumber,
       role: user.role,
-      token: generateToken(user._id, user.role),
+      accessToken,
+      refreshToken,
     });
   } else {
     res.status(401);
     throw new Error("Invalid email or password");
   }
+});
+
+// @desc    Exchange a valid refresh token for a new access token
+// @route   POST /api/auth/refresh
+const refresh = asyncHandler(async (req, res) => {
+  await connectDB();
+
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    res.status(401);
+    throw new Error("Refresh token is required");
+  }
+
+  let decoded;
+  try {
+    decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+  } catch (err) {
+    res.status(401);
+    throw new Error("Invalid or expired refresh token");
+  }
+
+  const user = await User.findById(decoded.id).select("+refreshTokenHash");
+
+  if (!user || !user.refreshTokenHash) {
+    res.status(401);
+    throw new Error("Refresh token is no longer valid");
+  }
+
+  if (user.refreshTokenHash !== hashToken(refreshToken)) {
+    // this is a stolen/replayed token. Revoke to be safe.
+    user.refreshTokenHash = undefined;
+    await user.save();
+    res.status(401);
+    throw new Error("Refresh token is no longer valid");
+  }
+
+  //  issue a brand new pair, invalidating the old refresh token
+  const { accessToken, refreshToken: newRefreshToken } =
+    await issueTokens(user);
+
+  res.json({
+    success: true,
+    accessToken,
+    refreshToken: newRefreshToken,
+  });
+});
+
+// @desc    Log out — revokes the stored refresh token
+// @route   POST /api/auth/logout
+const logout = asyncHandler(async (req, res) => {
+  await connectDB();
+
+  const { refreshToken } = req.body;
+
+  if (refreshToken) {
+    try {
+      const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+      await User.findByIdAndUpdate(decoded.id, {
+        $unset: { refreshTokenHash: 1 },
+      });
+    } catch (err) {}
+  }
+
+  res.json({ success: true, message: "Logged out" });
 });
 
 // @desc    Get current user profile
@@ -175,6 +264,8 @@ const createAdmin = asyncHandler(async (req, res) => {
 module.exports = {
   signup,
   signin,
+  refresh,
+  logout,
   getProfile,
   updateProfile,
   getUsers,

@@ -54,7 +54,11 @@ export default function ApplicantDashboard() {
 
   const handleSidebarClick = (label) => {
     if (label === "Log Out") {
+      const refreshToken = localStorage.getItem("refreshToken");
+      api.post("/api/auth/logout", { refreshToken }).catch(() => {});
+
       localStorage.clear();
+      api.defaults.headers.common.Authorization = "";
       navigate("/signin");
       return;
     }

@@ -37,24 +37,21 @@ const userSchema = mongoose.Schema(
       enum: ["applicant", "admin"],
       default: "applicant",
     },
-    // avatarUrl: {
-    //   type: String,
-    //   trim: true,
-    //   default: "",
-    // },
+    refreshTokenHash: {
+      type: String,
+      select: false,
+    },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true },
 );
 
-// Hash password before we save it
 userSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-// Next we Compare passwords
 userSchema.methods.matchPassword = async function (entered) {
   return await bcrypt.compare(entered, this.password);
 };

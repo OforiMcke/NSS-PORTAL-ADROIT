@@ -52,10 +52,11 @@ const SignIn = () => {
           ? "Recruiter"
           : `${data.firstName} ${data.lastName}`;
 
-      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("authToken", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
       localStorage.setItem("userRole", data.role);
       localStorage.setItem("userName", displayName);
-      api.defaults.headers.common.Authorization = `Bearer ${data.token}`;
+      api.defaults.headers.common.Authorization = `Bearer ${data.accessToken}`;
 
       const from = location.state?.from?.pathname;
       const fallback = data.role === "admin" ? "/admin" : "/applicant";
