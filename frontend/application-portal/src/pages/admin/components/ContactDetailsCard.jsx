@@ -7,8 +7,8 @@ export default function ContactDetailsCard({ application }) {
         <p>{application.email}</p>
       </div>
       <div className="jap-insight-row">
-        <strong>Application Type</strong>
-        <p>{application.job?.title || "Unassigned"}</p>
+        <strong>Position</strong>
+        <p>{application.jobRole || "Unassigned"}</p>
       </div>
     </div>
   );

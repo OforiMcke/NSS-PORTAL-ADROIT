@@ -16,6 +16,10 @@ const applicationSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    jobRole: {
+      type: String,
+      required: true,
+    },
 
     fullName: {
       type: String,

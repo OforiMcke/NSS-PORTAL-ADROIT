@@ -35,7 +35,7 @@ const uploadToCloudinary = async (filePath, folder) => {
 const submitApplication = asyncHandler(async (req, res) => {
   await connectDB();
 
-  const { fullName, email, phoneNumber, jobId } = req.body;
+  const { fullName, email, phoneNumber, jobId, jobRole } = req.body;
 
   if (!fullName || !email || !phoneNumber) {
     res.status(400);
@@ -47,6 +47,10 @@ const submitApplication = asyncHandler(async (req, res) => {
     throw new Error("A job must be selected to apply");
   }
 
+  if (!jobRole) {
+    res.status(400);
+    throw new Error("A job role must be selected to apply");
+  }
   const job = await Job.findById(jobId);
   if (!job) {
     res.status(404);
@@ -90,6 +94,7 @@ const submitApplication = asyncHandler(async (req, res) => {
     applicant: req.user?._id,
     job: job._id,
     jobTitle,
+    jobRole,
     fullName,
     email,
     phoneNumber,
