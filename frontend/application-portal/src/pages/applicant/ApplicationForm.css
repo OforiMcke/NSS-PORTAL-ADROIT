@@ -496,6 +496,20 @@ input[type="url"]:focus,
   background: #c4c8e2;
 }
 
+.af-btn-primary {
+  background: var(--af-navy);
+  color: var(--af-field-text);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.af-btn-primary:hover {
+  background: #364292;
+}
 @media print {
   body {
     background: #ffffff !important;
@@ -534,7 +548,6 @@ input[type="url"]:focus,
   }
 }
 .multi-upload-box {
-  align-items: stretch;
   justify-content: flex-start;
   padding: 0.75rem;
   min-height: 96px;

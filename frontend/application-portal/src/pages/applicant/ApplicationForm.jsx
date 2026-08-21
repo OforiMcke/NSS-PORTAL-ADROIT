@@ -12,23 +12,42 @@ export default function ApplicationForm({ embedded = false }) {
   const navigate = useNavigate();
   const { jobId: linkedJobId } = useParams();
 
-  const [formValues, setFormValues] = useState(() => {
-    const storedUser = localStorage.getItem("user");
-    const user = storedUser ? JSON.parse(storedUser) : null;
+  const isLoggedIn = !!localStorage.getItem("authToken");
 
-    const computedName = user
-      ? user.fullName || `${user.firstName || ""} ${user.lastName || ""}`.trim()
-      : "";
-
-    return {
-      fullName: computedName,
-      email: user?.email || "",
-      phoneNumber: user?.phoneNumber || "",
-      location: user?.location || "",
-      yearsOfExperience: "",
-      experienceLevel: "",
-    };
+  const [formValues, setFormValues] = useState({
+    fullName: "",
+    email: "",
+    phoneNumber: "",
+    location: "",
+    yearsOfExperience: "",
+    experienceLevel: "",
   });
+
+  useEffect(() => {
+    if (!embedded || !isLoggedIn) return;
+    let mounted = true;
+
+    api
+      .get("/api/auth/profile")
+      .then((res) => {
+        if (!mounted) return;
+        const profile = res.data;
+        setFormValues((prev) => ({
+          ...prev,
+          fullName:
+            `${profile.firstName || ""} ${profile.lastName || ""}`.trim(),
+          email: profile.email || "",
+          phoneNumber: profile.phoneNumber || "",
+        }));
+      })
+      .catch((err) => {
+        console.error("Failed to prefill from profile:", err.message);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [embedded, isLoggedIn]);
 
   const [employmentType, setEmploymentType] = useState(
     "National Service Personnel",
@@ -156,35 +175,31 @@ export default function ApplicationForm({ embedded = false }) {
   };
 
   const handleMultiFileChange = (fileArray) => {
-    console.log(
-      "additionalDocs now:",
-      fileArray.map((f) => f.name),
-    );
     setFiles((prev) => ({ ...prev, additionalDocs: fileArray }));
   };
 
   const handleDone = () => {
-    const isLoggedIn = !!localStorage.getItem("user");
-
     if (isLoggedIn) {
-      navigate("/dashboard");
-    } else {
-      const trimmedName = formValues.fullName.trim();
-      const [firstName, ...rest] = trimmedName.split(" ");
-      const lastName = rest.join(" ");
-
-      navigate("/signup", {
-        state: {
-          prefill: {
-            firstName,
-            lastName,
-            email: formValues.email,
-            phoneNumber: formValues.phoneNumber,
-          },
-        },
-      });
+      navigate("/applicant");
+      return;
     }
+
+    const trimmedName = formValues.fullName.trim();
+    const [firstName, ...rest] = trimmedName.split(" ");
+    const lastName = rest.join(" ");
+
+    navigate("/signup", {
+      state: {
+        prefill: {
+          firstName,
+          lastName,
+          email: formValues.email,
+          phoneNumber: formValues.phoneNumber,
+        },
+      },
+    });
   };
+
   const validate = () => {
     if (!job?._id || !effectiveJobRole) {
       setError(
@@ -355,19 +370,13 @@ export default function ApplicationForm({ embedded = false }) {
           <div className="af-modal">
             <h3>Application Submitted!</h3>
             <p>
-              {localStorage.getItem("user")
+              {isLoggedIn
                 ? "Your application has been received. Click below to view your status on your dashboard."
                 : "Your application has been received. Let's finish securing your account by setting up your password."}
             </p>
             <div className="af-modal-actions">
-              <button
-                type="button"
-                className="af-btn-primary"
-                onClick={handleDone}
-              >
-                {localStorage.getItem("user")
-                  ? "Go to Dashboard"
-                  : "Set Password & Continue"}
+              <button type="button" className="af-submit" onClick={handleDone}>
+                {isLoggedIn ? "Go to Dashboard" : "Set Password & Continue"}
               </button>
             </div>
           </div>
