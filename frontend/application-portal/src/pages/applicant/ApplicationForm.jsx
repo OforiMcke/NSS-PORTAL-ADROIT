@@ -337,10 +337,7 @@ export default function ApplicationForm({ embedded = false }) {
             onFileChange={handleFileChange}
             onMultiFileChange={handleMultiFileChange}
           />
-          <DeclarationCheckbox
-            checked={agreed}
-            onChange={(e) => setAgreed(e.target.checked)}
-          />
+          <DeclarationCheckbox agreed={agreed} onChange={setAgreed} />
 
           <button type="submit" className="af-submit" disabled={loading}>
             {loading ? "Submitting..." : "Confirm & Submit Application"}
