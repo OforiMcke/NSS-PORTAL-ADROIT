@@ -8,7 +8,7 @@ import JobDetailsFields from "./components/JobDetailsFields";
 import DocumentUploadFields from "./components/DocumentUploadFields";
 import DeclarationCheckbox from "./components/DeclarationCheckbox";
 
-export default function ApplicationForm({ embedded = false }) {
+export default function ApplicationForm({ embedded = false, onSubmitSuccess }) {
   const navigate = useNavigate();
   const { jobId: linkedJobId } = useParams();
 
@@ -179,6 +179,11 @@ export default function ApplicationForm({ embedded = false }) {
   };
 
   const handleDone = () => {
+    if (embedded && onSubmitSuccess) {
+      onSubmitSuccess();
+      return;
+    }
+
     if (isLoggedIn) {
       navigate("/applicant");
       return;

@@ -10,7 +10,6 @@ const SignUp = () => {
   const [animate, setAnimate] = useState(false);
   const prefill = location.state?.prefill || {};
 
-  // Check if this user arrived with prefilled info from the application form
   const isPrefilled = !!prefill.email;
 
   const [form, setForm] = useState({

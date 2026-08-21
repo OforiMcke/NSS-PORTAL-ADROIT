@@ -11,12 +11,17 @@ const {
   getAdminStats,
   getRecentApplications,
 } = require("../controllers/applicationController");
-const { protect, adminOnly } = require("../middleware/authMiddleware");
+const {
+  protect,
+  optionalAuth,
+  adminOnly,
+} = require("../middleware/authMiddleware");
 const upload = require("../middleware/uploadMiddleware");
 
 router.post(
   "/",
   // protect,
+  optionalAuth,
   upload.handleUploadErrors(
     upload.fields([
       { name: "cv", maxCount: 1 },
