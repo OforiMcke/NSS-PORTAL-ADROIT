@@ -54,6 +54,7 @@
   top: 0.3rem;
   right: 2rem;
 }
+
 .wlcm-me {
   font-family: "Montserrat", sans-serif;
   font-weight: 700;
@@ -63,12 +64,25 @@
   text-align: left;
   min-width: 30rem;
 }
+
 .signup-form h2 {
   font-family: "Montserrat", sans-serif;
   font-weight: 700;
   font-size: 3rem;
   margin: 0;
 }
+
+.prefill-notice {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #cbd5e1;
+  background: rgba(81, 85, 190, 0.2);
+  border-left: 4px solid #5155be;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin: -0.5rem 0 0.5rem 0;
+}
+
 .field {
   position: relative;
   display: flex;
@@ -84,6 +98,21 @@
   border-radius: 6px;
   box-sizing: border-box;
   background: #d6d9ec;
+  color: #0a0b40;
+  transition: all 0.2s ease;
+}
+
+.field input.input-locked {
+  background: #a9adc9;
+  border-color: #94a3b8;
+  color: #334155;
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+.field input.input-locked:focus {
+  border-color: #94a3b8;
+  box-shadow: none;
 }
 
 .toggle-password {
@@ -137,11 +166,13 @@
   font-size: 20px;
   margin-bottom: -1rem;
 }
+
 .checkbox-label span {
   font-size: 0.95rem;
   position: absolute;
   margin-left: 0.5rem;
 }
+
 .checkbox-label input {
   width: 1.5rem;
   height: 1.5rem;

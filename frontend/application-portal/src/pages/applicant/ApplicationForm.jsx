@@ -164,22 +164,27 @@ export default function ApplicationForm({ embedded = false }) {
   };
 
   const handleDone = () => {
-    const trimmedName = formValues.fullName.trim();
-    const [firstName, ...rest] = trimmedName.split(" ");
-    const lastName = rest.join(" ");
+    const isLoggedIn = !!localStorage.getItem("user");
 
-    navigate("/signup", {
-      state: {
-        prefill: {
-          firstName,
-          lastName,
-          email: formValues.email,
-          phoneNumber: formValues.phoneNumber,
+    if (isLoggedIn) {
+      navigate("/dashboard");
+    } else {
+      const trimmedName = formValues.fullName.trim();
+      const [firstName, ...rest] = trimmedName.split(" ");
+      const lastName = rest.join(" ");
+
+      navigate("/signup", {
+        state: {
+          prefill: {
+            firstName,
+            lastName,
+            email: formValues.email,
+            phoneNumber: formValues.phoneNumber,
+          },
         },
-      },
-    });
+      });
+    }
   };
-
   const validate = () => {
     if (!job?._id || !effectiveJobRole) {
       setError(
@@ -346,22 +351,23 @@ export default function ApplicationForm({ embedded = false }) {
       </div>
 
       {showAccountPrompt && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          className="af-modal-overlay"
-          onClick={() => setShowAccountPrompt(false)}
-        >
-          <div className="af-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="af-modal-overlay">
+          <div className="af-modal">
             <h3>Application Submitted!</h3>
             <p>
-              Your application has been received. To check your status, an
-              account has been created for you. Click on done to set your
-              password.
+              {localStorage.getItem("user")
+                ? "Your application has been received. Click below to view your status on your dashboard."
+                : "Your application has been received. Let's finish securing your account by setting up your password."}
             </p>
             <div className="af-modal-actions">
-              <button className="af-btn-secondary" onClick={handleDone}>
-                Done
+              <button
+                type="button"
+                className="af-btn-primary"
+                onClick={handleDone}
+              >
+                {localStorage.getItem("user")
+                  ? "Go to Dashboard"
+                  : "Set Password & Continue"}
               </button>
             </div>
           </div>

@@ -10,6 +10,9 @@ const SignUp = () => {
   const [animate, setAnimate] = useState(false);
   const prefill = location.state?.prefill || {};
 
+  // Check if this user arrived with prefilled info from the application form
+  const isPrefilled = !!prefill.email;
+
   const [form, setForm] = useState({
     firstName: prefill.firstName || "",
     lastName: prefill.lastName || "",
@@ -86,6 +89,7 @@ const SignUp = () => {
       setLoading(false);
     }
   };
+
   return (
     <div className={`split-screen ${animate ? "page-enter" : ""}`}>
       <div className="logo" />
@@ -93,7 +97,14 @@ const SignUp = () => {
       <main className="form-panel">
         <form className="signup-form" onSubmit={handleSubmit}>
           <h3 className="wlcm-me">Welcome to Adroit360 Application Portal</h3>
-          <h2>Create account</h2>
+
+          <h2>{isPrefilled ? "Create your password" : "Create account"}</h2>
+          {isPrefilled && (
+            <p className="prefill-notice">
+              Your application details have been locked in. Choose a secure
+              password to complete your account registration.
+            </p>
+          )}
 
           <div className="name-row">
             <div className="field">
@@ -105,6 +116,8 @@ const SignUp = () => {
                 placeholder="First name"
                 value={form.firstName}
                 onChange={handleChange}
+                readOnly={isPrefilled}
+                className={isPrefilled ? "input-locked" : ""}
                 required
               />
             </div>
@@ -118,6 +131,8 @@ const SignUp = () => {
                 placeholder="Last name"
                 value={form.lastName}
                 onChange={handleChange}
+                readOnly={isPrefilled}
+                className={isPrefilled ? "input-locked" : ""}
                 required
               />
             </div>
@@ -132,6 +147,8 @@ const SignUp = () => {
               placeholder="Email"
               value={form.email}
               onChange={handleChange}
+              readOnly={isPrefilled}
+              className={isPrefilled ? "input-locked" : ""}
               required
             />
           </div>
@@ -145,6 +162,7 @@ const SignUp = () => {
               placeholder="Enter your password"
               value={form.password}
               onChange={handleChange}
+              autoFocus={isPrefilled}
               required
             />
 
@@ -190,6 +208,7 @@ const SignUp = () => {
               )}
             </button>
           </div>
+
           <div className="field">
             <label htmlFor="phoneNumber"></label>
             <input
@@ -199,6 +218,8 @@ const SignUp = () => {
               placeholder="Phone number"
               value={form.phoneNumber}
               onChange={handleChange}
+              readOnly={isPrefilled}
+              className={isPrefilled ? "input-locked" : ""}
               required
             />
           </div>
@@ -219,7 +240,11 @@ const SignUp = () => {
           </div>
 
           <button type="submit" className="submit-button" disabled={loading}>
-            {loading ? "Creating account..." : "Create account"}
+            {loading
+              ? "Creating account..."
+              : isPrefilled
+                ? "Complete Registration"
+                : "Create account"}
           </button>
           <p className="signin-link">
             Already have an account? <Link to="/signin">Log in</Link>
