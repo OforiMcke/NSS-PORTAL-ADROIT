@@ -57,12 +57,11 @@ export function MultiUploadBox({
     <div className="upload-title">
       {label}
       <div
-        className={`upload-box ${isDragging ? "dragging" : ""} ${values.length ? "has-file" : ""}`}
+        className={`upload-box multi-upload-box ${isDragging ? "dragging" : ""} ${values.length ? "has-file" : ""}`}
         onClick={openPicker}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        style={{ cursor: "pointer" }}
       >
         {values.length > 0 ? (
           <div
@@ -70,64 +69,31 @@ export function MultiUploadBox({
             onClick={(e) => e.stopPropagation()}
           >
             {values.map((f, i) => (
-              <div
-                key={`${f.name}-${f.size}-${i}`}
-                className="upload-file-row"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: "8px",
-                  padding: "4px 0",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    overflow: "hidden",
-                  }}
-                >
-                  <FileText size={14} />
-                  <span
-                    style={{
-                      fontSize: "13px",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                  >
-                    {f.name}
-                  </span>
-                  <span style={{ fontSize: "11px", color: "#888" }}>
-                    ({(f.size / 1024 / 1024).toFixed(2)} MB)
-                  </span>
-                </div>
+              <div key={`${f.name}-${f.size}-${i}`} className="upload-file-row">
+                <FileText size={14} className="upload-file-icon" />
+                <span className="upload-file-name" title={f.name}>
+                  {f.name}
+                </span>
+                <span className="upload-file-size">
+                  {(f.size / 1024 / 1024).toFixed(2)} MB
+                </span>
                 <button
                   type="button"
+                  className="upload-file-remove"
                   onClick={(e) => handleRemoveFile(e, i)}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    color: "#ef4444",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
                   aria-label={`Remove ${f.name}`}
                 >
-                  <X size={14} />
+                  <X size={13} />
                 </button>
               </div>
             ))}
-            <div
-              className="upload-link"
+            <button
+              type="button"
+              className="upload-add-more"
               onClick={openPicker}
-              style={{ fontSize: "12px", marginTop: "6px" }}
             >
               + Add more files
-            </div>
+            </button>
           </div>
         ) : (
           <>
