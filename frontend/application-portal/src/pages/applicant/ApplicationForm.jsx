@@ -156,6 +156,10 @@ export default function ApplicationForm({ embedded = false }) {
   };
 
   const handleMultiFileChange = (fileArray) => {
+    console.log(
+      "additionalDocs now:",
+      fileArray.map((f) => f.name),
+    );
     setFiles((prev) => ({ ...prev, additionalDocs: fileArray }));
   };
 
