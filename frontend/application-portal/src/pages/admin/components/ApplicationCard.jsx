@@ -19,7 +19,7 @@ export default function ApplicationCard({ application, selected, onSelect }) {
         </span>
       </div>
       <div className="jap-card-role">
-        {application.job?.role || "General application"}
+        {application.jobRole?.role || "General application"}
       </div>
     </button>
   );
