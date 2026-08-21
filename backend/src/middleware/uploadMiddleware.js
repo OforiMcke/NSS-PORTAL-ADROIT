@@ -1,11 +1,9 @@
 const multer = require("multer");
-const fs = require("fs");
+const os = require("os");
 const path = require("path");
 
-const uploadDir = path.join(__dirname, "..", "uploads");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+// Vercel's serverless functions only allow writes to os.tmpdir() (/tmp)
+const uploadDir = os.tmpdir();
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
@@ -17,12 +15,10 @@ const storage = multer.diskStorage({
 
 // File type filters
 const fileFilter = (req, file, cb) => {
-  // CV: pdf only
   if (file.fieldname === "cv") {
     if (file.mimetype === "application/pdf") return cb(null, true);
     return cb(new Error("CV must be a PDF file"), false);
   }
-  // Photo: image only
   if (file.fieldname === "photo") {
     if (file.mimetype.startsWith("image/")) return cb(null, true);
     return cb(new Error("Photo must be an image"), false);
