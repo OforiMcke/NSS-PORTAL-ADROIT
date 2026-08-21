@@ -21,7 +21,7 @@ router.post(
     upload.fields([
       { name: "cv", maxCount: 1 },
       { name: "photo", maxCount: 1 },
-      { name: "additionalDoc", maxCount: 1 },
+      { name: "additionalDocs", maxCount: 5 },
     ]),
   ),
   submitApplication,

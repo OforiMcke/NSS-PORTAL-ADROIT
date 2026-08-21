@@ -1,5 +1,11 @@
 import { UploadBox } from "../UploadBox";
-export default function DocumentUploadFields({ onFileChange, files = {} }) {
+import MultiUploadBox from "../MultiUploadBox";
+
+export default function DocumentUploadFields({
+  onFileChange,
+  onMultiFileChange,
+  files = {},
+}) {
   return (
     <div className="af-grid-4">
       <UploadBox
@@ -9,26 +15,12 @@ export default function DocumentUploadFields({ onFileChange, files = {} }) {
         onChange={onFileChange("resume")}
         value={files["resume"]}
       />
-      {/* <UploadBox
-        label="Upload Cover Letter"
-        name="coverLetter"
-        onChange={onFileChange("coverLetter")}
-        value={files["coverLetter"]}
-      />
-      <UploadBox
-        label="Upload Photo (optional)"
-        name="photo"
-        accept="image/*"
-        onChange={onFileChange("photo")}
-        value={files["photo"]}
-      />
-        */}
 
-      <UploadBox
-        label="Additional Doc.(Portfolio)"
-        name="additionalDoc"
-        onChange={onFileChange("additionalDoc")}
-        value={files["additionalDoc"]}
+      <MultiUploadBox
+        label="Additional Docs (Portfolio)"
+        name="additionalDocs"
+        onChange={onMultiFileChange}
+        values={files["additionalDocs"] || []}
       />
     </div>
   );

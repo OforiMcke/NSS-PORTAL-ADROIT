@@ -68,6 +68,7 @@ const submitApplication = asyncHandler(async (req, res) => {
     req.files.cv[0].path,
     "adroit360/cvs",
   );
+
   let photoUpload = null;
   if (req.files?.photo) {
     photoUpload = await uploadToCloudinary(
@@ -75,13 +76,16 @@ const submitApplication = asyncHandler(async (req, res) => {
       "adroit360/photos",
     );
   }
-  let additionalDocUpload = null;
-  if (req.files?.additionalDoc) {
-    additionalDocUpload = await uploadToCloudinary(
-      req.files.additionalDoc[0].path,
-      "adroit360/additional-docs",
+
+  let additionalDocsUpload = [];
+  if (req.files?.additionalDocs?.length > 0) {
+    additionalDocsUpload = await Promise.all(
+      req.files.additionalDocs.map((file) =>
+        uploadToCloudinary(file.path, "adroit360/additional-docs"),
+      ),
     );
   }
+
   const application = await Application.create({
     applicant: req.user?._id,
     job: job._id,
@@ -91,8 +95,10 @@ const submitApplication = asyncHandler(async (req, res) => {
     phoneNumber,
     cvUrl: cvUpload.url,
     cvPublicId: cvUpload.publicId,
-    additionalDocUrl: additionalDocUpload?.url,
-    additionalDocPublicId: additionalDocUpload?.publicId,
+    additionalDocs: additionalDocsUpload.map((doc) => ({
+      url: doc.url,
+      publicId: doc.publicId,
+    })),
     status: "pending",
   });
 

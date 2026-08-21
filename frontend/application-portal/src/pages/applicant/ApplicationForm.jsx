@@ -34,8 +34,7 @@ export default function ApplicationForm({ embedded = false }) {
     "National Service Personnel",
   );
   const [agreed, setAgreed] = useState(false);
-  const [files, setFiles] = useState({ resume: null, additionalDoc: null });
-
+  const [files, setFiles] = useState({ resume: null, additionalDocs: [] });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -117,8 +116,6 @@ export default function ApplicationForm({ embedded = false }) {
     };
   }, [linkedJobId]);
 
-  // Flatten every open job's roles into one list of selectable (job, role) pairs.
-  // A job with no roles attached falls back to its title so it's still selectable.
   const roleOptions = useMemo(() => {
     const opts = [];
     openJobs.forEach((j) => {
@@ -126,7 +123,7 @@ export default function ApplicationForm({ embedded = false }) {
       roles.forEach((r) => {
         opts.push({
           key: `${j._id}::${r}`,
-          label: openJobs.length > 1 ? `${r} — ${j.title}` : r,
+          label: r,
           jobId: j._id,
           role: r,
         });
@@ -135,7 +132,6 @@ export default function ApplicationForm({ embedded = false }) {
     return opts;
   }, [openJobs]);
 
-  // If there's exactly one option in total, lock it in — no dropdown needed.
   const isLocked = roleOptions.length === 1;
   const effectiveKey = isLocked ? roleOptions[0]?.key : selectedRoleKey;
   const selectedOption =
@@ -157,6 +153,10 @@ export default function ApplicationForm({ embedded = false }) {
   const handleFileChange = (key) => (e) => {
     const file = e.target.files?.[0] || null;
     setFiles((prev) => ({ ...prev, [key]: file }));
+  };
+
+  const handleMultiFileChange = (fileArray) => {
+    setFiles((prev) => ({ ...prev, additionalDocs: fileArray }));
   };
 
   const handleDone = () => {
@@ -231,8 +231,10 @@ export default function ApplicationForm({ embedded = false }) {
     formData.append("employmentType", employmentType);
     formData.append("cv", files.resume);
 
-    if (files.additionalDoc) {
-      formData.append("additionalDoc", files.additionalDoc);
+    if (files.additionalDocs?.length > 0) {
+      files.additionalDocs.forEach((doc) => {
+        formData.append("additionalDocs", doc);
+      });
     }
 
     api
@@ -326,8 +328,11 @@ export default function ApplicationForm({ embedded = false }) {
             error={linkedJobId ? jobError : openJobsError}
           />
 
-          <DocumentUploadFields files={files} onFileChange={handleFileChange} />
-
+          <DocumentUploadFields
+            files={files}
+            onFileChange={handleFileChange}
+            onMultiFileChange={handleMultiFileChange}
+          />
           <DeclarationCheckbox
             checked={agreed}
             onChange={(e) => setAgreed(e.target.checked)}

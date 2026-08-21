@@ -37,8 +37,12 @@ const applicationSchema = mongoose.Schema(
     cvPublicId: String,
     photoUrl: String,
     photoPublicId: String,
-    additionalDocUrl: String,
-    additionalDocPublicId: String,
+    additionalDocs: [
+      {
+        url: String,
+        publicId: String,
+      },
+    ],
 
     status: {
       type: String,
