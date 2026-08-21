@@ -1,5 +1,4 @@
 import ApplicantProfileCard from "./ApplicantProfileCard";
-import ApplicantNoteBar from "./ApplicantNoteBar";
 import ContactDetailsCard from "./ContactDetailsCard";
 import ApplicationReviewCard from "./ApplicationReviewCard";
 
@@ -14,7 +13,6 @@ export default function ApplicationDetailPanel({
   return (
     <section className="jap-detail-panel">
       <ApplicantProfileCard application={application} />
-      <ApplicantNoteBar />
       <ContactDetailsCard application={application} />
       <ApplicationReviewCard
         application={application}

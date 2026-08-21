@@ -6,20 +6,19 @@ export default function ApplicationReviewCard({
   onViewResume,
   onViewAdditionalDoc,
 }) {
-  // 1. Initialize state safely
   const [previewUrl, setPreviewUrl] = useState(application?.cvUrl || "");
 
-  // 2. Helper to switch views safely
   const handleView = (url) => {
     if (url) setPreviewUrl(url);
   };
+
+  const additionalDocs = application.additionalDocs || [];
 
   return (
     <div className="jap-white-card">
       <div className="jap-resume-header">
         <span className="jap-section-title">Application Summary</span>
 
-        {/* Resume Actions */}
         <div className="jap-action-group">
           <button
             className={`jap-view-btn ${previewUrl === application.cvUrl ? "active" : ""}`}
@@ -39,35 +38,32 @@ export default function ApplicationReviewCard({
           </button>
         </div>
 
-        {/* Additional Doc Actions */}
-        {application.additionalDocUrl && (
-          <div className="jap-action-group">
+        {additionalDocs.map((doc, i) => (
+          <div className="jap-action-group" key={doc.url || i}>
             <button
-              className={`jap-view-btn ${previewUrl === application.additionalDocUrl ? "active" : ""}`}
+              className={`jap-view-btn ${previewUrl === doc.url ? "active" : ""}`}
               type="button"
-              onClick={() => handleView(application.additionalDocUrl)}
+              onClick={() => handleView(doc.url)}
             >
               <Eye size={13} />
-              View Doc
+              View Doc {additionalDocs.length > 1 ? i + 1 : ""}
             </button>
             <button
               className="jap-download-btn"
               type="button"
-              onClick={() => onViewAdditionalDoc(application.additionalDocUrl)}
+              onClick={() => onViewAdditionalDoc(doc.url)}
             >
               <Download size={13} />
-              Download Doc
+              Download Doc {additionalDocs.length > 1 ? i + 1 : ""}
             </button>
           </div>
-        )}
+        ))}
       </div>
 
       <h3>{application.fullName}</h3>
 
-      {/* Document Display Preview Area */}
       {previewUrl ? (
         <div className="jap-document-preview">
-          {/* Key prop forces iframe to recreate and reload when previewUrl changes */}
           <iframe
             key={previewUrl}
             src={previewUrl}

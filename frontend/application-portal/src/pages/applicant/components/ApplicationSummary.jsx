@@ -54,7 +54,6 @@ export default function ApplicationSummary({
               <td>Experience Level</td>
               <td>{formValues.experienceLevel || "N/A"}</td>
             </tr>
-            {/* <tr><td>Portfolio Link</td><td>{formValues.portfolio || "N/A"}</td></tr> */}
           </tbody>
         </table>
       </section>
@@ -91,12 +90,6 @@ export default function ApplicationSummary({
           </tbody>
         </table>
       </section>
-      {/* <section className="af-section">
-        // <h2>Statement of Motivation</h2>
-        //{" "}
-        <div className="af-summary-box">{formValues.statementOfMotivation}</div>
-        //{" "}
-      </section> */}
       <div className="af-summary-actions">
         <button
           type="button"
