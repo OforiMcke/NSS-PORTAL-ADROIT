@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { api } from "../../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import TopBar from "../../components/TopBar";
@@ -13,7 +13,7 @@ export default function ApprovedCandidates() {
 
   useEffect(() => {
     let mounted = true;
-    axios
+    api
       .get("/api/applications/admin/list", { params: { status: "accepted" } })
       .then((res) => {
         if (!mounted) return;
@@ -34,7 +34,7 @@ export default function ApprovedCandidates() {
   const handleSidebarClick = (label) => {
     if (label === "Log Out") {
       localStorage.clear();
-      axios.defaults.headers.common.Authorization = "";
+      api.defaults.headers.common.Authorization = "";
       navigate("/signin");
       return;
     }

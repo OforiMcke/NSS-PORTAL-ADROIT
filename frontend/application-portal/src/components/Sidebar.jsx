@@ -4,7 +4,7 @@ import {
   FileText,
   UserCheck,
   CalendarClock,
-  // Settings,
+  Settings,
   Users,
   LogOut,
   PlusCircle,
@@ -35,11 +35,11 @@ const applicantLinks = [
   { label: "Dashboard", icon: LayoutDashboard },
   { label: "Apply", icon: FileText },
   { label: "My Applications", icon: FileText },
-  // { label: "Interview Schedule", icon: CalendarClock },
+  { label: "Interview Schedule", icon: CalendarClock },
 ];
 
 const bottomLinks = [
-  // { label: "Settings", icon: Settings },
+  { label: "Settings", icon: Settings },
   { label: "Manage Users", icon: Users, adminOnly: true },
   { label: "Log Out", icon: LogOut },
 ];

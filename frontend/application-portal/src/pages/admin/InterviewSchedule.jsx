@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { api } from "../../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import TopBar from "../../components/TopBar";
@@ -17,7 +17,7 @@ export default function InterviewSchedule() {
   useEffect(() => {
     let mounted = true;
 
-    axios
+    api
       .get("/api/applications/admin/interviews")
       .then((res) => {
         if (!mounted) return;
@@ -39,12 +39,9 @@ export default function InterviewSchedule() {
     };
   }, []);
 
-  // Separate reusable reload function for after scheduling/marking hired —
-  // this is called from event handlers, not from inside an effect, so it's
-  // not subject to this lint rule at all.
   const loadData = () => {
     setLoading(true);
-    axios
+    api
       .get("/api/applications/admin/interviews")
       .then((res) => setApplications(res.data?.data || []))
       .catch((err) =>
@@ -54,13 +51,14 @@ export default function InterviewSchedule() {
       )
       .finally(() => setLoading(false));
   };
+
   const handleSchedule = async (id) => {
     const interviewDate = dateDrafts[id];
     if (!interviewDate) return;
     setSavingId(id);
     setError("");
     try {
-      await axios.put(`/api/applications/${id}/interview`, { interviewDate });
+      await api.put(`/api/applications/${id}/interview`, { interviewDate });
       loadData();
     } catch (err) {
       setError(err.response?.data?.message || "Failed to schedule interview.");
@@ -73,7 +71,7 @@ export default function InterviewSchedule() {
     setHiringId(id);
     setError("");
     try {
-      await axios.put(`/api/applications/${id}/hire`);
+      await api.put(`/api/applications/${id}/hire`);
       loadData();
     } catch (err) {
       setError(
@@ -87,7 +85,7 @@ export default function InterviewSchedule() {
   const handleSidebarClick = (label) => {
     if (label === "Log Out") {
       localStorage.clear();
-      axios.defaults.headers.common.Authorization = "";
+      api.defaults.headers.common.Authorization = "";
       navigate("/signin");
       return;
     }
