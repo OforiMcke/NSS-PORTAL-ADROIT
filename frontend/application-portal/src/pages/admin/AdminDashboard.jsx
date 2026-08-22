@@ -70,10 +70,12 @@ export default function AdminDashboard() {
         setStats(statsData.data);
         setRecentActivity(
           recentData.data.map((application) => ({
-            name: `${application.applicant.firstName} ${application.applicant.lastName}`,
-            action: `applied for ${application.job?.title || "a role"}`,
+            name: application.applicant
+              ? `${application.applicant.firstName} ${application.applicant.lastName}`
+              : application.fullName || "Anonymous applicant",
+            action: `applied for ${application.jobRole || "a role"}`,
             time: new Date(application.createdAt).toLocaleDateString(),
-            jobTitle: application.job?.title,
+            jobRole: application.jobRole,
             employmentType: application.job?.employmentType,
           })),
         );

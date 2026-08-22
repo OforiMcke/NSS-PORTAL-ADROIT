@@ -123,7 +123,7 @@ export default function InterviewSchedule() {
               {applications.map((app) => (
                 <div className="jobs-list-row" key={app._id}>
                   <span className="jobs-list-title">{app.fullName}</span>
-                  <span>{app.jobTitle || app.job?.title || "—"}</span>
+                  <span>{app.jobTitle || app.jobRole || "—"}</span>
                   <span>
                     {app.interviewDate
                       ? new Date(app.interviewDate).toLocaleString()
@@ -141,12 +141,14 @@ export default function InterviewSchedule() {
                     />
                     <button
                       type="button"
+                      className="I-btn"
                       onClick={() => handleSchedule(app._id)}
                       disabled={savingId === app._id}
                     >
                       {savingId === app._id ? "Saving..." : "Set"}
                     </button>
                     <button
+                      className="I-btn"
                       type="button"
                       onClick={() => handleMarkHired(app._id)}
                       disabled={hiringId === app._id || !app.interviewDate}

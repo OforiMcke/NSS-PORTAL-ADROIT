@@ -75,7 +75,7 @@ export default function ApprovedCandidates() {
                 <div className="jobs-list-row" key={c._id}>
                   <span className="jobs-list-title">{c.fullName}</span>
                   <span>{c.email}</span>
-                  <span>{c.jobTitle || c.job?.title || "—"}</span>
+                  <span>{c.jobTitle || c.jobRole || "—"}</span>
                   <span>
                     {c.interviewDate
                       ? new Date(c.interviewDate).toLocaleString()

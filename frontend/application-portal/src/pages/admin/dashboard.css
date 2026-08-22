@@ -411,6 +411,10 @@ h3 {
   margin-top: 5px;
   flex-shrink: 0;
 }
+.I-btn {
+  background-color: #03045e;
+  border-radius: 5px;
+}
 
 .dot-0 {
   background: #ffcf3f;
