@@ -120,7 +120,15 @@ export default function AdminDashboard() {
       });
       return;
     }
+    if (label === "Approved Candidates") {
+      navigate("/admin/approved-candidates");
+      return;
+    }
 
+    if (label === "Interview Schedules") {
+      navigate("/admin/interview-schedule");
+      return;
+    }
     if (label === "Job Roles") {
       setActiveLink(label);
       navigate("/admin/job-roles");
