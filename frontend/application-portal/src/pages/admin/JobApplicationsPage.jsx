@@ -149,6 +149,16 @@ export default function JobApplicationsPage() {
       return;
     }
 
+    if (label === "Approved Candidates") {
+      navigate("/admin/approved-candidates");
+      return;
+    }
+
+    if (label === "Interview Schedules") {
+      navigate("/admin/interview-schedule");
+      return;
+    }
+
     setActiveLink(label === "Job Applications" ? "All Applications" : label);
   };
 

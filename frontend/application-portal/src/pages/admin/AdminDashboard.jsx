@@ -122,15 +122,7 @@ export default function AdminDashboard() {
       });
       return;
     }
-    if (label === "Approved Candidates") {
-      navigate("/admin/approved-candidates");
-      return;
-    }
 
-    if (label === "Interview Schedules") {
-      navigate("/admin/interview-schedule");
-      return;
-    }
     if (label === "Job Roles") {
       setActiveLink(label);
       navigate("/admin/job-roles");
@@ -171,14 +163,14 @@ export default function AdminDashboard() {
           </div>
           <div className="bundled last"></div>
           <div className="welcome-badge">
-            Total Number of Jobs Open : {stats.totalApplicants}
+            Total Number of Jobs Open : {stats.openJobsCount}
           </div>
         </section>
 
         <section className="stats-row">
           <StatCard
             label="Open Jobs:"
-            value={stats.totalApplicants}
+            value={stats.openJobsCount}
             icon={Megaphone}
           />
           <StatCard

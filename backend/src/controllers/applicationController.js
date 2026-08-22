@@ -260,8 +260,9 @@ const getAdminStats = asyncHandler(async (req, res) => {
   const hiredApplications = await Application.countDocuments({
     status: "hired",
   });
+  const openJobsCount = await Job.countDocuments({ status: "open" });
   const totalApplicants = await Application.distinct("applicant").then(
-    (d) => d.length,
+    (d) => d.filter(Boolean).length,
   );
 
   res.json({
@@ -272,6 +273,7 @@ const getAdminStats = asyncHandler(async (req, res) => {
       acceptedApplications,
       declinedApplications,
       hiredApplications,
+      openJobsCount, // NEW
       totalApplicants,
     },
   });
