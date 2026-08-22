@@ -183,16 +183,21 @@ export default function MyApplications() {
                   View CV/Resume <ExternalLink size={14} />
                 </a>
               )}
-              {selected.additionalDocUrl && (
-                <a
-                  href={selected.additionalDocUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ma-cv-link"
-                >
-                  View Additional Document <ExternalLink size={14} />
-                </a>
-              )}
+              {selected.additionalDocs?.length > 0 &&
+                selected.additionalDocs.map((doc, i) => (
+                  <a
+                    key={doc.url || i}
+                    href={doc.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ma-cv-link"
+                  >
+                    View Additional Document
+                    {selected.additionalDocs?.length > 1 ? `${i + 1}` : ""}
+                    {""}
+                    <ExternalLink size={14} />
+                  </a>
+                ))}
               {selected.status === "declined" && selected.adminFeedback && (
                 <div className="ma-feedback-box">
                   <p className="ma-box-label">Feedback</p>

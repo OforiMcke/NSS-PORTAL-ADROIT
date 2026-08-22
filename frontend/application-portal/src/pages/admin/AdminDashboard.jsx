@@ -7,19 +7,6 @@ import StatCard from "../../components/StatCard";
 import { api } from "../../api/axiosInstance";
 import "../admin/dashboard.css";
 
-const hiringData = [
-  { label: "1", value: 35 },
-  { label: "2", value: 45 },
-  { label: "3", value: 60 },
-  { label: "4", value: 55 },
-  { label: "5", value: 75 },
-  { label: "6", value: 85 },
-  { label: "7", value: 95 },
-  { label: "8", value: 105 },
-  { label: "9", value: 120 },
-  { label: "10", value: 140 },
-];
-
 const chartColors = [
   "#96a7d2",
   "#629dd1",
@@ -57,21 +44,27 @@ export default function AdminDashboard() {
       ? "Recruiter"
       : localStorage.getItem("userName") || "Recruiter";
   const [userAvatarUrl, setUserAvatarUrl] = useState("");
-  const maxValue = Math.max(...hiringData.map((d) => d.value));
-
+  const [hiringData, setHiringData] = useState([]);
+  const maxValue = Math.max(...hiringData.map((d) => d.value), 1);
   const displayedActivity = recentActivity;
+
   useEffect(() => {
     let isMounted = true;
 
     const loadAdminData = async () => {
       try {
-        const [{ data: statsData }, { data: recentData }, profileRes] =
-          await Promise.all([
-            api.get("/api/applications/admin/stats"),
-            api.get("/api/applications/admin/recent"),
-            api.get("/api/auth/profile"),
-          ]);
-
+        const [
+          { data: statsData },
+          { data: recentData },
+          profileRes,
+          { data: trendData },
+        ] = await Promise.all([
+          api.get("/api/applications/admin/stats"),
+          api.get("/api/applications/admin/recent"),
+          api.get("/api/auth/profile"),
+          api.get("/api/applications/admin/hiring-trend"),
+        ]);
+        setHiringData(trendData.data || []);
         if (!isMounted) return;
 
         setStats(statsData.data);
@@ -107,6 +100,11 @@ export default function AdminDashboard() {
       navigate("/signin");
       return;
     }
+
+    if (label === "Approved Candidates")
+      return navigate("/admin/approved-candidates");
+    if (label === "Interview Schedules")
+      return navigate("/admin/interview-schedule");
 
     if (JOB_APPLICATIONS_GROUP.includes(label)) {
       setActiveLink(label);
@@ -180,7 +178,7 @@ export default function AdminDashboard() {
           />
           <StatCard
             label="Hires This Month:"
-            value={stats.acceptedApplications}
+            value={stats.hiredApplications}
             icon={Handshake}
           />
         </section>

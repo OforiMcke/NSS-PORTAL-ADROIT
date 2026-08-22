@@ -247,8 +247,6 @@ const getMyApplications = asyncHandler(async (req, res) => {
 });
 
 const getAdminStats = asyncHandler(async (req, res) => {
-  await connectDB();
-
   const totalApplications = await Application.countDocuments();
   const pendingApplications = await Application.countDocuments({
     status: "pending",
@@ -259,8 +257,11 @@ const getAdminStats = asyncHandler(async (req, res) => {
   const declinedApplications = await Application.countDocuments({
     status: "declined",
   });
+  const hiredApplications = await Application.countDocuments({
+    status: "hired",
+  });
   const totalApplicants = await Application.distinct("applicant").then(
-    (distinct) => distinct.length,
+    (d) => d.length,
   );
 
   res.json({
@@ -270,11 +271,11 @@ const getAdminStats = asyncHandler(async (req, res) => {
       pendingApplications,
       acceptedApplications,
       declinedApplications,
+      hiredApplications,
       totalApplicants,
     },
   });
 });
-
 const getRecentApplications = asyncHandler(async (req, res) => {
   await connectDB();
 
@@ -286,6 +287,116 @@ const getRecentApplications = asyncHandler(async (req, res) => {
 
   res.json({ success: true, count: applications.length, data: applications });
 });
+// @desc    Schedule (or reschedule) an interview for an accepted application
+// @route   PUT /api/applications/:id/interview
+// @access  Private/Admin
+const scheduleInterview = asyncHandler(async (req, res) => {
+  const { interviewDate } = req.body;
+
+  if (!interviewDate) {
+    res.status(400);
+    throw new Error("An interview date is required");
+  }
+
+  const application = await Application.findById(req.params.id);
+  if (!application) {
+    res.status(404);
+    throw new Error("Application not found");
+  }
+
+  if (application.status !== "accepted") {
+    res.status(400);
+    throw new Error(
+      "Only accepted applications can have an interview scheduled",
+    );
+  }
+
+  application.interviewDate = new Date(interviewDate);
+  await application.save();
+
+  res.json({
+    success: true,
+    message: "Interview scheduled successfully",
+    data: application,
+  });
+});
+
+// @desc    List accepted applications for interview scheduling
+// @route   GET /api/applications/admin/interviews
+// @access  Private/Admin
+const getInterviewSchedule = asyncHandler(async (req, res) => {
+  const applications = await Application.find({ status: "accepted" }) // unchanged — hired candidates fall out of this naturally
+    .populate("job", "title employmentType")
+    .sort("interviewDate");
+
+  res.json({ success: true, count: applications.length, data: applications });
+});
+
+// @desc    Monthly hire counts for the dashboard chart (last 10 months)
+// @route   GET /api/applications/admin/hiring-trend
+// @access  Private/Admin
+const getHiringTrend = asyncHandler(async (req, res) => {
+  const now = new Date();
+  const months = [];
+  for (let i = 9; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push({ year: d.getFullYear(), month: d.getMonth() });
+  }
+  const rangeStart = new Date(months[0].year, months[0].month, 1);
+
+  const hires = await Application.aggregate([
+    { $match: { status: "hired", hiredDate: { $gte: rangeStart } } },
+    {
+      $group: {
+        _id: { year: { $year: "$hiredDate" }, month: { $month: "$hiredDate" } },
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+
+  const data = months.map(({ year, month }) => {
+    const match = hires.find(
+      (h) => h._id.year === year && h._id.month === month + 1,
+    );
+    return {
+      label: new Date(year, month, 1).toLocaleString("default", {
+        month: "short",
+      }),
+      value: match ? match.count : 0,
+    };
+  });
+
+  res.json({ success: true, data });
+});
+
+// @desc    Mark an accepted candidate as hired
+// @route   PUT /api/applications/:id/hire
+// @access  Private/Admin
+const markAsHired = asyncHandler(async (req, res) => {
+  const application = await Application.findById(req.params.id);
+
+  if (!application) {
+    res.status(404);
+    throw new Error("Application not found");
+  }
+
+  if (application.status !== "accepted") {
+    res.status(400);
+    throw new Error(
+      "Only accepted candidates who have interviewed can be marked as hired",
+    );
+  }
+
+  application.status = "hired";
+  application.hiredDate = new Date();
+  await application.save();
+
+  res.json({
+    success: true,
+    message: "Candidate marked as hired",
+    data: application,
+  });
+});
 
 module.exports = {
   submitApplication,
@@ -296,4 +407,8 @@ module.exports = {
   getMyApplications,
   getAdminStats,
   getRecentApplications,
+  scheduleInterview,
+  getInterviewSchedule,
+  getHiringTrend,
+  markAsHired,
 };

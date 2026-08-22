@@ -50,7 +50,7 @@ const applicationSchema = mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["pending", "accepted", "declined"],
+      enum: ["pending", "accepted", "declined", "hired"], // added "hired"
       default: "pending",
     },
     adminFeedback: {

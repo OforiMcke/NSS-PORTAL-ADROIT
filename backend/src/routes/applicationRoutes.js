@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const {
   submitApplication,
-  getApplicationsBySubCategory,
   getAdminApplications,
   getApplicationDetail,
   acceptApplication,
@@ -10,6 +9,10 @@ const {
   getMyApplications,
   getAdminStats,
   getRecentApplications,
+  scheduleInterview,
+  getInterviewSchedule,
+  getHiringTrend,
+  markAsHired,
 } = require("../controllers/applicationController");
 const {
   protect,
@@ -35,6 +38,10 @@ router.get("/me", protect, getMyApplications);
 router.get("/admin/stats", protect, adminOnly, getAdminStats);
 router.get("/admin/recent", protect, adminOnly, getRecentApplications);
 router.get("/admin/list", protect, adminOnly, getAdminApplications);
+router.get("/admin/interviews", protect, adminOnly, getInterviewSchedule);
+router.get("/admin/hiring-trend", protect, adminOnly, getHiringTrend);
+router.put("/:id/interview", protect, adminOnly, scheduleInterview);
+router.put("/:id/hire", protect, adminOnly, markAsHired);
 router.get("/:id", protect, adminOnly, getApplicationDetail);
 router.put("/:id/accept", protect, adminOnly, acceptApplication);
 router.put("/:id/decline", protect, adminOnly, declineApplication);

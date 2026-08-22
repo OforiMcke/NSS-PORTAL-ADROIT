@@ -12,15 +12,18 @@ export default function ApplicationDetailPanel({
 }) {
   return (
     <section className="jap-detail-panel">
-      <ApplicantProfileCard application={application} />
+      <ApplicantProfileCard
+        application={application}
+        isUpdating={isUpdating}
+        onAccept={onAccept}
+        onDecline={onDecline}
+      />
       <ContactDetailsCard application={application} />
       <ApplicationReviewCard
         application={application}
         isUpdating={isUpdating}
         onViewResume={onViewResume}
         onViewAdditionalDoc={onViewAdditionalDoc}
-        onAccept={onAccept}
-        onDecline={onDecline}
       />
     </section>
   );
