@@ -47,6 +47,7 @@ export default function AdminDashboard() {
   const [hiringData, setHiringData] = useState([]);
   const maxValue = Math.max(...hiringData.map((d) => d.value), 1);
   const displayedActivity = recentActivity;
+  const [upcomingInterviews, setUpcomingInterviews] = useState([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -58,15 +59,17 @@ export default function AdminDashboard() {
           { data: recentData },
           profileRes,
           { data: trendData },
+          { data: interviewsData },
         ] = await Promise.all([
           api.get("/api/applications/admin/stats"),
           api.get("/api/applications/admin/recent"),
           api.get("/api/auth/profile"),
           api.get("/api/applications/admin/hiring-trend"),
+          api.get("/api/applications/admin/upcoming-interviews"),
         ]);
         setHiringData(trendData.data || []);
         if (!isMounted) return;
-
+        setUpcomingInterviews(interviewsData.data || []);
         setStats(statsData.data);
         setRecentActivity(
           recentData.data.map((application) => ({
@@ -240,6 +243,18 @@ export default function AdminDashboard() {
         </section>
         <section className="schedule-card">
           <h3>Current Schedule</h3>
+          {upcomingInterviews.length === 0 ? (
+            <p className="jobs-list-state">No interviews scheduled yet.</p>
+          ) : (
+            upcomingInterviews.map((interview) => (
+              <div className="schedule-item" key={interview._id}>
+                <span className="schedule-dot" />
+                {interview.fullName} —{" "}
+                {interview.job?.title || interview.jobRole || "a role"} on{" "}
+                {new Date(interview.interviewDate).toLocaleString()}
+              </div>
+            ))
+          )}
         </section>
       </main>
     </div>

@@ -148,7 +148,7 @@ export default function InterviewSchedule() {
                       {savingId === app._id ? "Saving..." : "Set"}
                     </button>
                     <button
-                      className="I-btn"
+                      className="M-btn"
                       type="button"
                       onClick={() => handleMarkHired(app._id)}
                       disabled={hiringId === app._id || !app.interviewDate}

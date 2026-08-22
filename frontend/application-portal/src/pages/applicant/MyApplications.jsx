@@ -8,15 +8,17 @@ const statusColor = {
   pending: "status-pending",
   accepted: "status-accepted",
   declined: "status-rejected",
+  hired: "status-hired",
 };
 
 const statusLabel = {
   pending: "Under Review",
   accepted: "Accepted",
   declined: "Declined",
+  hired: "Hired 🎉",
 };
 
-const FILTERS = ["All", "Pending", "Accepted", "Declined"];
+const FILTERS = ["All", "Pending", "Accepted", "Declined", "Hired"];
 
 export default function MyApplications() {
   const [applications, setApplications] = useState([]);

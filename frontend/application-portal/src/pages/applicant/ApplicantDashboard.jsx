@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FileText, UserCheck, Clock } from "lucide-react";
+import { FileText, UserCheck, Clock, CalendarDays } from "lucide-react";
 import Sidebar from "../../components/Sidebar";
 import TopBar from "../../components/TopBar";
 import StatCard from "../../components/StatCard";
@@ -8,17 +8,20 @@ import api from "../../api/axiosInstance";
 import "../admin/dashboard.css";
 import ApplicationForm from "./ApplicationForm.jsx";
 import MyApplications from "./MyApplications.jsx";
+import ApplicantInterviewSchedule from "./ApplicantInterviewSchedule.jsx";
 
 const statusColor = {
   pending: "status-pending",
   accepted: "status-accepted",
   declined: "status-rejected",
+  hired: "status-hired",
 };
 
 const statusLabel = {
   pending: "Under Review",
   accepted: "Accepted",
   declined: "Declined",
+  hired: "Hired 🎉",
 };
 
 export default function ApplicantDashboard() {
@@ -106,7 +109,7 @@ export default function ApplicantDashboard() {
         )}
 
         {activeLink === "My Applications" && <MyApplications />}
-
+        {activeLink === "Interview Schedule" && <ApplicantInterviewSchedule />}
         {activeLink === "Dashboard" && (
           <>
             <section className="welcome-banner">
@@ -148,11 +151,11 @@ export default function ApplicantDashboard() {
                 value={submittedCount}
                 icon={FileText}
               />
-              {/* <StatCard
+              <StatCard
                 label="Interviews Scheduled:"
                 value={interviewCount}
                 icon={CalendarDays}
-              /> */}
+              />
               <StatCard
                 label="Accepted:"
                 value={acceptedCount}
@@ -178,8 +181,7 @@ export default function ApplicantDashboard() {
                 <tbody>
                   {applications.map((app, i) => (
                     <tr key={i}>
-                      <td>{app.job?.title || "Unknown role"}</td>
-                      {/* was: app.subCategory?.name */}{" "}
+                      <td>{app.job?.title || app.jobRole || "Unknown role"}</td>
                       <td>
                         <span
                           className={`status-badge ${statusColor[app.status]}`}
