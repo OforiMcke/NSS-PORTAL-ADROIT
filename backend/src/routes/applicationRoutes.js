@@ -9,6 +9,7 @@ const {
   getMyApplications,
   getAdminStats,
   getRecentApplications,
+  getUpcomingInterviews,
   scheduleInterview,
   getInterviewSchedule,
   getHiringTrend,
@@ -39,6 +40,12 @@ router.get("/admin/stats", protect, adminOnly, getAdminStats);
 router.get("/admin/recent", protect, adminOnly, getRecentApplications);
 router.get("/admin/list", protect, adminOnly, getAdminApplications);
 router.get("/admin/interviews", protect, adminOnly, getInterviewSchedule);
+router.get(
+  "/admin/upcoming-interviews",
+  protect,
+  adminOnly,
+  getUpcomingInterviews,
+);
 router.get("/admin/hiring-trend", protect, adminOnly, getHiringTrend);
 router.put("/:id/interview", protect, adminOnly, scheduleInterview);
 router.put("/:id/hire", protect, adminOnly, markAsHired);

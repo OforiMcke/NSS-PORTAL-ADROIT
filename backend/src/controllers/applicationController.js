@@ -280,6 +280,7 @@ const getAdminStats = asyncHandler(async (req, res) => {
     },
   });
 });
+
 const getRecentApplications = asyncHandler(async (req, res) => {
   await connectDB();
 
@@ -291,6 +292,24 @@ const getRecentApplications = asyncHandler(async (req, res) => {
 
   res.json({ success: true, count: applications.length, data: applications });
 });
+
+// @desc    Upcoming interviews for the admin dashboard widget
+// @route   GET /api/applications/admin/upcoming-interviews
+// @access  Private/Admin
+const getUpcomingInterviews = asyncHandler(async (req, res) => {
+  await connectDB();
+
+  const applications = await Application.find({
+    status: "accepted",
+    interviewDate: { $gte: new Date() },
+  })
+    .populate("job", "title employmentType")
+    .sort("interviewDate")
+    .limit(5);
+
+  res.json({ success: true, count: applications.length, data: applications });
+});
+
 // @desc    Schedule (or reschedule) an interview for an accepted application
 // @route   PUT /api/applications/:id/interview
 // @access  Private/Admin
@@ -330,7 +349,7 @@ const scheduleInterview = asyncHandler(async (req, res) => {
 // @desc    List accepted applications for interview scheduling
 // @route   GET /api/applications/admin/interviews
 const getInterviewSchedule = asyncHandler(async (req, res) => {
-  await connecDB();
+  await connectDB();
 
   const applications = await Application.find({ status: "accepted" })
     .populate("job", "title employmentType")
@@ -341,7 +360,7 @@ const getInterviewSchedule = asyncHandler(async (req, res) => {
 
 // @route   GET /api/applications/admin/hiring-trend
 const getHiringTrend = asyncHandler(async (req, res) => {
-  await connecDB();
+  await connectDB();
 
   const now = new Date();
   const months = [];
@@ -378,7 +397,7 @@ const getHiringTrend = asyncHandler(async (req, res) => {
 
 // @route   PUT /api/applications/:id/hire
 const markAsHired = asyncHandler(async (req, res) => {
-  await connecDB();
+  await connectDB();
 
   const application = await Application.findById(req.params.id);
 
@@ -414,6 +433,7 @@ module.exports = {
   getMyApplications,
   getAdminStats,
   getRecentApplications,
+  getUpcomingInterviews,
   scheduleInterview,
   getInterviewSchedule,
   getHiringTrend,
