@@ -247,6 +247,8 @@ const getMyApplications = asyncHandler(async (req, res) => {
 });
 
 const getAdminStats = asyncHandler(async (req, res) => {
+  await connectDB();
+
   const totalApplications = await Application.countDocuments();
   const pendingApplications = await Application.countDocuments({
     status: "pending",
@@ -273,7 +275,7 @@ const getAdminStats = asyncHandler(async (req, res) => {
       acceptedApplications,
       declinedApplications,
       hiredApplications,
-      openJobsCount, // NEW
+      openJobsCount,
       totalApplicants,
     },
   });
@@ -293,6 +295,8 @@ const getRecentApplications = asyncHandler(async (req, res) => {
 // @route   PUT /api/applications/:id/interview
 // @access  Private/Admin
 const scheduleInterview = asyncHandler(async (req, res) => {
+  await connectDB();
+
   const { interviewDate } = req.body;
 
   if (!interviewDate) {
@@ -325,19 +329,20 @@ const scheduleInterview = asyncHandler(async (req, res) => {
 
 // @desc    List accepted applications for interview scheduling
 // @route   GET /api/applications/admin/interviews
-// @access  Private/Admin
 const getInterviewSchedule = asyncHandler(async (req, res) => {
-  const applications = await Application.find({ status: "accepted" }) // unchanged — hired candidates fall out of this naturally
+  await connecDB();
+
+  const applications = await Application.find({ status: "accepted" })
     .populate("job", "title employmentType")
     .sort("interviewDate");
 
   res.json({ success: true, count: applications.length, data: applications });
 });
 
-// @desc    Monthly hire counts for the dashboard chart (last 10 months)
 // @route   GET /api/applications/admin/hiring-trend
-// @access  Private/Admin
 const getHiringTrend = asyncHandler(async (req, res) => {
+  await connecDB();
+
   const now = new Date();
   const months = [];
   for (let i = 9; i >= 0; i--) {
@@ -371,10 +376,10 @@ const getHiringTrend = asyncHandler(async (req, res) => {
   res.json({ success: true, data });
 });
 
-// @desc    Mark an accepted candidate as hired
 // @route   PUT /api/applications/:id/hire
-// @access  Private/Admin
 const markAsHired = asyncHandler(async (req, res) => {
+  await connecDB();
+
   const application = await Application.findById(req.params.id);
 
   if (!application) {
