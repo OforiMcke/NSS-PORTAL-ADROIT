@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import TopBar from "../../components/TopBar";
 import "../admin/dashboard.css";
+import "./InterviewSections.css";
 
 export default function ApprovedCandidates() {
   const navigate = useNavigate();
@@ -64,18 +65,18 @@ export default function ApprovedCandidates() {
             <p className="jobs-list-state">No approved candidates yet.</p>
           )}
           {!loading && !error && candidates.length > 0 && (
-            <div className="jobs-list-table">
-              <div className="jobs-list-row jobs-list-header">
+            <div className="iv-table">
+              <div className="iv-row iv-header">
                 <span>Name</span>
                 <span>Email</span>
                 <span>Job Role</span>
                 <span>Interview Date</span>
               </div>
               {candidates.map((c) => (
-                <div className="jobs-list-row" key={c._id}>
-                  <span className="jobs-list-title">{c.fullName}</span>
+                <div className="iv-row" key={c._id}>
+                  <span className="iv-name">{c.fullName}</span>
                   <span>{c.email}</span>
-                  <span>{c.jobTitle || c.jobRole || "—"}</span>
+                  <span>{c.jobRole || c.jobTitle || c.job?.title || "—"}</span>
                   <span>
                     {c.interviewDate
                       ? new Date(c.interviewDate).toLocaleString()

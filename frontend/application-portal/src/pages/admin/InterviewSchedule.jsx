@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import TopBar from "../../components/TopBar";
 import "../admin/dashboard.css";
+import "./InterviewSections.css";
 
 export default function InterviewSchedule() {
   const navigate = useNavigate();
@@ -113,23 +114,25 @@ export default function InterviewSchedule() {
             <p className="jobs-list-state">No accepted candidates yet.</p>
           )}
           {!loading && applications.length > 0 && (
-            <div className="jobs-list-table">
-              <div className="jobs-list-row jobs-list-header">
+            <div className="iv-table">
+              <div className="iv-row iv-header">
                 <span>Name</span>
                 <span>Job Role</span>
                 <span>Interview Date</span>
                 <span>Action</span>
               </div>
               {applications.map((app) => (
-                <div className="jobs-list-row" key={app._id}>
-                  <span className="jobs-list-title">{app.fullName}</span>
-                  <span>{app.jobTitle || app.jobRole || "—"}</span>
+                <div className="iv-row" key={app._id}>
+                  <span className="iv-name">{app.fullName}</span>
+                  <span>
+                    {app.jobRole || app.jobTitle || app.job?.title || "—"}
+                  </span>
                   <span>
                     {app.interviewDate
                       ? new Date(app.interviewDate).toLocaleString()
                       : "Not scheduled"}
                   </span>
-                  <span style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  <span className="iv-actions">
                     <input
                       type="datetime-local"
                       onChange={(e) =>
@@ -141,15 +144,15 @@ export default function InterviewSchedule() {
                     />
                     <button
                       type="button"
-                      className="I-btn"
+                      className="iv-btn iv-btn-set"
                       onClick={() => handleSchedule(app._id)}
                       disabled={savingId === app._id}
                     >
                       {savingId === app._id ? "Saving..." : "Set"}
                     </button>
                     <button
-                      className="M-btn"
                       type="button"
+                      className="iv-btn iv-btn-hire"
                       onClick={() => handleMarkHired(app._id)}
                       disabled={hiringId === app._id || !app.interviewDate}
                       title={

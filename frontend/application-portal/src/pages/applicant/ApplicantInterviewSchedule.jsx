@@ -1,21 +1,7 @@
 import { useState, useEffect } from "react";
 import { CalendarClock } from "lucide-react";
 import { api } from "../../api/axiosInstance";
-import "../admin/dashboard.css";
-
-const statusColor = {
-  pending: "status-pending",
-  accepted: "status-accepted",
-  declined: "status-rejected",
-  hired: "status-hired",
-};
-
-const statusLabel = {
-  pending: "Under Review",
-  accepted: "Interview Scheduled",
-  declined: "Declined",
-  hired: "Hired 🎉",
-};
+import "./ApplicantInterviewSchedule.css";
 
 export default function ApplicantInterviewSchedule() {
   const [applications, setApplications] = useState([]);
@@ -46,47 +32,59 @@ export default function ApplicantInterviewSchedule() {
   const scheduled = applications.filter((app) => !!app.interviewDate);
 
   return (
-    <section className="applications-card">
+    <div className="ais-wrapper">
       <h3>Interview Schedule</h3>
 
       {loading && (
-        <p className="ma-status-text">Loading your interview schedule...</p>
+        <p className="ais-status-text">Loading your interview schedule...</p>
       )}
-      {!loading && error && <p className="ma-error-text">{error}</p>}
+      {!loading && error && <p className="ais-error-text">{error}</p>}
 
       {!loading && !error && scheduled.length === 0 && (
-        <div className="ma-empty-state">
-          <CalendarClock size={32} className="ma-empty-icon" />
+        <div className="ais-empty">
+          <CalendarClock size={36} />
           <p>No interviews scheduled yet.</p>
         </div>
       )}
 
       {!loading && !error && scheduled.length > 0 && (
-        <table className="applications-table">
-          <thead>
-            <tr>
-              <th>Position</th>
-              <th>Interview Date</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {scheduled.map((app) => (
-              <tr key={app._id}>
-                <td>{app.job?.title || app.jobTitle || "—"}</td>
-                <td>{new Date(app.interviewDate).toLocaleString()}</td>
-                <td>
-                  <span
-                    className={`status-badge ${statusColor[app.status] || ""}`}
-                  >
-                    {statusLabel[app.status] || app.status}
+        <div className="ais-list">
+          {scheduled.map((app) => {
+            const date = new Date(app.interviewDate);
+            const isHired = app.status === "hired";
+            return (
+              <div
+                key={app._id}
+                className={`ais-card ${isHired ? "ais-card--hired" : ""}`}
+              >
+                <div className="ais-date-block">
+                  <span className="ais-date-day">{date.getDate()}</span>
+                  <span className="ais-date-month">
+                    {date.toLocaleString("default", { month: "short" })}
                   </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </div>
+                <div className="ais-details">
+                  <div className="ais-role">
+                    {app.job?.title || app.jobRole || "—"}
+                  </div>
+                  <div className="ais-time">
+                    {date.toLocaleString("default", {
+                      weekday: "long",
+                      hour: "numeric",
+                      minute: "2-digit",
+                    })}
+                  </div>
+                </div>
+                <span
+                  className={`ais-badge ${isHired ? "ais-badge--hired" : "ais-badge--accepted"}`}
+                >
+                  {isHired ? "Hired 🎉" : "Interview Scheduled"}
+                </span>
+              </div>
+            );
+          })}
+        </div>
       )}
-    </section>
+    </div>
   );
 }

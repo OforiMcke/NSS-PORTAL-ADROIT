@@ -1,0 +1,120 @@
+/* ===== Approved Candidates / Interview Schedule tables ===== */
+.iv-table {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 16px;
+  background: #fff;
+}
+
+.iv-row {
+  display: grid;
+  grid-template-columns: 1.5fr 1.5fr 1fr 1.4fr;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+  gap: 10px;
+}
+
+.iv-row:last-child {
+  border-bottom: none;
+}
+
+.iv-header {
+  background: #fafafa;
+  font-weight: 600;
+  font-size: 13px;
+  color: #666;
+}
+
+.iv-row:not(.iv-header):hover {
+  background: #fafbff;
+}
+
+.iv-name {
+  font-weight: 600;
+  color: #0a0a5c;
+}
+
+/* ===== Action cell (datetime input + Set + Mark Hired) ===== */
+.iv-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.iv-actions input[type="datetime-local"] {
+  padding: 7px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #333;
+  min-width: 0;
+}
+
+.iv-actions input[type="datetime-local"]:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.iv-btn {
+  padding: 7px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    opacity 0.15s ease,
+    transform 0.1s ease;
+}
+
+.iv-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.iv-btn:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.iv-btn-set {
+  background: #dbe4fb;
+  color: #0a0a5c;
+}
+
+.iv-btn-hire {
+  background: #0a0a5c;
+  color: #fff;
+}
+
+/* ===== "Current Schedule" widget — status-aware dot ===== */
+.schedule-item .schedule-dot--upcoming {
+  background: #f5c518;
+}
+
+.schedule-item .schedule-dot--soon {
+  background: #e74c3c;
+}
+
+/* ===== Responsive stacking ===== */
+@media (max-width: 720px) {
+  .iv-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .iv-header {
+    display: none;
+  }
+
+  .iv-row {
+    border-bottom: 1px solid #eef0f6;
+    padding: 16px;
+  }
+}
