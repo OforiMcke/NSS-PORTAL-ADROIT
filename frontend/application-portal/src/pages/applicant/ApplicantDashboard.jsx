@@ -32,6 +32,7 @@ export default function ApplicantDashboard() {
     firstName: "Applicant",
     lastName: "",
   });
+  const [nextInterview, setNextInterview] = useState(null);
 
   const fetchApplicantData = async () => {
     try {
@@ -42,6 +43,15 @@ export default function ApplicantDashboard() {
 
       setProfile(profileRes.data);
       setApplications(appsRes.data.data);
+
+      const now = new Date();
+      const upcoming = (appsRes.data.data || [])
+        .filter(
+          (app) => app.interviewDate && new Date(app.interviewDate) >= now,
+        )
+        .sort((a, b) => new Date(a.interviewDate) - new Date(b.interviewDate));
+
+      setNextInterview(upcoming[0] || null);
     } catch (error) {
       console.error("Failed to load applicant dashboard data:", error);
     }
@@ -198,10 +208,29 @@ export default function ApplicantDashboard() {
 
             <section className="schedule-card">
               <h3>Upcoming Interview</h3>
-              {/* <div className="schedule-item">
-                <span className="schedule-dot" />
-                NSS - IT Support Interview on Aug 12, 2026 at 10:00 AM
-              </div> */}
+              {nextInterview ? (
+                <div className="schedule-item">
+                  <span className="schedule-dot" />
+                  {nextInterview.job?.title ||
+                    nextInterview.jobTitle ||
+                    "Your role"}{" "}
+                  —{" "}
+                  {new Date(nextInterview.interviewDate).toLocaleString(
+                    "default",
+                    {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                      hour: "numeric",
+                      minute: "2-digit",
+                    },
+                  )}
+                </div>
+              ) : (
+                <p className="jobs-list-state" style={{ padding: "12px 0" }}>
+                  No upcoming interviews scheduled.
+                </p>
+              )}
             </section>
           </>
         )}
