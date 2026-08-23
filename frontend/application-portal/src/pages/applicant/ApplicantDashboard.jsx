@@ -191,7 +191,7 @@ export default function ApplicantDashboard() {
                 <tbody>
                   {applications.map((app, i) => (
                     <tr key={i}>
-                      <td>{app.job?.title || app.jobRole || "Unknown role"}</td>
+                      <td>{app.jobRole || "Unknown role"}</td>
                       <td>
                         <span
                           className={`status-badge ${statusColor[app.status]}`}
