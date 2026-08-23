@@ -99,10 +99,8 @@ export default function MyApplications() {
             <thead>
               <tr>
                 <th>Position</th>
-                {/* <th>Category</th> */}
                 <th>Status</th>
                 <th>Date Applied</th>
-                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -112,8 +110,7 @@ export default function MyApplications() {
                   className="ma-row"
                   onClick={() => setSelected(app)}
                 >
-                  <td>{app.job?.title || "—"}</td>
-                  {/* <td>{app.category?.name || "—"}</td> */}
+                  <td>{app.jobRole || "—"}</td>
                   <td>
                     <span
                       className={`status-badge ${statusColor[app.status] || ""}`}
@@ -142,12 +139,10 @@ export default function MyApplications() {
               <div>
                 <h3 className="ma-modal-title">
                   {selected.job?.title || "Application"}
-                  {/* was: selected.subCategory?.name */}
                 </h3>
                 <p className="ma-modal-subtitle">
                   {selected.job?.employmentType}
                 </p>
-                {/* was: selected.category?.name */}
               </div>
               <button
                 onClick={() => setSelected(null)}
@@ -169,11 +164,6 @@ export default function MyApplications() {
               <p className="ma-detail-value">
                 {new Date(selected.createdAt).toLocaleString()}
               </p>
-
-              {/* <p className="ma-detail-label">Statement of Motivation</p>
-              <p className="ma-detail-statement">
-                {selected.statementOfMotivation}
-              </p> */}
 
               {selected.cvUrl && (
                 <a

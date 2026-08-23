@@ -36,6 +36,7 @@ export default function AdminDashboard() {
     acceptedApplications: 0,
     declinedApplications: 0,
     totalApplicants: 0,
+    openJobs: 0,
   });
   const [recentActivity, setRecentActivity] = useState([]);
   const userRole = localStorage.getItem("userRole");
