@@ -9,7 +9,6 @@ export default function ApplicationDetailPanel({
   // onViewAdditionalDoc,
   onAccept,
   onDecline,
-  onReset,
 }) {
   return (
     <section className="jap-detail-panel">
@@ -18,7 +17,6 @@ export default function ApplicationDetailPanel({
         isUpdating={isUpdating}
         onAccept={onAccept}
         onDecline={onDecline}
-        onReset={onReset}
       />
       <ContactDetailsCard application={application} />
       <ApplicationReviewCard

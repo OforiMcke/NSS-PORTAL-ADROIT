@@ -26,10 +26,11 @@ export default function JobApplicationsPage() {
   const [updatingId, setUpdatingId] = useState(null);
   const [error, setError] = useState("");
   const [userName, setUserName] = useState("Recruiter");
-  const [setUserEmail] = useState("recruiter@adroit360.com");
+  const [userEmail, setUserEmail] = useState("recruiter@adroit360.com");
   const [activeLink, setActiveLink] = useState(
     location.state?.initialView || "All Applications",
   );
+  <TopBar userName={userName} userEmail={userEmail} />;
 
   useEffect(() => {
     let isMounted = true;
@@ -90,44 +91,30 @@ export default function JobApplicationsPage() {
     null;
 
   const handleStatusAction = async (action, applicationId) => {
-    const originalApplication = applications.find(
-      (app) => app._id === applicationId,
-    );
-    const previousStatus = originalApplication?.status || "pending";
-
-    let nextStatus = "pending";
-    if (action === "accept") nextStatus = "accepted";
-    if (action === "decline") nextStatus = "declined";
-
-    setApplications((current) =>
-      current.map((application) =>
-        application._id === applicationId
-          ? { ...application, status: nextStatus }
-          : application,
-      ),
-    );
-    setUpdatingId(applicationId);
-    setError("");
-
     try {
+      setUpdatingId(applicationId);
+      setError("");
+
       if (action === "accept") {
         await api.put(`/api/applications/${applicationId}/accept`);
-      } else if (action === "decline") {
+      } else {
         await api.put(`/api/applications/${applicationId}/decline`);
-      } else if (action === "reset") {
-        await api.put(`/api/applications/${applicationId}/reset`);
       }
-    } catch (err) {
+
       setApplications((current) =>
         current.map((application) =>
           application._id === applicationId
-            ? { ...application, status: previousStatus }
+            ? {
+                ...application,
+                status: action === "accept" ? "accepted" : "declined",
+              }
             : application,
         ),
       );
+    } catch (err) {
       setError(
         err.response?.data?.message ||
-          `Unable to change status to ${nextStatus} right now.`,
+          `Unable to ${action} this application right now.`,
       );
     } finally {
       setUpdatingId(null);
@@ -179,7 +166,6 @@ export default function JobApplicationsPage() {
   const isAllJobsView = activeLink === "All Jobs";
   const isCreateAdminView = activeLink === "Create Admin";
   const isJobRolesView = activeLink === "Job Roles";
-
   return (
     <div className="dashboard-layout">
       <Sidebar
@@ -226,7 +212,6 @@ export default function JobApplicationsPage() {
                   onViewAdditionalDoc={handleViewAdditionalDoc}
                   onAccept={() => handleStatusAction("accept", selected._id)}
                   onDecline={() => handleStatusAction("decline", selected._id)}
-                  onReset={() => handleStatusAction("reset", selected._id)}
                 />
               )}
             </div>
