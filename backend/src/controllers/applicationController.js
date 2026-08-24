@@ -364,19 +364,29 @@ const getHiringTrend = asyncHandler(async (req, res) => {
 
   const now = new Date();
   const months = [];
+
   for (let i = 9; i >= 0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
     months.push({ year: d.getFullYear(), month: d.getMonth() });
   }
+
   const rangeStart = new Date(months[0].year, months[0].month, 1);
 
   const hires = await Application.aggregate([
-    { $match: { status: "hired", hiredDate: { $gte: rangeStart } } },
+    {
+      $match: {
+        status: "hired",
+        hiredDate: { $gte: rangeStart },
+      },
+    },
     {
       $group: {
         _id: { year: { $year: "$hiredDate" }, month: { $month: "$hiredDate" } },
         count: { $sum: 1 },
       },
+    },
+    {
+      $sort: { "_id.year": 1, "_id.month": 1 },
     },
   ]);
 
@@ -384,9 +394,11 @@ const getHiringTrend = asyncHandler(async (req, res) => {
     const match = hires.find(
       (h) => h._id.year === year && h._id.month === month + 1,
     );
+
     return {
       label: new Date(year, month, 1).toLocaleString("default", {
         month: "short",
+        year: "2-digit",
       }),
       value: match ? match.count : 0,
     };
@@ -406,6 +418,7 @@ const markAsHired = asyncHandler(async (req, res) => {
     throw new Error("Application not found");
   }
 
+  // Double check configuration requirement to ensure uniform tracking workflow
   if (application.status !== "accepted") {
     res.status(400);
     throw new Error(
@@ -415,7 +428,6 @@ const markAsHired = asyncHandler(async (req, res) => {
 
   application.status = "hired";
   application.hiredDate = new Date();
-  await application.save();
 
   res.json({
     success: true,

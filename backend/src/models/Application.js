@@ -26,12 +26,24 @@ const applicationSchema = mongoose.Schema(
       required: [true, "Name is required"],
       trim: true,
     },
+
     email: {
       type: String,
-      required: [true, "Email is required"],
+      trim: true,
       lowercase: true,
+      unique: true,
+      required: [true, "Email address is required"],
+      match: [
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        "Please fill a valid email address",
+      ],
     },
-    phoneNumber: { type: String, required: [true, "Phone number is required"] },
+    phoneNumber: {
+      type: String,
+      trim: true,
+      required: [true, "Phone number is required"],
+      match: [/^\d{10}$/, "Phone number must be exactly 10 digits"],
+    },
 
     // Uploaded files
     cvUrl: {
@@ -50,7 +62,7 @@ const applicationSchema = mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["pending", "accepted", "declined", "hired"], // added "hired"
+      enum: ["pending", "accepted", "declined", "hired"],
       default: "pending",
     },
     adminFeedback: {

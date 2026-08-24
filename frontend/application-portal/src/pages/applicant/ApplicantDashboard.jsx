@@ -211,10 +211,7 @@ export default function ApplicantDashboard() {
               {nextInterview ? (
                 <div className="schedule-item">
                   <span className="schedule-dot" />
-                  {nextInterview.job?.title ||
-                    nextInterview.jobTitle ||
-                    "Your role"}{" "}
-                  —{" "}
+                  {nextInterview.jobRole || "Your role"} —{" "}
                   {new Date(nextInterview.interviewDate).toLocaleString(
                     "default",
                     {

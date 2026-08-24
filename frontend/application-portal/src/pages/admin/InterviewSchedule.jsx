@@ -124,9 +124,7 @@ export default function InterviewSchedule() {
               {applications.map((app) => (
                 <div className="iv-row" key={app._id}>
                   <span className="iv-name">{app.fullName}</span>
-                  <span>
-                    {app.jobRole || app.jobTitle || app.job?.title || "—"}
-                  </span>
+                  <span>{app.jobRole || "—"}</span>
                   <span>
                     {app.interviewDate
                       ? new Date(app.interviewDate).toLocaleString()
