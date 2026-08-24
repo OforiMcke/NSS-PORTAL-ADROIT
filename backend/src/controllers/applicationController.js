@@ -421,7 +421,6 @@ const markAsHired = asyncHandler(async (req, res) => {
     throw new Error("Application not found");
   }
 
-  // Double check configuration requirement to ensure uniform tracking workflow
   if (application.status !== "accepted") {
     res.status(400);
     throw new Error(
@@ -431,6 +430,7 @@ const markAsHired = asyncHandler(async (req, res) => {
 
   application.status = "hired";
   application.hiredDate = new Date();
+  await application.save();
 
   res.json({
     success: true,
@@ -438,7 +438,6 @@ const markAsHired = asyncHandler(async (req, res) => {
     data: application,
   });
 });
-
 module.exports = {
   submitApplication,
   getAdminApplications,
