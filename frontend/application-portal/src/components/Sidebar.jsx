@@ -4,8 +4,8 @@ import {
   FileText,
   UserCheck,
   CalendarClock,
-  Settings,
-  Users,
+  // Settings,
+  // Users,
   LogOut,
   PlusCircle,
   Briefcase,
@@ -39,8 +39,8 @@ const applicantLinks = [
 ];
 
 const bottomLinks = [
-  { label: "Settings", icon: Settings },
-  { label: "Manage Users", icon: Users, adminOnly: true },
+  // { label: "Settings", icon: Settings },
+  // { label: "Manage Users", icon: Users, adminOnly: true },
   { label: "Log Out", icon: LogOut },
 ];
 
