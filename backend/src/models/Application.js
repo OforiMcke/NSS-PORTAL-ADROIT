@@ -70,12 +70,12 @@ const applicationSchema = mongoose.Schema(
       default: "",
     },
     interviewDate: Date,
+    hiredDate: Date,
     reviewedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
     reviewDate: Date,
-
     // we use this to track Emails that are sent
     emailsSent: {
       applicationReceived: { type: Boolean, default: false },
