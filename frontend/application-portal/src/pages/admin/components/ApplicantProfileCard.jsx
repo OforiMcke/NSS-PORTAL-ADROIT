@@ -10,7 +10,6 @@ import { initials, statusLabel } from "../utils/helpers";
 export default function ApplicantProfileCard({
   application,
   isUpdating,
-
   onAccept,
   onDecline,
 }) {
@@ -41,7 +40,11 @@ export default function ApplicantProfileCard({
             className="jap-action-btn accept"
             type="button"
             onClick={onAccept}
-            disabled={isUpdating || application.status === "accepted"}
+            disabled={
+              isUpdating ||
+              application.status === "accepted" ||
+              application.status === "declined"
+            }
           >
             {isUpdating ? (
               <LoaderCircle className="jap-spinner" size={14} />
@@ -54,7 +57,11 @@ export default function ApplicantProfileCard({
             className="jap-action-btn decline"
             type="button"
             onClick={onDecline}
-            disabled={isUpdating || application.status === "declined"}
+            disabled={
+              isUpdating ||
+              application.status === "declined" ||
+              application.status === "accepted"
+            }
           >
             {isUpdating ? (
               <LoaderCircle className="jap-spinner" size={14} />
