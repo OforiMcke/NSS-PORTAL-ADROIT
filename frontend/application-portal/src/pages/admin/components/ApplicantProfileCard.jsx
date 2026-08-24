@@ -46,13 +46,14 @@ export default function ApplicantProfileCard({
               application.status === "declined"
             }
           >
-            {isUpdating ? (
+            {isUpdating && application.status === "accepted" ? (
               <LoaderCircle className="jap-spinner" size={14} />
             ) : (
               <CheckCircle2 size={14} />
             )}
             Accept
           </button>
+
           <button
             className="jap-action-btn decline"
             type="button"
@@ -63,7 +64,7 @@ export default function ApplicantProfileCard({
               application.status === "accepted"
             }
           >
-            {isUpdating ? (
+            {isUpdating && application.status === "declined" ? (
               <LoaderCircle className="jap-spinner" size={14} />
             ) : (
               <XCircle size={14} />
