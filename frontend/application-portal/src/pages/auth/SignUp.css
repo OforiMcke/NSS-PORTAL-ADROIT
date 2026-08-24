@@ -238,3 +238,84 @@
   color: #2563eb;
   text-decoration: none;
 }
+
+@media (max-width: 968px) {
+  .split-screen {
+    flex-direction: column;
+  }
+
+  .visual-panel {
+    display: none;
+  }
+
+  .form-panel {
+    padding: 80px 16px 40px 16px;
+    min-height: 100vh;
+  }
+
+  .signup-form {
+    padding: 16px;
+    gap: 1.25rem;
+  }
+
+  .logo {
+    position: absolute;
+    top: 1rem;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: 12rem;
+    height: 3.5rem;
+  }
+
+  .wlcm-me {
+    min-width: unset;
+    width: 100%;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .signup-form h2 {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .name-row {
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .name-row .field {
+    flex: 1 1 100%;
+  }
+
+  .prefill-notice,
+  .success-message,
+  .error-message {
+    font-size: 0.88rem;
+    padding: 10px 12px;
+  }
+
+  .signin-link {
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    font-size: 0.95rem;
+  }
+
+  .checkbox-label input {
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .checkbox-label span {
+    position: relative;
+    margin-left: 0.75rem;
+    font-size: 0.9rem;
+  }
+}
