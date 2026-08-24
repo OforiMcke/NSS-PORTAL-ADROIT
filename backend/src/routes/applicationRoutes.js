@@ -24,7 +24,6 @@ const upload = require("../middleware/uploadMiddleware");
 
 router.post(
   "/",
-  // protect,
   optionalAuth,
   upload.handleUploadErrors(
     upload.fields([
@@ -35,6 +34,7 @@ router.post(
   ),
   submitApplication,
 );
+
 router.get("/me", protect, getMyApplications);
 router.get("/admin/stats", protect, adminOnly, getAdminStats);
 router.get("/admin/recent", protect, adminOnly, getRecentApplications);
@@ -47,9 +47,10 @@ router.get(
   getUpcomingInterviews,
 );
 router.get("/admin/hiring-trend", protect, adminOnly, getHiringTrend);
+
+router.get("/:id", protect, adminOnly, getApplicationDetail);
 router.put("/:id/interview", protect, adminOnly, scheduleInterview);
 router.put("/:id/hire", protect, adminOnly, markAsHired);
-router.get("/:id", protect, adminOnly, getApplicationDetail);
 router.put("/:id/accept", protect, adminOnly, acceptApplication);
 router.put("/:id/decline", protect, adminOnly, declineApplication);
 

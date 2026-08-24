@@ -36,20 +36,23 @@ export default function AdminDashboard() {
     acceptedApplications: 0,
     declinedApplications: 0,
     totalApplicants: 0,
-    openJobs: 0,
+    openJobsCount: 0,
+    hiredApplications: 0,
   });
+  const [timeRange, setTimeRange] = useState(10);
+
   const [recentActivity, setRecentActivity] = useState([]);
+  const [userAvatarUrl, setUserAvatarUrl] = useState("");
+  const [hiringData, setHiringData] = useState([]);
+  const [upcomingInterviews, setUpcomingInterviews] = useState([]);
+
   const userRole = localStorage.getItem("userRole");
   const userName =
     userRole === "admin"
       ? "Recruiter"
       : localStorage.getItem("userName") || "Recruiter";
-  const [userAvatarUrl, setUserAvatarUrl] = useState("");
-  const [hiringData, setHiringData] = useState([]);
-  const maxValue = Math.max(...hiringData.map((d) => d.value), 1);
-  const displayedActivity = recentActivity;
-  const [upcomingInterviews, setUpcomingInterviews] = useState([]);
 
+  const maxValue = Math.max(...hiringData.map((d) => d.value), 1);
   useEffect(() => {
     let isMounted = true;
 
@@ -65,25 +68,25 @@ export default function AdminDashboard() {
           api.get("/api/applications/admin/stats"),
           api.get("/api/applications/admin/recent"),
           api.get("/api/auth/profile"),
-          api.get("/api/applications/admin/hiring-trend"),
+          api.get(`/api/applications/admin/hiring-trend?months=${timeRange}`),
           api.get("/api/applications/admin/upcoming-interviews"),
         ]);
-        setHiringData(trendData.data || []);
+
         if (!isMounted) return;
+
+        setHiringData(trendData.data || []);
         setUpcomingInterviews(interviewsData.data || []);
-        setStats(statsData.data);
+        setStats(statsData.data || {});
+        setUserAvatarUrl(profileRes.data?.avatarUrl || "");
         setRecentActivity(
-          recentData.data.map((application) => ({
-            name: application.applicant
-              ? `${application.applicant.firstName} ${application.applicant.lastName}`
-              : application.fullName || "Anonymous applicant",
-            action: `applied for ${application.jobRole || "a role"}`,
-            time: new Date(application.createdAt).toLocaleDateString(),
-            jobRole: application.jobRole,
-            employmentType: application.job?.employmentType,
+          (recentData.data || []).map((app) => ({
+            name: app.applicant
+              ? `${app.applicant.firstName} ${app.applicant.lastName}`
+              : app.fullName || "Anonymous applicant",
+            action: `applied for ${app.jobRole || "a role"}`,
+            time: new Date(app.createdAt).toLocaleDateString(),
           })),
         );
-        setUserAvatarUrl(profileRes.data.avatarUrl || "");
       } catch (error) {
         console.error("Failed to load admin dashboard data:", error);
       }
@@ -94,13 +97,12 @@ export default function AdminDashboard() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [timeRange]);
 
   const handleSidebarClick = (label) => {
     if (label === "Log Out") {
       const refreshToken = localStorage.getItem("refreshToken");
       api.post("/api/auth/logout", { refreshToken }).catch(() => {});
-
       localStorage.clear();
       api.defaults.headers.common.Authorization = "";
       navigate("/signin");
@@ -114,8 +116,7 @@ export default function AdminDashboard() {
 
     if (JOB_APPLICATIONS_GROUP.includes(label)) {
       setActiveLink(label);
-      const initialView = label;
-      navigate("/admin/job-applications", { state: { initialView } });
+      navigate("/admin/job-applications", { state: { initialView: label } });
       return;
     }
 
@@ -193,16 +194,19 @@ export default function AdminDashboard() {
           <div className="chart-card">
             <div className="chart-header">
               <h3>Hiring Chart</h3>
-              <select className="chart-filter">
-                <option>This month</option>
-                <option>Last month</option>
-                <option>This year</option>
+              <select
+                className="chart-filter"
+                value={timeRange}
+                onChange={(e) => setTimeRange(Number(e.target.value))}
+              >
+                <option value={6}>Last 6 Months</option>
+                <option value={10}>Last 10 Months</option>
+                <option value={12}>Last 12 Months</option>
               </select>
             </div>
             <div className="bar-chart">
               {hiringData.map((d, i) => {
                 const color = chartColors[i % chartColors.length];
-
                 return (
                   <div className="bar-wrapper" key={i}>
                     <div
@@ -222,12 +226,12 @@ export default function AdminDashboard() {
           <div className="activity-card">
             <h3>Recent Activity</h3>
             <ul className="activity-list">
-              {displayedActivity.length === 0 ? (
+              {recentActivity.length === 0 ? (
                 <li className="activity-item">
                   <div>No recent activity.</div>
                 </li>
               ) : (
-                displayedActivity.map((item, i) => (
+                recentActivity.map((item, i) => (
                   <li key={i} className="activity-item">
                     <span className={`activity-dot dot-${i % 6}`} />
                     <div>
@@ -242,6 +246,7 @@ export default function AdminDashboard() {
             </ul>
           </div>
         </section>
+
         <section className="schedule-card">
           <h3>Current Schedule</h3>
           {upcomingInterviews.length === 0 ? (

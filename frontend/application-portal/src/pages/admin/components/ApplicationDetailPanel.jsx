@@ -5,8 +5,8 @@ import ApplicationReviewCard from "./ApplicationReviewCard";
 export default function ApplicationDetailPanel({
   application,
   isUpdating,
-  onViewResume,
-  onViewAdditionalDoc,
+  // onViewResume,
+  // onViewAdditionalDoc,
   onAccept,
   onDecline,
 }) {
@@ -22,8 +22,8 @@ export default function ApplicationDetailPanel({
       <ApplicationReviewCard
         application={application}
         isUpdating={isUpdating}
-        onViewResume={onViewResume}
-        onViewAdditionalDoc={onViewAdditionalDoc}
+        // onViewResume={onViewResume}
+        // onViewAdditionalDoc={onViewAdditionalDoc}
       />
     </section>
   );

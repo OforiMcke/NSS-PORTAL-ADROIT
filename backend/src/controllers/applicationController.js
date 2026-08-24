@@ -358,14 +358,19 @@ const getInterviewSchedule = asyncHandler(async (req, res) => {
   res.json({ success: true, count: applications.length, data: applications });
 });
 
-// @route   GET /api/applications/admin/hiring-trend
+// @route   GET /api/applications/admin/hiring-trend?months=6
 const getHiringTrend = asyncHandler(async (req, res) => {
   await connectDB();
+
+  // Parse time window constraint safely from client request
+  const rangeLimit = parseInt(req.query.months, 10) || 10;
+  const loopIndexStart = rangeLimit - 1;
 
   const now = new Date();
   const months = [];
 
-  for (let i = 9; i >= 0; i--) {
+  // Dynamically compute requested chronological windows
+  for (let i = loopIndexStart; i >= 0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
     months.push({ year: d.getFullYear(), month: d.getMonth() });
   }
@@ -385,9 +390,7 @@ const getHiringTrend = asyncHandler(async (req, res) => {
         count: { $sum: 1 },
       },
     },
-    {
-      $sort: { "_id.year": 1, "_id.month": 1 },
-    },
+    { $sort: { "_id.year": 1, "_id.month": 1 } },
   ]);
 
   const data = months.map(({ year, month }) => {

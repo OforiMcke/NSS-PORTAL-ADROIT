@@ -1,10 +1,13 @@
-import { Download, Eye } from "lucide-react";
+import {
+  // Download,
+  Eye,
+} from "lucide-react";
 import { useState } from "react";
 
 export default function ApplicationReviewCard({
   application,
-  onViewResume,
-  onViewAdditionalDoc,
+  // onViewResume,
+  // onViewAdditionalDoc,
 }) {
   const [previewUrl, setPreviewUrl] = useState(application?.cvUrl || "");
 
@@ -28,14 +31,14 @@ export default function ApplicationReviewCard({
             <Eye size={13} />
             View Resume
           </button>
-          <button
+          {/* <button
             className="jap-download-btn"
             type="button"
             onClick={() => onViewResume(application.cvUrl)}
           >
             <Download size={13} />
             Download Resume
-          </button>
+          </button> */}
         </div>
 
         {additionalDocs.map((doc, i) => (
@@ -48,14 +51,14 @@ export default function ApplicationReviewCard({
               <Eye size={13} />
               View Doc {additionalDocs.length > 1 ? i + 1 : ""}
             </button>
-            <button
+            {/* <button
               className="jap-download-btn"
               type="button"
               onClick={() => onViewAdditionalDoc(doc.url)}
             >
               <Download size={13} />
               Download Doc {additionalDocs.length > 1 ? i + 1 : ""}
-            </button>
+            </button> */}
           </div>
         ))}
       </div>
