@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Eye,
   ListChecks,
@@ -13,6 +14,23 @@ export default function ApplicantProfileCard({
   onAccept,
   onDecline,
 }) {
+  const [clickedAction, setClickedAction] = useState(null);
+
+  const handleAcceptClick = async () => {
+    setClickedAction("accept");
+    await onAccept();
+    setClickedAction(null);
+  };
+
+  const handleDeclineClick = async () => {
+    setClickedAction("decline");
+    await onDecline();
+    setClickedAction(null);
+  };
+
+  const isAccepted = application.status === "accepted";
+  const isDeclined = application.status === "declined";
+
   return (
     <div className="jap-profile-card">
       <div className="jap-profile-stats">
@@ -39,14 +57,14 @@ export default function ApplicantProfileCard({
           <button
             className="jap-action-btn accept"
             type="button"
-            onClick={onAccept}
+            onClick={handleAcceptClick}
             disabled={
-              isUpdating ||
-              application.status === "accepted" ||
-              application.status === "declined"
+              (isUpdating && clickedAction !== "accept") ||
+              isAccepted ||
+              isDeclined
             }
           >
-            {isUpdating && application.status === "accepted" ? (
+            {isUpdating && clickedAction === "accept" ? (
               <LoaderCircle className="jap-spinner" size={14} />
             ) : (
               <CheckCircle2 size={14} />
@@ -57,14 +75,14 @@ export default function ApplicantProfileCard({
           <button
             className="jap-action-btn decline"
             type="button"
-            onClick={onDecline}
+            onClick={handleDeclineClick}
             disabled={
-              isUpdating ||
-              application.status === "declined" ||
-              application.status === "accepted"
+              (isUpdating && clickedAction !== "decline") ||
+              isDeclined ||
+              isAccepted
             }
           >
-            {isUpdating && application.status === "declined" ? (
+            {isUpdating && clickedAction === "decline" ? (
               <LoaderCircle className="jap-spinner" size={14} />
             ) : (
               <XCircle size={14} />

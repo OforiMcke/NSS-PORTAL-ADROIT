@@ -387,8 +387,8 @@
 
 .jap-spinner {
   animation: jap-spin 1s linear infinite;
+  display: inline-block;
 }
-
 @keyframes jap-spin {
   from {
     transform: rotate(0deg);

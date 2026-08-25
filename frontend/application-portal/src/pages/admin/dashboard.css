@@ -597,7 +597,7 @@ h3 {
 
   .sidebar-link {
     flex: 1 1 calc(50% - 12px);
-    justify-content: center;
+    /* justify-content: center; */
   }
 
   .sidebar-divider {
@@ -656,6 +656,20 @@ h3 {
   .applications-table {
     min-width: 500px;
   }
+  .bundled.last {
+    display: none;
+  }
+  .bund.own {
+    display: none;
+  }
+
+  .bund.pu {
+    display: none;
+  }
+
+  .bund.go {
+    display: none;
+  }
 }
 
 @media (max-width: 480px) {
@@ -670,6 +684,20 @@ h3 {
   .bar-chart {
     gap: 6px;
     height: 180px;
+  }
+  .bundled.last {
+    display: none;
+  }
+  .bund.own {
+    display: none;
+  }
+
+  .bund.pu {
+    display: none;
+  }
+
+  .bund.go {
+    display: none;
   }
 }
 
