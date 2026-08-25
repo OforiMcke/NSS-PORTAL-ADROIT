@@ -1,10 +1,13 @@
-import { Search, Bell } from "lucide-react";
+import {
+  // Search,
+  Bell,
+} from "lucide-react";
 
 export default function TopBar({ userName = "Recruiter", avatarUrl }) {
   return (
     <div className="topbar">
       <div className="search-box">
-        <Search size={12} />
+        {/* <Search size={12} /> */}
         <input type="text" placeholder="Search" />
       </div>
 

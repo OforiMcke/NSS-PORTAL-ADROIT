@@ -203,11 +203,16 @@ export default function JobApplicationsPage() {
                   onSelect={setSelectedId}
                 />
               </section>
-
               {selected && (
                 <ApplicationDetailPanel
                   application={selected}
-                  isUpdating={updatingId === selected._id}
+                  updatingAction={
+                    updatingId === selected._id
+                      ? selected.status === "accepted"
+                        ? "accepting"
+                        : "declining"
+                      : null
+                  }
                   onViewResume={handleViewResume}
                   onViewAdditionalDoc={handleViewAdditionalDoc}
                   onAccept={() => handleStatusAction("accept", selected._id)}

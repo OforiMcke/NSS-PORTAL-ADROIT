@@ -560,55 +560,116 @@ h3 {
   .stats-row {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .content-row {
     grid-template-columns: 1fr;
   }
-  .welcome-cta-btn {
-    width: 4rem;
-    right: -10rem;
-    position: absolute;
-  }
-  .bundled.last {
-    right: -7rem;
-  }
-  .bund.own {
-    right: -7rem;
+
+  .welcome-banner {
+    height: auto;
+    padding: 24px;
   }
 
-  .bund.pu {
-    right: -3rem;
-  }
-
-  .bund.go {
-    right: -5rem;
+  .welcome-cta {
+    position: static;
+    margin-left: 0;
+    margin-top: 16px;
   }
 }
 
 @media (max-width: 768px) {
+  .dashboard-layout {
+    flex-direction: column;
+  }
+
   .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    padding: 16px;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .sidebar-link {
+    flex: 1 1 calc(50% - 12px);
+    justify-content: center;
+  }
+
+  .sidebar-divider {
     display: none;
   }
+
+  .dashboard-main {
+    padding: 16px;
+  }
+
+  .topbar {
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
+
+  .search-box {
+    width: 100%;
+  }
+
+  .topbar-right {
+    justify-content: space-between;
+  }
+
+  .welcome-banner {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+
+  .welcome-avatar {
+    width: 7rem;
+    height: 7rem;
+  }
+
+  .welcome-avatar--initials {
+    font-size: 3.5rem;
+  }
+
+  .welcome-banner h1 {
+    font-size: 28px;
+  }
+
+  .welcome-banner p {
+    font-size: 16px;
+  }
+
+  .lines {
+    opacity: 0.3;
+  }
+
+  .applications-card {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .applications-table {
+    min-width: 500px;
+  }
+}
+
+@media (max-width: 480px) {
   .stats-row {
     grid-template-columns: 1fr;
   }
-  .welcome-cta-btn {
-    width: 4rem;
-    right: -10rem;
-    position: absolute;
-  }
-  .bundled.last {
-    right: -7rem;
-  }
-  .bund.own {
-    right: -7rem;
+
+  .sidebar-link {
+    flex: 1 1 100%;
   }
 
-  .bund.pu {
-    right: -3rem;
-  }
-
-  .bund.go {
-    right: -5rem;
+  .bar-chart {
+    gap: 6px;
+    height: 180px;
   }
 }
 

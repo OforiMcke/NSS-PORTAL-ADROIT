@@ -1,15 +1,7 @@
 import { useRef, useState } from "react";
-import { FileText, CheckCircle2, Trash2 } from "lucide-react"; // Added icons for feedback
+import { FileText, CheckCircle2, Trash2 } from "lucide-react";
 
-export function UploadBox({
-  label,
-  required,
-  name,
-  onChange,
-  accept,
-  value,
-  subtext = "Support zip or rar files",
-}) {
+export function UploadBox({ label, required, name, onChange, accept, value }) {
   const fileInputRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -97,7 +89,6 @@ export function UploadBox({
                 Browse
               </span>
             </div>
-            <div className="upload-subtext">{subtext}</div>
           </>
         )}
 

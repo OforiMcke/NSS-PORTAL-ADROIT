@@ -38,7 +38,7 @@ export default function ApplicantDashboard() {
     try {
       const [profileRes, appsRes] = await Promise.all([
         api.get("/api/auth/profile"),
-        api.get("/api/applications/me"),
+        api.get("/api/applications/me"), 
       ]);
 
       setProfile(profileRes.data);
