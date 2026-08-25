@@ -26,6 +26,7 @@ h3 {
   position: sticky;
   top: 0;
   height: 100vh;
+  z-index: 10;
 }
 
 .sidebar-logo {
@@ -79,6 +80,8 @@ h3 {
   font-size: 14px;
   text-align: left;
   transition: 0.2s;
+  position: relative;
+  z-index: 2;
 }
 
 .sidebar-link:hover {
@@ -177,6 +180,7 @@ h3 {
   position: absolute;
   inset: 0;
   overflow: hidden;
+  pointer-events: none;
 }
 
 .bundle {
@@ -811,7 +815,7 @@ h3 {
     border-radius: 8px;
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    z-index: 99;
+    /* z-index: 99; */
   }
 
   .mobile-close-btn {
@@ -830,7 +834,7 @@ h3 {
     position: fixed;
     inset: 0;
     background: rgba(10, 11, 64, 0.4);
-    backdrop-filter: blur(4px);
+    /* backdrop-filter: blur(4px); */
     z-index: 999;
   }
 
