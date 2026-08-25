@@ -4,14 +4,14 @@ import {
   FileText,
   UserCheck,
   CalendarClock,
-  // Settings,
-  // Users,
   LogOut,
   PlusCircle,
   Briefcase,
   UserPlus,
   ChevronDown,
   ChevronRight,
+  Menu,
+  X,
 } from "lucide-react";
 
 const adminLinks = [
@@ -38,13 +38,11 @@ const applicantLinks = [
   { label: "Interview Schedule", icon: CalendarClock },
 ];
 
-const bottomLinks = [
-  // { label: "Settings", icon: Settings },
-  // { label: "Manage Users", icon: Users, adminOnly: true },
-  { label: "Log Out", icon: LogOut },
-];
+const bottomLinks = [{ label: "Log Out", icon: LogOut }];
 
 export default function Sidebar({ role = "admin", activeLink, onLinkClick }) {
+  const [isOpen, setIsOpen] = useState(false);
+
   const links = role === "admin" ? adminLinks : applicantLinks;
 
   const initiallyExpanded = links.find((l) =>
@@ -57,85 +55,113 @@ export default function Sidebar({ role = "admin", activeLink, onLinkClick }) {
     setExpanded((prev) => (prev === label ? null : label));
   };
 
+  const handleLinkClick = (label) => {
+    if (onLinkClick) onLinkClick(label);
+    setIsOpen(false);
+  };
+
   return (
-    <aside className="sidebar">
-      <div className="sidebar-logo"></div>
+    <>
+      <button
+        className="mobile-hamburger-btn"
+        onClick={() => setIsOpen(true)}
+        aria-label="Open Menu"
+      >
+        <Menu size={24} />
+      </button>
 
-      <nav className="sidebar-nav">
-        {links.map((link) => {
-          const Icon = link.icon;
-          const hasChildren = Array.isArray(link.children);
-          const isExpanded = expanded === link.label;
-          const isParentActive =
-            activeLink === link.label ||
-            link.children?.some((c) => c.label === activeLink);
+      {isOpen && (
+        <div className="sidebar-overlay" onClick={() => setIsOpen(false)} />
+      )}
 
-          return (
-            <div key={link.label} className="sidebar-group">
-              <button
-                className={`sidebar-link ${isParentActive ? "active" : ""}`}
-                onClick={() => {
-                  if (hasChildren) {
-                    toggleExpanded(link.label);
-                  }
-                  onLinkClick && onLinkClick(link.label);
-                }}
-              >
-                <Icon size={18} />
-                <span>{link.label}</span>
-                {hasChildren &&
-                  (isExpanded ? (
-                    <ChevronDown size={16} className="sidebar-chevron" />
-                  ) : (
-                    <ChevronRight size={16} className="sidebar-chevron" />
-                  ))}
-              </button>
+      <aside className={`sidebar ${isOpen ? "mobile-open" : ""}`}>
+        <button
+          className="mobile-close-btn"
+          onClick={() => setIsOpen(false)}
+          aria-label="Close Menu"
+        >
+          <X size={24} />
+        </button>
 
-              {hasChildren && isExpanded && (
-                <div className="sidebar-sublinks">
-                  {link.children.map((child) => {
-                    const ChildIcon = child.icon;
-                    return (
-                      <button
-                        key={child.label}
-                        className={`sidebar-link sidebar-sublink ${
-                          activeLink === child.label ? "active" : ""
-                        }`}
-                        onClick={() => onLinkClick && onLinkClick(child.label)}
-                      >
-                        <ChildIcon size={16} />
-                        <span>{child.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </nav>
+        <div className="sidebar-logo"></div>
 
-      <div className="sidebar-divider" />
-
-      <div className="sidebar-bottom">
-        {bottomLinks
-          .filter((l) => !l.adminOnly || role === "admin")
-          .map((link) => {
+        <nav className="sidebar-nav">
+          {links.map((link) => {
             const Icon = link.icon;
+            const hasChildren = Array.isArray(link.children);
+            const isExpanded = expanded === link.label;
+            const isParentActive =
+              activeLink === link.label ||
+              link.children?.some((c) => c.label === activeLink);
+
             return (
-              <button
-                key={link.label}
-                className={`sidebar-link ${
-                  activeLink === link.label ? "active" : ""
-                }`}
-                onClick={() => onLinkClick && onLinkClick(link.label)}
-              >
-                <Icon size={18} />
-                <span>{link.label}</span>
-              </button>
+              <div key={link.label} className="sidebar-group">
+                <button
+                  className={`sidebar-link ${isParentActive ? "active" : ""}`}
+                  onClick={() => {
+                    if (hasChildren) {
+                      toggleExpanded(link.label);
+                    } else {
+                      handleLinkClick(link.label);
+                    }
+                  }}
+                >
+                  <Icon size={18} />
+                  <span>{link.label}</span>
+                  {hasChildren &&
+                    (isExpanded ? (
+                      <ChevronDown size={16} className="sidebar-chevron" />
+                    ) : (
+                      <ChevronRight size={16} className="sidebar-chevron" />
+                    ))}
+                </button>
+
+                {hasChildren && isExpanded && (
+                  <div className="sidebar-sublinks">
+                    {link.children.map((child) => {
+                      const ChildIcon = child.icon;
+                      return (
+                        <button
+                          key={child.label}
+                          className={`sidebar-link sidebar-sublink ${
+                            activeLink === child.label ? "active" : ""
+                          }`}
+                          onClick={() => handleLinkClick(child.label)}
+                        >
+                          <ChildIcon size={16} />
+                          <span>{child.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             );
           })}
-      </div>
-    </aside>
+        </nav>
+
+        <div className="sidebar-divider" />
+
+        <div className="sidebar-bottom">
+          {bottomLinks
+            .filter((l) => !l.adminOnly || role === "admin")
+            .map((link) => {
+              const Icon = link.icon;
+              return (
+                <button
+                  key={link.label}
+                  className={`sidebar-link ${
+                    activeLink === link.label ? "active" : ""
+                  }`}
+                  onClick={() => handleLinkClick(link.label)}
+                >
+                  <Icon size={18} />
+                  <span>{link.label}</span>
+                </button>
+              );
+            })}
+        </div>
+      </aside>
+    </>
   );
 }
