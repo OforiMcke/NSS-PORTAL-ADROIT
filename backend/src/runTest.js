@@ -9,19 +9,19 @@ const {
 
 const MockApplicationEmail = {
   fullName: "JM Ofori",
-  email: "oforimckeownjulius@gmail.com",
-  jobTitle: "Software dev",
+  email: "amiskyjunior@gmail.com",
+  jobRole: "Software dev",
 };
 
 const MockNewApplicationEmail = {
   fullName: "JM Ofori",
   email: "oforimckeownjulius@gmail.com",
-  jobTitle: "Software dev",
+  jobRole: "Software dev",
 };
 // Mock application objects
 const mockAcceptedApplicant = {
   fullName: "Julius Junior",
-  email: "oforimckeownjulius@gmail.com",
+  email: "jmofori@palm.edu.gh",
 };
 
 const mockRejectedApplicant = {

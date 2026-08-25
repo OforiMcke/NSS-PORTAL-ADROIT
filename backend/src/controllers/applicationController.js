@@ -91,41 +91,41 @@ const submitApplication = asyncHandler(async (req, res) => {
   }
 
   const application = await Application.create({
-    applicant: req.user?._id,
-    job: job._id,
-    jobTitle,
-    jobRole,
-    fullName,
-    email,
-    phoneNumber,
-    cvUrl: cvUpload.url,
-    cvPublicId: cvUpload.publicId,
-    additionalDocs: additionalDocsUpload.map((doc) => ({
-      url: doc.url,
-      publicId: doc.publicId,
-    })),
-    status: "pending",
-  });
+  applicant: req.user?._id,
+  job: job._id,
+  jobTitle,
+  jobRole,
+  fullName,
+  email,
+  phoneNumber,
+  cvUrl: cvUpload.url,
+  cvPublicId: cvUpload.publicId,
+  additionalDocs: additionalDocsUpload.map((doc) => ({
+    url: doc.url,
+    publicId: doc.publicId,
+  })),
+  status: "pending",
+});
 
-  sendApplicationReceivedEmail(application).catch((err) =>
-    console.error("Applicant confirmation email failed:", err.message),
-  );
-  (async () => {
-    try {
-      await connectDB();
-      const admins = await User.find({ role: "admin" }).select("email");
-      const adminEmails = admins.map((a) => a.email).filter(Boolean);
-      await sendNewApplicationAdminEmail(application, adminEmails);
-    } catch (err) {
-      console.error("Admin notification email failed:", err.message);
-    }
-  })();
 
-  res.status(201).json({
-    success: true,
-    message: "Application submitted successfully",
-    data: application,
-  });
+try {
+  await sendApplicationReceivedEmail(application);
+} catch (err) {
+  console.error("Applicant confirmation email failed:", err.message);
+}
+
+try {
+  const admins = await User.find({ role: "admin" }).select("email");
+  const adminEmails = admins.map((a) => a.email).filter(Boolean);
+  await sendNewApplicationAdminEmail(application, adminEmails);
+} catch (err) {
+  console.error("Admin notification email failed:", err.message);
+}
+
+res.status(201).json({
+  success: true,
+  message: "Application submitted successfully",
+  data: application,
 });
 
 const getAdminApplications = asyncHandler(async (req, res) => {

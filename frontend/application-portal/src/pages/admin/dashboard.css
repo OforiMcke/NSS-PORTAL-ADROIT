@@ -581,7 +581,9 @@ h3 {
   }
 
   .welcome-cta-btn {
+    position: absolute;
     z-index: 2;
+    right: 1rem;
   }
 }
 
