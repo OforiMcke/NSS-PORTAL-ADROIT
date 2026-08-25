@@ -92,6 +92,8 @@
   font-weight: 700;
   white-space: nowrap;
   flex-shrink: 0;
+  margin-left: 2rem;
+  margin-top: 6rem;
 }
 
 .ais-badge--accepted {

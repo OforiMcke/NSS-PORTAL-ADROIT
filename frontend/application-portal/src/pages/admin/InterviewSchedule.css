@@ -1,4 +1,3 @@
-/* ===== Approved Candidates / Interview Schedule tables ===== */
 .iv-table {
   display: flex;
   flex-direction: column;
@@ -39,7 +38,6 @@
   color: #0a0a5c;
 }
 
-/* ===== Action cell (datetime input + Set + Mark Hired) ===== */
 .iv-actions {
   display: flex;
   align-items: center;
@@ -93,7 +91,6 @@
   color: #fff;
 }
 
-/* ===== "Current Schedule" widget — status-aware dot ===== */
 .schedule-item .schedule-dot--upcoming {
   background: #f5c518;
 }
@@ -102,7 +99,6 @@
   background: #e74c3c;
 }
 
-/* ===== Responsive stacking ===== */
 @media (max-width: 720px) {
   .iv-row {
     grid-template-columns: 1fr;
