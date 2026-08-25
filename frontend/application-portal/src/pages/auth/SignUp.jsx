@@ -214,6 +214,8 @@ const SignUp = () => {
               id="phoneNumber"
               name="phoneNumber"
               type="tel"
+              inputMode="numeric"
+              maxLength="10"
               placeholder="Phone number"
               value={form.phoneNumber}
               onChange={handleChange}

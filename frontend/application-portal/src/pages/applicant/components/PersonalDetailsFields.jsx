@@ -37,6 +37,8 @@ export default function PersonalDetailsFields({ formValues, onChange }) {
           </label>
           <input
             type="tel"
+            inputMode="numeric"
+            maxLength="10"
             name="phoneNumber"
             className="af-input"
             value={formValues.phoneNumber}

@@ -579,6 +579,10 @@ h3 {
     margin-left: 0;
     margin-top: 16px;
   }
+
+  .welcome-cta-btn {
+    z-index: 2;
+  }
 }
 
 @media (max-width: 768px) {
@@ -612,17 +616,17 @@ h3 {
     padding: 16px;
   }
 
-  .topbar {
+  /* .topbar {
     flex-direction: column-reverse;
     gap: 12px;
-  }
+  } */
 
   .search-box {
-    width: 100%;
+    display: none;
   }
 
   .topbar-right {
-    justify-content: space-between;
+    justify-content: right;
   }
 
   .welcome-banner {
