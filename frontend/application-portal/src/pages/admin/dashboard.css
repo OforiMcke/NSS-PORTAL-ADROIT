@@ -580,11 +580,11 @@ h3 {
     margin-top: 16px;
   } */
 
-  .welcome-cta-btn {
+  /* .welcome-cta-btn {
     position: absolute;
     z-index: 2;
     right: 1rem;
-  }
+  } */
 }
 
 @media (max-width: 768px) {
