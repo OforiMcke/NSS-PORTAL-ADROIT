@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { FileText, X, ExternalLink } from "lucide-react";
-import api from "../../api/axiosInstance";
-import "../admin/dashboard.css";
+import api from "../../../api/axiosInstance";
+import "../../admin/dashboard.css";
 import "./MyApplications.css";
 
 const statusColor = {

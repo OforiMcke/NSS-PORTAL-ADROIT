@@ -1,5 +1,5 @@
 import { FileText, UserCheck, Clock, CalendarDays } from "lucide-react";
-import StatCard from "../../components/StatCard";
+import StatCard from "../../../components/StatCard";
 import ApplicantWelcomeBanner from "./ApplicantWelcomeBanner";
 import ApplicationsTable from "./ApplicationsTable";
 import UpcomingInterview from "./UpcomingInterview";
