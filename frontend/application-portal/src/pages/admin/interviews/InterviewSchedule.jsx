@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { api } from "../../api/axiosInstance";
+import { api } from "../../../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../../components/Sidebar";
-import TopBar from "../../components/TopBar";
-import "../admin/dashboard.css";
+import Sidebar from "../../../components/Sidebar";
+import TopBar from "../../../components/TopBar";
+import "../../admin/dashboard.css";
 import "./InterviewSections.css";
 
 export default function InterviewSchedule() {

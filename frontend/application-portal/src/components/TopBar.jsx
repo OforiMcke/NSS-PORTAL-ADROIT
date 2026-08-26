@@ -6,10 +6,10 @@ import {
 export default function TopBar({ userName = "Recruiter", avatarUrl }) {
   return (
     <div className="topbar">
-      <div className="search-box">
-        {/* <Search size={12} /> */}
+      {/* <div className="search-box">
+        <Search size={12} />
         <input type="text" placeholder="Search" />
-      </div>
+      </div> */}
 
       <div className="topbar-right">
         <Bell size={20} className="topbar-icon" />

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Copy, Check } from "lucide-react";
-import api from "../../api/axiosInstance";
+import api from "../../../api/axiosInstance";
 import "./JobsList.css";
 
 export default function JobsList({ onCreateJob }) {

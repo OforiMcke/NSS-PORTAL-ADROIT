@@ -1,4 +1,4 @@
-import "../ApplicationForm.css";
+import "../application/ApplicationForm.css";
 
 const EMPLOYMENT_TYPES = ["National Service Personnel"];
 

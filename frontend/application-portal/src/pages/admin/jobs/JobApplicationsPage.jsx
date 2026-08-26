@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import Sidebar from "../../components/Sidebar";
-import TopBar from "../../components/TopBar";
-import "../admin/dashboard.css";
+import Sidebar from "../../../components/Sidebar";
+import TopBar from "../../../components/TopBar";
+import "../../admin/dashboard.css";
 import "./JobApplicationPage.css";
-import CreateAdmin from "../admin/CreateAdmin";
-import { api } from "../../api/axiosInstance";
+import CreateAdmin from "../CreateAdmin";
+import { api } from "../../../api/axiosInstance";
 
-import FilterBar from "./components/FilterBar";
-import ApplicationList from "./components/ApplicationList";
-import ApplicationDetailPanel from "./components/ApplicationDetailPanel";
-import CreateJob from "../admin/CreateJob";
-import JobsList from "../admin/JobsList";
-import JobRoles from "../admin/JobRoles";
+import FilterBar from "../components/FilterBar";
+import ApplicationList from "../components/ApplicationList";
+import ApplicationDetailPanel from "../components/ApplicationDetailPanel";
+import CreateJob from "../jobs/CreateJob";
+import JobsList from "../jobs/JobsList";
+import JobRoles from "../jobs/JobRoles";
 
 export default function JobApplicationsPage() {
   const navigate = useNavigate();

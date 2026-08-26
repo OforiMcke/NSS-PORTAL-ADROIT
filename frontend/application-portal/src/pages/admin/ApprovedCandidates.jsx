@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import TopBar from "../../components/TopBar";
 import "../admin/dashboard.css";
-import "./InterviewSections.css";
+import "../admin/interviews/InterviewSections.css";
 
 export default function ApprovedCandidates() {
   const navigate = useNavigate();

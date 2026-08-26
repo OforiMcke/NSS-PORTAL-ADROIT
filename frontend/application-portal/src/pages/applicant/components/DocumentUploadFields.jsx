@@ -1,5 +1,5 @@
-import { UploadBox } from "../UploadBox";
-import MultiUploadBox from "../MultiUploadBox";
+import { UploadBox } from "./UploadBox";
+import MultiUploadBox from "./MultiUploadBox";
 
 export default function DocumentUploadFields({
   onFileChange,

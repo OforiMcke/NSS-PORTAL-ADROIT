@@ -1,6 +1,6 @@
 import { useState } from "react";
-import api from "../../api/axiosInstance";
-import RoleAutocomplete from "../../components/RoleAutocomplete";
+import api from "../../../api/axiosInstance";
+import RoleAutocomplete from "../../../components/RoleAutocomplete";
 import "./CreateJob.css";
 
 export const CreateJob = () => {
