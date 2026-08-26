@@ -91,6 +91,17 @@
   color: #fff;
 }
 
+.iv-btn-edit {
+  background: #e2e8f0;
+  color: #0a0a5c;
+}
+
+.iv-btn-cancel {
+  background: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
+}
+
 .schedule-item .schedule-dot--upcoming {
   background: #f5c518;
 }

@@ -104,12 +104,17 @@ const submitApplication = asyncHandler(async (req, res) => {
       publicId: doc.publicId,
     })),
     status: "pending",
+    emailsSent: {
+      applicationReceived: false,
+      newApplicationAdmin: false,
+      acceptance: false,
+      rejection: false,
+    },
   });
 
-  // Await both emails now — on Vercel, the function can freeze the instant
-  // res.json() is sent, so fire-and-forget promises never finish executing.
   try {
     await sendApplicationReceivedEmail(application);
+    application.emailsSent.applicationReceived = true;
   } catch (err) {
     console.error("Applicant confirmation email failed:", err.message);
   }
@@ -118,9 +123,12 @@ const submitApplication = asyncHandler(async (req, res) => {
     const admins = await User.find({ role: "admin" }).select("email");
     const adminEmails = admins.map((a) => a.email).filter(Boolean);
     await sendNewApplicationAdminEmail(application, adminEmails);
+    application.emailsSent.newApplicationAdmin = true;
   } catch (err) {
     console.error("Admin notification email failed:", err.message);
   }
+
+  await application.save();
 
   res.status(201).json({
     success: true,
@@ -177,6 +185,16 @@ const acceptApplication = asyncHandler(async (req, res) => {
   application.status = "accepted";
   application.reviewDate = new Date();
   application.adminFeedback = "";
+
+  if (!application.emailsSent) {
+    application.emailsSent = {
+      applicationReceived: false,
+      newApplicationAdmin: false,
+      acceptance: false,
+      rejection: false,
+    };
+  }
+
   await application.save();
 
   if (!application.emailsSent.acceptance) {
@@ -214,6 +232,16 @@ const declineApplication = asyncHandler(async (req, res) => {
   application.adminFeedback = req.body.feedback || "";
   application.status = "declined";
   application.reviewDate = new Date();
+
+  if (!application.emailsSent) {
+    application.emailsSent = {
+      applicationReceived: false,
+      newApplicationAdmin: false,
+      acceptance: false,
+      rejection: false,
+    };
+  }
+
   await application.save();
 
   if (!application.emailsSent.rejection) {

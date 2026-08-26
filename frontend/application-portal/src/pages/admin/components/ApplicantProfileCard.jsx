@@ -54,41 +54,41 @@ export default function ApplicantProfileCard({
           </span>
         </div>
         <div className="jap-action-row">
-          <button
-            className="jap-action-btn accept"
-            type="button"
-            onClick={handleAcceptClick}
-            disabled={
-              (isUpdating && clickedAction !== "accept") ||
-              isAccepted ||
-              isDeclined
-            }
-          >
-            {isUpdating && clickedAction === "accept" ? (
-              <LoaderCircle className="jap-spinner" size={14} />
-            ) : (
-              <CheckCircle2 size={14} />
-            )}
-            Accept
-          </button>
+          {!isDeclined && (
+            <button
+              className="jap-action-btn accept"
+              type="button"
+              onClick={handleAcceptClick}
+              disabled={
+                (isUpdating && clickedAction !== "accept") || isAccepted
+              }
+            >
+              {isUpdating && clickedAction === "accept" ? (
+                <LoaderCircle className="jap-spinner" size={14} />
+              ) : (
+                <CheckCircle2 size={14} />
+              )}
+              {isAccepted ? "Accepted" : "Accept"}
+            </button>
+          )}
 
-          <button
-            className="jap-action-btn decline"
-            type="button"
-            onClick={handleDeclineClick}
-            disabled={
-              (isUpdating && clickedAction !== "decline") ||
-              isDeclined ||
-              isAccepted
-            }
-          >
-            {isUpdating && clickedAction === "decline" ? (
-              <LoaderCircle className="jap-spinner" size={14} />
-            ) : (
-              <XCircle size={14} />
-            )}
-            Decline
-          </button>
+          {!isAccepted && (
+            <button
+              className="jap-action-btn decline"
+              type="button"
+              onClick={handleDeclineClick}
+              disabled={
+                (isUpdating && clickedAction !== "decline") || isDeclined
+              }
+            >
+              {isUpdating && clickedAction === "decline" ? (
+                <LoaderCircle className="jap-spinner" size={14} />
+              ) : (
+                <XCircle size={14} />
+              )}
+              {isDeclined ? "Declined" : "Decline"}
+            </button>
+          )}
         </div>
       </div>
     </div>

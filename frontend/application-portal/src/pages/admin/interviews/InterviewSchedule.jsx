@@ -14,6 +14,26 @@ export default function InterviewSchedule() {
   const [savingId, setSavingId] = useState(null);
   const [dateDrafts, setDateDrafts] = useState({});
   const [hiringId, setHiringId] = useState(null);
+  const [editingIds, setEditingIds] = useState({});
+
+  const formatDateTimeLocal = (dateString) => {
+    if (!dateString) return "";
+    const d = new Date(dateString);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    const hours = String(d.getHours()).padStart(2, "0");
+    const minutes = String(d.getMinutes()).padStart(2, "0");
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
+  const handleStartEdit = (appId, currentDate) => {
+    setEditingIds((prev) => ({ ...prev, [appId]: true }));
+    setDateDrafts((prev) => ({
+      ...prev,
+      [appId]: formatDateTimeLocal(currentDate),
+    }));
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -60,6 +80,7 @@ export default function InterviewSchedule() {
     setError("");
     try {
       await api.put(`/api/applications/${id}/interview`, { interviewDate });
+      setEditingIds((prev) => ({ ...prev, [id]: false }));
       loadData();
     } catch (err) {
       setError(err.response?.data?.message || "Failed to schedule interview.");
@@ -131,28 +152,63 @@ export default function InterviewSchedule() {
                       : "Not scheduled"}
                   </span>
                   <span className="iv-actions">
-                    <input
-                      type="datetime-local"
-                      onChange={(e) =>
-                        setDateDrafts((prev) => ({
-                          ...prev,
-                          [app._id]: e.target.value,
-                        }))
-                      }
-                    />
-                    <button
-                      type="button"
-                      className="iv-btn iv-btn-set"
-                      onClick={() => handleSchedule(app._id)}
-                      disabled={savingId === app._id}
-                    >
-                      {savingId === app._id ? "Saving..." : "Set"}
-                    </button>
+                    {app.interviewDate && !editingIds[app._id] ? (
+                      <button
+                        type="button"
+                        className="iv-btn iv-btn-edit"
+                        onClick={() =>
+                          handleStartEdit(app._id, app.interviewDate)
+                        }
+                      >
+                        Edit
+                      </button>
+                    ) : (
+                      <>
+                        <input
+                          type="datetime-local"
+                          value={dateDrafts[app._id] || ""}
+                          onChange={(e) =>
+                            setDateDrafts((prev) => ({
+                              ...prev,
+                              [app._id]: e.target.value,
+                            }))
+                          }
+                        />
+                        <button
+                          type="button"
+                          className="iv-btn iv-btn-set"
+                          onClick={() => handleSchedule(app._id)}
+                          disabled={
+                            savingId === app._id || !dateDrafts[app._id]
+                          }
+                        >
+                          {savingId === app._id ? "Saving..." : "Set"}
+                        </button>
+                        {app.interviewDate && (
+                          <button
+                            type="button"
+                            className="iv-btn iv-btn-cancel"
+                            onClick={() =>
+                              setEditingIds((prev) => ({
+                                ...prev,
+                                [app._id]: false,
+                              }))
+                            }
+                          >
+                            Cancel
+                          </button>
+                        )}
+                      </>
+                    )}
                     <button
                       type="button"
                       className="iv-btn iv-btn-hire"
                       onClick={() => handleMarkHired(app._id)}
-                      disabled={hiringId === app._id || !app.interviewDate}
+                      disabled={
+                        hiringId === app._id ||
+                        !app.interviewDate ||
+                        editingIds[app._id]
+                      }
                       title={
                         !app.interviewDate ? "Schedule an interview first" : ""
                       }

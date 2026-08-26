@@ -206,13 +206,7 @@ export default function JobApplicationsPage() {
               {selected && (
                 <ApplicationDetailPanel
                   application={selected}
-                  updatingAction={
-                    updatingId === selected._id
-                      ? selected.status === "accepted"
-                        ? "accepting"
-                        : "declining"
-                      : null
-                  }
+                  isUpdating={updatingId === selected._id}
                   onViewResume={handleViewResume}
                   onViewAdditionalDoc={handleViewAdditionalDoc}
                   onAccept={() => handleStatusAction("accept", selected._id)}
