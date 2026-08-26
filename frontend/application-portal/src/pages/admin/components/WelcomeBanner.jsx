@@ -11,7 +11,10 @@ export default function WelcomeBanner({ userName, stats }) {
       <div className="welcome-avatar welcome-avatar--initials">{initials}</div>
       <div>
         <h1>Hello {userName.split(" ")[0] || "Recruiter"},</h1>
-        <p>You have received {stats.totalApplications} responses</p>
+        <p>
+          You have received {stats.totalApplications} response
+          {stats.totalApplications === 1 ? "" : "s"}
+        </p>
       </div>
       <div>
         <div className="bund own" />
