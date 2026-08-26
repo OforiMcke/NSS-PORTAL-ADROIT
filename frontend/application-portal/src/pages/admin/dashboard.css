@@ -575,13 +575,12 @@ h3 {
   }
 
   .welcome-cta {
-    position: static;
+    position: absolute;
     margin-left: 0;
     margin-top: 16px;
   }
 
   .welcome-cta-btn {
-    position: absolute;
     z-index: 2;
     right: 1rem;
   }
