@@ -8,13 +8,13 @@ import {
 import SignUp from "./pages/auth/SignUp.jsx";
 import SignIn from "./pages/auth/SignIn.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
-import JobApplicationsPage from "./pages/admin/JobApplicationsPage.jsx";
+import JobApplicationsPage from "./pages/admin/jobs/JobApplicationsPage.jsx";
 import ApplicantDashboard from "./pages/applicant/ApplicantDashboard.jsx";
-import ApplicationForm from "./pages/applicant/ApplicationForm.jsx";
-import JobRoles from "./pages/admin/JobRoles";
+import ApplicationForm from "./pages/applicant/application/ApplicationForm.jsx";
+import JobRoles from "./pages/admin/jobs/JobRoles";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import ApprovedCandidates from "./pages/admin/ApprovedCandidates.jsx";
-import InterviewSchedule from "./pages/admin/InterviewSchedule.jsx";
+import InterviewSchedule from "./pages/admin/interviews/InterviewSchedule.jsx";
 
 function RouteGuard({ children, requiredRole, isPublic }) {
   const location = useLocation();
