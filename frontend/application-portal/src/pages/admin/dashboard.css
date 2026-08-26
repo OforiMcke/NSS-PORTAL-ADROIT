@@ -518,7 +518,7 @@ h3 {
 
 .welcome-cta {
   margin-left: 2rem;
-  position: absolute;
+  /* position: absolute; */
   top: 8rem;
   right: 12rem;
 }
@@ -574,13 +574,14 @@ h3 {
     padding: 24px;
   }
 
-  .welcome-cta {
-    position: absolute;
+  /* .welcome-cta {
+    position: static;
     margin-left: 0;
     margin-top: 16px;
-  }
+  } */
 
   .welcome-cta-btn {
+    position: absolute;
     z-index: 2;
     right: 1rem;
   }
