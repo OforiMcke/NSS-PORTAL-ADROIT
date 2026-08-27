@@ -40,9 +40,10 @@ const ForgotPassword = () => {
           </p>
 
           <div className="field">
-            <label htmlFor="email"></label>
+            <label htmlFor="email">Email Address</label>
             <input
               id="email"
+              name="email"
               type="email"
               placeholder="Email"
               value={email}
