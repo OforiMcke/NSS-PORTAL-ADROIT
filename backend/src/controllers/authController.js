@@ -116,8 +116,6 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email });
 
-  // Always respond the same way whether or not the account exists, so this
-  // endpoint can't be used to check which emails are registered.
   const genericMessage =
     "If an account with that email exists, a reset link has been sent.";
 

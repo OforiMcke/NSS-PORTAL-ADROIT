@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../../api/axiosInstance";
 import "./SignUp.css";
+import "./ForgotPassword.css";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -17,7 +18,7 @@ const ForgotPassword = () => {
 
     try {
       const { data } = await api.post("/api/auth/forgot-password", { email });
-      setSuccess(data.message);
+      setSuccess(data.message || "Reset link sent successfully!");
     } catch (err) {
       setError(
         err.response?.data?.message ||
@@ -29,12 +30,11 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="split-screen">
+    <div>
       <div className="logo" />
-      <aside className="visual-panel" />
-      <main className="form-panel">
+      <main className="form-panel-1">
         <form className="signup-form" onSubmit={handleSubmit}>
-          <h2>Forgot password</h2>
+          <h2 className="fgt-pass">Forgot password</h2>
           <p className="signin-link">
             Remembered it? <Link to="/signin">Log in</Link>
           </p>

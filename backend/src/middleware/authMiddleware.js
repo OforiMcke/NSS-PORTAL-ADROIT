@@ -48,9 +48,7 @@ const optionalAuth = asyncHandler(async (req, res, next) => {
     if (user && user.isActive !== false) {
       req.user = user;
     }
-  } catch (error) {
-    // invalid/expired token — proceed as anonymous rather than blocking
-  }
+  } catch (error) {}
 
   next();
 });
