@@ -140,9 +140,44 @@ const sendNewApplicationAdminEmail = async (application, adminEmails = []) => {
   });
 };
 
+// password reset email
+const sendPasswordResetEmail = async (user, resetUrl) => {
+  const safeName = escapeHtml(user.firstName);
+  const subject = `Reset your password | Adroit 360`;
+  const html = `
+    <div style="font-family: Arial, sans-serif; min-width: 600px; margin:auto; padding:20px;">
+      <h2 style="color:#1a73e8;">Adroit 360: Password Reset Request</h2>
+      <p>Dear <strong>${safeName}</strong>,</p>
+      <p>We received a request to reset your password. Click the button below
+         to choose a new one. This link expires in 30 minutes.</p>
+      <p style="text-align:center; margin: 24px 0;">
+        <a href="${resetUrl}" style="background:#1a73e8; color:#fff; padding:12px 24px;
+           border-radius:6px; text-decoration:none; font-weight:600;">Reset Password</a>
+      </p>
+      <p>If you didn't request this, you can safely ignore this email and your
+         password will remain unchanged.</p>
+      <p style="margin-top: -20px;">Warm regards,<br/>The Adroit 360 Team</p>
+    </div>
+    <footer style="font-size: 12px; color: #888; margin-top: 20px; text-align: center;">
+      <p>This email was sent from Adroit 360. If you have any questions, please contact us at
+      <a href="mailto:careers@adroit360.com">careers@adroit360.com</a>
+      </p>
+      <p>&copy; ${new Date().getFullYear()} Adroit 360. All rights reserved.</p>
+    </footer>
+  `;
+
+  await transporter.sendMail({
+    from: `"Adroit 360" <${process.env.EMAIL_USER}>`,
+    to: user.email,
+    subject,
+    html,
+  });
+};
+
 module.exports = {
   sendAcceptanceEmail,
   sendRejectionEmail,
   sendApplicationReceivedEmail,
   sendNewApplicationAdminEmail,
+  sendPasswordResetEmail,
 };

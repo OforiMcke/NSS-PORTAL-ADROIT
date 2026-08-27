@@ -574,11 +574,11 @@ h3 {
     padding: 24px;
   }
 
-  /* .welcome-cta {
+  .welcome-cta {
     position: static;
     margin-left: 0;
     margin-top: 16px;
-  } */
+  }
 
   /* .welcome-cta-btn {
     position: absolute;
@@ -607,7 +607,6 @@ h3 {
 
   .sidebar-link {
     flex: 1 1 calc(50% - 12px);
-    /* justify-content: center; */
   }
 
   .sidebar-divider {
@@ -617,11 +616,6 @@ h3 {
   .dashboard-main {
     padding: 16px;
   }
-
-  /* .topbar {
-    flex-direction: column-reverse;
-    gap: 12px;
-  } */
 
   .search-box {
     display: none;

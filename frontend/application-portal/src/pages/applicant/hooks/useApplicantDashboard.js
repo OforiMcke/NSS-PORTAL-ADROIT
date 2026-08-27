@@ -23,8 +23,6 @@ export function useApplicantDashboard() {
   });
   const [nextInterview, setNextInterview] = useState(null);
 
-  // Used for manual refetches (e.g. after a successful application) — fine to
-  // call setState here since it's invoked from an event handler, not an effect.
   const fetchApplicantData = useCallback(async () => {
     try {
       const [profileRes, appsRes] = await Promise.all([

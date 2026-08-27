@@ -8,6 +8,7 @@ const {
 const User = require("../models/User.js");
 const Application = require("../models/Application.js");
 const connectDB = require("../config/db.js");
+const { sendPasswordResetEmail } = require("./emailController.js");
 
 const hashToken = (token) =>
   crypto.createHash("sha256").update(token).digest("hex");
@@ -100,6 +101,89 @@ const signin = asyncHandler(async (req, res) => {
     res.status(401);
     throw new Error("Invalid email or password");
   }
+});
+
+// @desc    Request a password reset link
+// @route   POST /api/auth/forgot-password
+const forgotPassword = asyncHandler(async (req, res) => {
+  await connectDB();
+
+  const { email } = req.body;
+  if (!email) {
+    res.status(400);
+    throw new Error("Email is required");
+  }
+
+  const user = await User.findOne({ email });
+
+  // Always respond the same way whether or not the account exists, so this
+  // endpoint can't be used to check which emails are registered.
+  const genericMessage =
+    "If an account with that email exists, a reset link has been sent.";
+
+  if (!user) {
+    return res.json({ success: true, message: genericMessage });
+  }
+
+  const resetToken = user.getResetPasswordToken();
+  await user.save({ validateBeforeSave: false });
+
+  const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+
+  try {
+    // Awaited deliberately — on Vercel, sending the response before this
+    // finishes can freeze the function before the email actually goes out.
+    await sendPasswordResetEmail(user, resetUrl);
+  } catch (error) {
+    console.error("Password reset email failed:", error.message);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    res.status(500);
+    throw new Error("Could not send reset email. Please try again.");
+  }
+
+  res.json({ success: true, message: genericMessage });
+});
+
+// @desc    Reset password using the token from the email
+// @route   PUT /api/auth/reset-password/:token
+const resetPassword = asyncHandler(async (req, res) => {
+  await connectDB();
+
+  const { password } = req.body;
+  if (!password) {
+    res.status(400);
+    throw new Error("A new password is required");
+  }
+
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
+
+  const user = await User.findOne({
+    resetPasswordToken: hashedToken,
+    resetPasswordExpire: { $gt: Date.now() },
+  }).select("+resetPasswordToken +resetPasswordExpire");
+
+  if (!user) {
+    res.status(400);
+    throw new Error("This reset link is invalid or has expired");
+  }
+
+  user.password = password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+  // Also invalidate any existing session which forces a fresh sign-in
+  user.refreshTokenHash = undefined;
+  await user.save();
+
+  res.json({
+    success: true,
+    message: "Password reset successfully. You can now sign in.",
+  });
 });
 
 // @desc    Exchange a valid refresh token for a new access token
@@ -264,6 +348,8 @@ const createAdmin = asyncHandler(async (req, res) => {
 module.exports = {
   signup,
   signin,
+  forgotPassword,
+  resetPassword,
   refresh,
   logout,
   getProfile,

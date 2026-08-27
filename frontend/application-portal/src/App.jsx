@@ -15,6 +15,8 @@ import JobRoles from "./pages/admin/jobs/JobRoles";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import ApprovedCandidates from "./pages/admin/ApprovedCandidates.jsx";
 import InterviewSchedule from "./pages/admin/interviews/InterviewSchedule.jsx";
+import ForgotPassword from "./pages/auth/ForgotPassword.jsx";
+import ResetPassword from "./pages/auth/ResetPassword.jsx";
 
 function RouteGuard({ children, requiredRole, isPublic }) {
   const location = useLocation();
@@ -55,6 +57,23 @@ function App() {
           element={
             <RouteGuard isPublic>
               <SignIn />
+            </RouteGuard>
+          }
+        />
+
+        <Route
+          path="/forgot-password"
+          element={
+            <RouteGuard isPublic>
+              <ForgotPassword />
+            </RouteGuard>
+          }
+        />
+        <Route
+          path="/reset-password/:token"
+          element={
+            <RouteGuard isPublic>
+              <ResetPassword />
             </RouteGuard>
           }
         />

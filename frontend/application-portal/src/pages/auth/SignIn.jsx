@@ -162,7 +162,10 @@ const SignIn = () => {
             {loading ? "Signing in..." : "Sign in"}
           </button>
           <p className="signin-link">
-            Don&apos;t have an account? <Link to="/signup">Create account</Link>
+            <Link to="/forgot-password">Forgot password?</Link>
+          </p>
+          <p className="signin-link">
+            Don't have an account? <Link to="/signup">Create account</Link>
           </p>
           {error && <p className="error-message">{error}</p>}
           {success && <p className="success-message">{success}</p>}
