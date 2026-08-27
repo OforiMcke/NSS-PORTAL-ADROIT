@@ -116,11 +116,13 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email });
 
-  const genericMessage =
-    "If an account with that email exists, a reset link has been sent.";
-
   if (!user) {
-    return res.json({ success: true, message: genericMessage });
+    res.status(404); 
+    return res.json({
+      success: false,
+      message:
+        "No account found with this email address. Please check and try again.",
+    });
   }
 
   const resetToken = user.getResetPasswordToken();
@@ -132,6 +134,8 @@ const forgotPassword = asyncHandler(async (req, res) => {
     await sendPasswordResetEmail(user, resetUrl);
   } catch (error) {
     console.error("Password reset email failed:", error.message);
+
+    // Clear tokens out on email transmission crash to preserve lifecycle integrity
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
     await user.save({ validateBeforeSave: false });
@@ -140,7 +144,10 @@ const forgotPassword = asyncHandler(async (req, res) => {
     throw new Error("Could not send reset email. Please try again.");
   }
 
-  res.json({ success: true, message: genericMessage });
+  res.json({
+    success: true,
+    message: `A password reset link has been successfully sent to ${email}.`,
+  });
 });
 
 // @desc    Reset password using the token from the email

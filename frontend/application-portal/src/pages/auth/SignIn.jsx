@@ -113,6 +113,8 @@ const SignIn = () => {
               placeholder="Enter your password"
               value={form.password}
               onChange={handleChange}
+              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z\d]).{8,}"
+              title="Must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and a special character"
               required
             />
             <button

@@ -242,13 +242,23 @@ const declineApplication = asyncHandler(async (req, res) => {
     };
   }
 
-  await application.save();
+  try {
+    await application.save();
+  } catch (err) {
+    console.error("Failed to save declined application:", err.message);
+    res.status(400);
+    throw new Error(
+      err.name === "ValidationError"
+        ? `Could not decline: ${err.message}`
+        : "Could not update this application. Please try again.",
+    );
+  }
 
   if (!application.emailsSent.rejection) {
     try {
       await sendRejectionEmail(application);
       application.emailsSent.rejection = true;
-      await application.save();
+      await application.save({ validateModifiedOnly: true });
     } catch (error) {
       console.error("Rejection email failed:", error.message);
     }
@@ -260,7 +270,6 @@ const declineApplication = asyncHandler(async (req, res) => {
     data: application,
   });
 });
-
 const getMyApplications = asyncHandler(async (req, res) => {
   await connectDB();
 

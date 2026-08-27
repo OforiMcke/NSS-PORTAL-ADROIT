@@ -31,7 +31,7 @@ const applicationSchema = mongoose.Schema(
       type: String,
       trim: true,
       lowercase: true,
-      unique: true,
+      // unique: true,
       required: [true, "Email address is required"],
       match: [
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
@@ -89,6 +89,7 @@ const applicationSchema = mongoose.Schema(
 
 // lets an applicant fetch their own submission history quickly
 applicationSchema.index({ applicant: 1 });
-
+applicationSchema.index({ job: 1, status: 1, createdAt: -1 });
+applicationSchema.index({ email: 1, job: 1 }, { unique: true });
 const Application = mongoose.model("Application", applicationSchema);
 module.exports = Application;
