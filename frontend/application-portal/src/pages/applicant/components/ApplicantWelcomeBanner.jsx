@@ -15,7 +15,10 @@ export default function ApplicantWelcomeBanner({
     <section className="welcome-banner">
       <div className="welcome-avatar welcome-avatar--initials">{initials}</div>
       <div>
-        <h1>Welcome back, {profile.firstName}</h1>
+        <h1>
+          Welcome back, <br />
+          {profile.firstName}
+        </h1>
         <p>
           You have {submittedCount} active application{" "}
           {submittedCount === 1 ? "" : "s"}

@@ -131,8 +131,6 @@ const forgotPassword = asyncHandler(async (req, res) => {
   const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
   try {
-    // Awaited deliberately — on Vercel, sending the response before this
-    // finishes can freeze the function before the email actually goes out.
     await sendPasswordResetEmail(user, resetUrl);
   } catch (error) {
     console.error("Password reset email failed:", error.message);

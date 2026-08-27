@@ -518,7 +518,7 @@ h3 {
 
 .welcome-cta {
   margin-left: 2rem;
-  /* position: absolute; */
+  position: absolute;
   top: 8rem;
   right: 12rem;
 }
@@ -532,6 +532,8 @@ h3 {
   cursor: pointer;
   width: 10rem;
   height: 8vh;
+  position: absolute;
+  z-index: 2;
 }
 
 .dashboard-apply-embed {
@@ -579,12 +581,25 @@ h3 {
     margin-left: 0;
     margin-top: 16px;
   }
+  .bundled.last {
+    display: none;
+  }
+  .bund.own {
+    display: none;
+  }
 
-  /* .welcome-cta-btn {
+  .bund.pu {
+    display: none;
+  }
+
+  .bund.go {
+    display: none;
+  }
+  .welcome-cta-btn {
     position: absolute;
     z-index: 2;
     right: 1rem;
-  } */
+  }
 }
 
 @media (max-width: 768px) {
@@ -630,7 +645,11 @@ h3 {
     text-align: center;
     align-items: center;
   }
-
+  .welcome-cta-btn {
+    margin-top: -2rem;
+    min-width: 4rem;
+    height: 2rem;
+  }
   .welcome-avatar {
     width: 7rem;
     height: 7rem;
