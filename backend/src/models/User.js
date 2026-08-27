@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
-
 const userSchema = mongoose.Schema(
   {
     firstName: {
@@ -59,9 +58,8 @@ const userSchema = mongoose.Schema(
   { timestamps: true },
 );
 
-// Hash password before saving
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password") || !this.password) return next();
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
@@ -76,8 +74,7 @@ userSchema.methods.getResetPasswordToken = function () {
     .createHash("sha256")
     .update(resetToken)
     .digest("hex");
-
-  // will expire after 30 minutes
+  //will expire after 30 minutes
   this.resetPasswordExpire = Date.now() + 30 * 60 * 1000;
   return resetToken;
 };
