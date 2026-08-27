@@ -61,22 +61,8 @@ function App() {
           }
         />
 
-        <Route
-          path="/forgot-password"
-          element={
-            <RouteGuard isPublic>
-              <ForgotPassword />
-            </RouteGuard>
-          }
-        />
-        <Route
-          path="/reset-password/:token"
-          element={
-            <RouteGuard isPublic>
-              <ResetPassword />
-            </RouteGuard>
-          }
-        />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
 
         <Route
           path="/applicant"
