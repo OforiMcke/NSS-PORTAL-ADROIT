@@ -99,6 +99,8 @@ const submitApplication = asyncHandler(async (req, res) => {
     phoneNumber,
     cvUrl: cvUpload.url,
     cvPublicId: cvUpload.publicId,
+    photoUrl: photoUpload?.url || "",
+    photoPublicId: photoUpload?.publicId || "",
     additionalDocs: additionalDocsUpload.map((doc) => ({
       url: doc.url,
       publicId: doc.publicId,
@@ -213,7 +215,6 @@ const acceptApplication = asyncHandler(async (req, res) => {
     data: application,
   });
 });
-
 const declineApplication = asyncHandler(async (req, res) => {
   await connectDB();
 
@@ -229,7 +230,7 @@ const declineApplication = asyncHandler(async (req, res) => {
     throw new Error("Application already declined");
   }
 
-  application.adminFeedback = req.body.feedback || "";
+  application.adminFeedback = req.body?.feedback || "";
   application.status = "declined";
   application.reviewDate = new Date();
 
@@ -247,11 +248,7 @@ const declineApplication = asyncHandler(async (req, res) => {
   } catch (err) {
     console.error("Failed to save declined application:", err.message);
     res.status(400);
-    throw new Error(
-      err.name === "ValidationError"
-        ? `Could not decline: ${err.message}`
-        : "Could not update this application. Please try again.",
-    );
+    throw new Error(`Could not decline: ${err.message}`);
   }
 
   if (!application.emailsSent.rejection) {
