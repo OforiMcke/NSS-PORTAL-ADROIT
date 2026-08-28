@@ -22,7 +22,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Database connection
-connectDB();
+connectDB().catch((err) => {
+  console.error("Database connection failed on startup:", err.message);
+});
 
 // API Route Links
 app.use("/api/auth", authRoutes);

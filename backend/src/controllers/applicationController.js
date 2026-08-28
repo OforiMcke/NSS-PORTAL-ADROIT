@@ -114,28 +114,33 @@ const submitApplication = asyncHandler(async (req, res) => {
     },
   });
 
-  try {
-    await sendApplicationReceivedEmail(application);
-    application.emailsSent.applicationReceived = true;
-  } catch (err) {
-    console.error("Applicant confirmation email failed:", err.message);
-  }
-
-  try {
-    const admins = await User.find({ role: "admin" }).select("email");
-    const adminEmails = admins.map((a) => a.email).filter(Boolean);
-    await sendNewApplicationAdminEmail(application, adminEmails);
-    application.emailsSent.newApplicationAdmin = true;
-  } catch (err) {
-    console.error("Admin notification email failed:", err.message);
-  }
-
-  await application.save();
-
   res.status(201).json({
     success: true,
     message: "Application submitted successfully",
     data: application,
+  });
+
+  // Run email notifications asynchronously in the background so client response is instant
+  (async () => {
+    try {
+      await sendApplicationReceivedEmail(application);
+      application.emailsSent.applicationReceived = true;
+    } catch (err) {
+      console.error("Applicant confirmation email failed:", err.message);
+    }
+
+    try {
+      const admins = await User.find({ role: "admin" }).select("email");
+      const adminEmails = admins.map((a) => a.email).filter(Boolean);
+      await sendNewApplicationAdminEmail(application, adminEmails);
+      application.emailsSent.newApplicationAdmin = true;
+    } catch (err) {
+      console.error("Admin notification email failed:", err.message);
+    }
+
+    await application.save();
+  })().catch((err) => {
+    console.error("Background email execution failed:", err.message);
   });
 });
 
@@ -199,21 +204,24 @@ const acceptApplication = asyncHandler(async (req, res) => {
 
   await application.save();
 
-  if (!application.emailsSent.acceptance) {
-    try {
-      await sendAcceptanceEmail(application);
-      application.emailsSent.acceptance = true;
-      await application.save();
-    } catch (error) {
-      console.error("Acceptance email failed:", error.message);
-    }
-  }
-
   res.json({
     success: true,
     message: "Application accepted. Confirmation email sent.",
     data: application,
   });
+
+  // Run email notification asynchronously in the background so client response is instant
+  if (!application.emailsSent.acceptance) {
+    (async () => {
+      try {
+        await sendAcceptanceEmail(application);
+        application.emailsSent.acceptance = true;
+        await application.save();
+      } catch (error) {
+        console.error("Acceptance email failed:", error.message);
+      }
+    })();
+  }
 });
 const declineApplication = asyncHandler(async (req, res) => {
   await connectDB();
@@ -251,21 +259,24 @@ const declineApplication = asyncHandler(async (req, res) => {
     throw new Error(`Could not decline: ${err.message}`);
   }
 
-  if (!application.emailsSent.rejection) {
-    try {
-      await sendRejectionEmail(application);
-      application.emailsSent.rejection = true;
-      await application.save({ validateModifiedOnly: true });
-    } catch (error) {
-      console.error("Rejection email failed:", error.message);
-    }
-  }
-
   res.json({
     success: true,
     message: "Application declined. Rejection email sent.",
     data: application,
   });
+
+  // Run email notification asynchronously in the background so client response is instant
+  if (!application.emailsSent.rejection) {
+    (async () => {
+      try {
+        await sendRejectionEmail(application);
+        application.emailsSent.rejection = true;
+        await application.save({ validateModifiedOnly: true });
+      } catch (error) {
+        console.error("Rejection email failed:", error.message);
+      }
+    })();
+  }
 });
 const getMyApplications = asyncHandler(async (req, res) => {
   await connectDB();
