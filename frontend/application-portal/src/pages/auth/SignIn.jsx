@@ -54,7 +54,13 @@ const SignIn = () => {
       localStorage.setItem("refreshToken", data.refreshToken);
       localStorage.setItem("userRole", data.role);
       localStorage.setItem("userName", displayName);
-      api.defaults.headers.common.Authorization = `Bearer ${data.accessToken}`;
+      // api.defaults.headers.common.Authorization = `Bearer ${data.accessToken}`;
+
+      console.log(
+        `Authtoken is ${data.accessToken}; refreshToken is ${data.refreshToken}; userRole is ${data.role}; display is ${displayName}`,
+      );
+
+      
 
       const fallback = data.role === "admin" ? "/admin" : "/applicant";
       const targetPath = location.state?.from?.pathname;

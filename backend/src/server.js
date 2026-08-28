@@ -13,11 +13,12 @@ const jobRoutes = require("./routes/jobRoutes");
 const jobRoleRoute = require("./routes/jobRoleRoute.js");
 const app = express();
 
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL ? process.env.CLIENT_URL.split(",") : "*",
-  }),
-);
+// app.use(
+//   cors({
+//     origin: process.env.CLIENT_URL ? process.env.CLIENT_URL.split(",") : "*",
+//   }),
+// );
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -32,6 +33,10 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/applications", applicationRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/job-roles", jobRoleRoute);
+
+app.use("/health", () => { 
+  console.log(`Everything dey work betters`);
+})
 
 //Error Handlers
 app.use(notFound);

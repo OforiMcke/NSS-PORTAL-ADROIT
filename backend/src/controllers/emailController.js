@@ -139,7 +139,7 @@ const sendNewApplicationAdminEmail = async (application, adminEmails = []) => {
     html,
   });
 };
-
+ 
 // password reset email
 const sendPasswordResetEmail = async (user, resetUrl) => {
   const safeName = escapeHtml(user.firstName);
