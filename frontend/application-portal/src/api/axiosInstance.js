@@ -48,6 +48,14 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    // Bad login/signup credentials aren't an expired session
+    if (
+      originalRequest.url?.includes("/api/auth/signin") ||
+      originalRequest.url?.includes("/api/auth/signup")
+    ) {
+      return Promise.reject(error);
+    }
+
     if (originalRequest.url?.includes("/api/auth/refresh")) {
       clearAuthAndRedirect();
       return Promise.reject(error);
