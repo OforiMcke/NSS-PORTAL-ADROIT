@@ -35,7 +35,8 @@ app.use("/api/jobs", jobRoutes);
 app.use("/api/job-roles", jobRoleRoute);
 
 app.use("/health", () => { 
-  console.log(`Everything dey work betters`);
+  res.json({message: "Gbos Gbas"})
+  // console.log(`Everything dey work betters`);
 })
 
 //Error Handlers
