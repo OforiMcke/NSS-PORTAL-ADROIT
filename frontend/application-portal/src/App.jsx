@@ -12,7 +12,7 @@ import JobApplicationsPage from "./pages/admin/jobs/JobApplicationsPage.jsx";
 import ApplicantDashboard from "./pages/applicant/ApplicantDashboard.jsx";
 import ApplicationForm from "./pages/applicant/application/ApplicationForm.jsx";
 import JobRoles from "./pages/admin/jobs/JobRoles";
-import { ProtectedRoute } from "./components/ProtectedRoute";
+// import { ProtectedRoute } from "./components/ProtectedRoute";
 import ApprovedCandidates from "./pages/admin/ApprovedCandidates.jsx";
 import InterviewSchedule from "./pages/admin/interviews/InterviewSchedule.jsx";
 import ForgotPassword from "./pages/auth/ForgotPassword.jsx";
@@ -32,7 +32,7 @@ function RouteGuard({ children, requiredRole, isPublic }) {
   }
 
   if (!isPublic && requiredRole && role !== requiredRole) {
-    return <Navigate to="/signin" state={{ from: location }} replace />;
+    return <Navigate to={role === "admin" ? "/admin" : "/applicant"} replace />;
   }
 
   return children;
@@ -60,9 +60,10 @@ function App() {
             </RouteGuard>
           }
         />
-
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+
+        <Route path="/apply/:jobId" element={<ApplicationForm />} />
 
         <Route
           path="/applicant"
@@ -81,7 +82,6 @@ function App() {
           }
         />
 
-        <Route path="/apply/:jobId" element={<ApplicationForm />} />
         <Route
           path="/admin"
           element={
@@ -98,14 +98,16 @@ function App() {
             </RouteGuard>
           }
         />
+
         <Route
           path="/admin/job-roles"
           element={
-            <ProtectedRoute allowedRole="admin">
+            <RouteGuard requiredRole="admin">
               <JobRoles />
-            </ProtectedRoute>
+            </RouteGuard>
           }
         />
+
         <Route
           path="/admin/approved-candidates"
           element={

@@ -7,10 +7,7 @@ const SignIn = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [animate, setAnimate] = useState(false);
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
+  const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,20 +16,21 @@ const SignIn = () => {
   useEffect(() => {
     window.requestAnimationFrame(() => setAnimate(true));
 
+    const token = localStorage.getItem("authToken");
     const currentRole = localStorage.getItem("userRole");
-    if (currentRole === "admin") {
-      navigate("/admin");
-    } else if (currentRole === "applicant") {
-      navigate("/applicant");
+
+    if (token && currentRole) {
+      if (currentRole === "admin") {
+        navigate("/admin", { replace: true });
+      } else if (currentRole === "applicant") {
+        navigate("/applicant", { replace: true });
+      }
     }
   }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -58,9 +56,20 @@ const SignIn = () => {
       localStorage.setItem("userName", displayName);
       api.defaults.headers.common.Authorization = `Bearer ${data.accessToken}`;
 
-      const from = location.state?.from?.pathname;
       const fallback = data.role === "admin" ? "/admin" : "/applicant";
-      const destination = from && from !== "/signin" ? from : fallback;
+      const targetPath = location.state?.from?.pathname;
+
+      let destination = fallback;
+      if (targetPath && targetPath !== "/signin") {
+        if (data.role === "admin" && targetPath.startsWith("/admin")) {
+          destination = targetPath;
+        } else if (
+          data.role === "applicant" &&
+          targetPath.startsWith("/applicant")
+        ) {
+          destination = targetPath;
+        }
+      }
 
       setSuccess(
         data.role === "admin"
@@ -69,7 +78,6 @@ const SignIn = () => {
       );
 
       setTimeout(() => navigate(destination, { replace: true }), 900);
-      console.log("Signin success:", data);
     } catch (err) {
       setError(
         err.response?.data?.message ||
@@ -92,7 +100,6 @@ const SignIn = () => {
           <h2>Sign in</h2>
 
           <div className="field">
-            <label htmlFor="email"></label>
             <input
               id="email"
               name="email"
@@ -105,7 +112,6 @@ const SignIn = () => {
           </div>
 
           <div className="field">
-            <label htmlFor="password"></label>
             <input
               id="password"
               name="password"
